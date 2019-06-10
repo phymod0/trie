@@ -33,7 +33,7 @@ void trie_destroy(Trie* trie, trieval_destructor_t dtor);
  * @param val Pointer to the value
  * @returns 0 on success or -1 if out of memory
  */
-int trie_insert(const char* key, void* val);
+int trie_insert(Trie* trie, const char* key, void* val);
 
 /**
  * Delete a key-value pair from the trie.
@@ -44,7 +44,7 @@ int trie_insert(const char* key, void* val);
  * @param key C-string of the key to remove
  * @param dtor Optional pointer to the destructor of the value to destroy
  */
-void trie_delete(const char* key, trieval_destructor_t dtor);
+void trie_delete(Trie* trie, const char* key, trieval_destructor_t dtor);
 
 /**
  * Find a value from the trie given it's key.
@@ -52,7 +52,7 @@ void trie_delete(const char* key, trieval_destructor_t dtor);
  * @param key C-string of the key the requested value was inserted with.
  * @returns Requested value or NULL if not found
  */
-void* trie_find(const char* key);
+void* trie_find(Trie* trie, const char* key);
 
 /**
  * Find all values from a trie given a common prefix of their keys.
@@ -61,7 +61,7 @@ void* trie_find(const char* key);
  * @returns TrieIterator to iterate over all requested values
  * @see trie_iterator.h
  */
-TrieIterator* trie_findall(const char* key_prefix);
+TrieIterator* trie_findall(Trie* trie, const char* key_prefix);
 
 
 #endif /* TRIE */
