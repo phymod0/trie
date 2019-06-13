@@ -258,6 +258,9 @@ int trie_delete(Trie* trie, const char* key)
 		trie_priv->ops->dtor(node->value);
 	node->value = NULL;
 
+	if (!parent)
+		return 0;
+
 	if (node->fchild)
 		return node_merge(node);
 	parent->fchild = node->next;
