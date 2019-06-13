@@ -3,6 +3,8 @@
 
 
 #include <stdlib.h>
+#include <string.h>
+#include <stddef.h>
 
 #include "trie_iterator.h"
 
@@ -10,16 +12,23 @@
 /** Trie data structure. */
 typedef struct {void* priv_data;} Trie;
 
-/** Destructor type for a trie value. */
+/** Destructor type for a trie node value. */
 typedef void (*trieval_destructor_t)(void*);
+
+/** Trie operations */
+struct trie_ops {
+	trieval_destructor_t dtor;
+};
 
 
 /**
  * Instantiate a trie.
  *
+ * <code>ops</code> will be duplicated and then used.
+ *
  * @returns Allocated trie structure
  */
-Trie* trie_create(void);
+Trie* trie_create(const struct trie_ops* ops);
 
 /**
  * Destroy a trie.
@@ -27,13 +36,13 @@ Trie* trie_create(void);
  * @param trie Trie returned by <code>trie_create</code>
  * @param dtor Pointer to the destructor of the value to destroy
  */
-void trie_destroy(Trie* trie, trieval_destructor_t dtor);
+void trie_destroy(Trie* trie);
 
 /**
  * Insert a key-value pair into a trie.
  *
  * Values inserted with a pre-existing key will replace the corresponding
- * pre-existing value.
+ * pre-existing value and the pre-existing value will be destroyed.
  *
  * @param key C-string of the key
  * @param val Pointer to the value
@@ -49,7 +58,7 @@ int trie_insert(Trie* trie, const char* key, void* val);
  * @returns 0 on success or -1 if out of memory
  */
 /* XXX: Remove memory dependency */
-int trie_delete(Trie* trie, const char* key, trieval_destructor_t dtor);
+int trie_delete(Trie* trie, const char* key);
 
 /**
  * Find a value from the trie given it's key.
