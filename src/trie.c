@@ -272,13 +272,31 @@ int trie_delete(Trie* trie, const char* key)
 
 void* trie_find(Trie* trie, const char* key)
 {
-
+	trie_node_t* node;
+	char* segptr;
+	find_mismatch(trie->priv_data, key, &node, &segptr, &key);
+	if (*key || *segptr)
+		/* Not found */
+		return NULL;
+	return node->value;
 }
 
 
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix)
 {
+	trie_priv_t* trie_priv = trie->priv_data;
 
+	trie_node_t* node;
+	char *segptr, *prefix_left;
+	find_mismatch(trie_priv, key_prefix, &node, &segptr, &prefix_left);
+	if (*prefix_left)
+		/* Full prefix not found */
+		return NULL;
+	char* truncated_prefix = add_strs(key_prefix, segptr);
+	if (!truncated_prefix)
+		return NULL;
+	/* TODO: Note that iterator should not include key text from root */
+	return trie_iterator_create(truncated_prefix, node);
 }
 
 
