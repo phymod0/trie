@@ -6,11 +6,12 @@
 #include <string.h>
 #include <stddef.h>
 
-#include "trie_iterator.h"
-
 
 /** Trie data structure. */
 typedef struct {void* priv_data;} Trie;
+
+/** Iterator type for iterating over (key, value) pairs in a subtrie. */
+typedef struct {void* priv_data;} TrieIterator;
 
 /** Destructor type for a trie node value. */
 typedef void (*trieval_destructor_t)(void*);

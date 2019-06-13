@@ -1,7 +1,6 @@
 #include <stdbool.h>
 
 #include "trie.h"
-#include "trie_iterator.h"
 
 
 #define VALLOC(x, n) (x = malloc((n) * sizeof *(x)))
@@ -19,6 +18,11 @@ typedef struct {
 	trie_node_t* root;
 	struct trie_ops* ops;
 } trie_priv_t;
+
+typedef struct {
+
+	char* keybuf;
+} trie_iter_priv_t;
 
 
 Trie* trie_create(const struct trie_ops* ops)
