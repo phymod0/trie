@@ -102,7 +102,7 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
  *
  * @param it Pointer to valid iterator or NULL
  */
-void trie_iter_next(TrieIterator* it);
+void trie_iter_step(TrieIterator** it);
 
 /**
  * Get the key at the current iterator.

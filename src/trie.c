@@ -354,9 +354,10 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 
 
 /* TODO: Note that iterator should not include key text from root */
-void trie_iter_next(TrieIterator* it)
+void trie_iter_step(TrieIterator** it)
 {
 	/* TODO: Complete */
+	/* TODO: Make sure *it is NULL before the stack is empty */
 }
 
 
