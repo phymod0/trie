@@ -59,6 +59,14 @@ void* stack_pop(Stack* s)
 }
 
 
+void* stack_top(Stack* s)
+{
+	stack_priv_t* priv = s->priv;
+
+	return priv->head ? priv->head->val : NULL;
+}
+
+
 bool stack_empty(Stack* s)
 {
 	stack_priv_t* priv = s->priv;
@@ -69,6 +77,9 @@ bool stack_empty(Stack* s)
 
 void stack_destroy(Stack* s)
 {
+	if (!s)
+		return;
+
 	stack_priv_t* priv = s->priv;
 	stack_elem_t* elem = priv->head;
 	void (*dtor)(void*) = priv->ops->dtor;

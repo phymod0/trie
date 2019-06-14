@@ -26,6 +26,7 @@ struct stack_ops {
 Stack* stack_create(struct stack_ops* ops);
 int stack_push(Stack* s, void* data);
 void* stack_pop(Stack* s);
+void* stack_top(Stack* s);
 bool stack_empty(Stack* s);
 void stack_destroy(Stack* s);
 
