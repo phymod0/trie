@@ -7,16 +7,17 @@
 #include <stddef.h>
 
 
+//////////////////////////////////////////////////////
+//////////////////// TRIE SECTION ////////////////////
+//////////////////////////////////////////////////////
+
 /** Trie data structure. */
 typedef struct {void* priv;} Trie;
-
-/** Iterator type for iterating over (key, value) pairs in a subtrie. */
-typedef struct {void* priv;} TrieIterator;
 
 /** Destructor type for a trie node value. */
 typedef void (*trieval_destructor_t)(void*);
 
-/** Trie operations */
+/** Trie operations. */
 struct trie_ops {
 	trieval_destructor_t dtor;
 };
@@ -81,6 +82,22 @@ int trie_delete(Trie* trie, const char* key);
  */
 void* trie_find(Trie* trie, const char* key);
 
+
+//////////////////////////////////////////////////////////
+//////////////////// ITERATOR SECTION ////////////////////
+//////////////////////////////////////////////////////////
+
+/** Iterator type for iterating over (key, value) pairs in a subtrie. */
+typedef struct {void* priv;} TrieIterator;
+
+
+/**
+ * Destroy an iterator.
+ *
+ * @param it Iterator to destroy
+ */
+void trie_iter_destroy(TrieIterator* it);
+
 /**
  * Find all values from a trie given a common prefix of their keys.
  *
@@ -92,6 +109,10 @@ void* trie_find(Trie* trie, const char* key);
  */
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 			   size_t max_keylen);
+/* TODO: Create trie operation defaults */
+/* TODO: Handle NULL-iterator freeing */
+/* TODO: Lexical sorting of keys maybe? */
+/* TODO: Redesign opaque typing */
 
 /**
  * Advance an iterator to the next valid (key, value) pair.
@@ -100,9 +121,12 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
  * which is prefixed by <code>key_prefix</code> and also prefixes the current
  * iterator key.
  *
- * @param it Pointer to valid iterator or NULL
+ * <code>*it_p</code> would be set to NULL if either the iterator has ended or
+ * there is no memory to proceed with the iteration.
+ *
+ * @param it_p Pointer to valid iterator or NULL
  */
-void trie_iter_step(TrieIterator** it);
+void trie_iter_next(TrieIterator** it_p);
 
 /**
  * Get the key at the current iterator.
@@ -119,13 +143,6 @@ const char* trie_iter_getkey(TrieIterator* it);
  * @returns Iterator value
  */
 void* trie_iter_getval(TrieIterator* it);
-
-/**
- * Destroy an iterator.
- *
- * @param it Iterator to destroy
- */
-void trie_iter_destroy(TrieIterator* it);
 
 
 #endif /* TRIE */
