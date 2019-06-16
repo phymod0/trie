@@ -12,7 +12,8 @@
 //////////////////////////////////////////////////////
 
 /** Trie data structure. */
-typedef struct {void* priv;} Trie;
+struct trie;
+typedef struct trie Trie;
 
 /** Destructor type for a trie node value. */
 typedef void (*trieval_destructor_t)(void*);
@@ -88,15 +89,16 @@ void* trie_find(Trie* trie, const char* key);
 //////////////////////////////////////////////////////////
 
 /** Iterator type for iterating over (key, value) pairs in a subtrie. */
-typedef struct {void* priv;} TrieIterator;
+struct trie_iter;
+typedef struct trie_iter TrieIterator;
 
 
 /**
  * Destroy an iterator.
  *
- * @param it Iterator to destroy
+ * @param iter Iterator to destroy
  */
-void trie_iter_destroy(TrieIterator* it);
+void trie_iter_destroy(TrieIterator* iter);
 
 /**
  * Find all values from a trie given a common prefix of their keys.
@@ -112,7 +114,6 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 /* TODO: Create trie operation defaults */
 /* TODO: Handle NULL-iterator freeing */
 /* TODO: Lexical sorting of keys maybe? */
-/* TODO: Redesign opaque typing */
 
 /**
  * Advance an iterator to the next valid (key, value) pair.
@@ -121,28 +122,28 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
  * which is prefixed by <code>key_prefix</code> and also prefixes the current
  * iterator key.
  *
- * <code>*it_p</code> would be set to NULL if either the iterator has ended or
- * there is no memory to proceed with the iteration.
+ * <code>*iter_p</code> would be set to NULL if either the iterator has ended
+ * or there is no memory to proceed with the iteration.
  *
- * @param it_p Pointer to valid iterator or NULL
+ * @param iter_p Pointer to valid iterator or NULL
  */
-void trie_iter_next(TrieIterator** it_p);
+void trie_iter_next(TrieIterator** iter_p);
 
 /**
  * Get the key at the current iterator.
  *
- * @param it Current iterator
+ * @param iter Current iterator
  * @returns Iterator key
  */
-const char* trie_iter_getkey(TrieIterator* it);
+const char* trie_iter_getkey(TrieIterator* iter);
 
 /**
  * Get the value at the current iterator.
  *
- * @param it Current iterator
+ * @param iter Current iterator
  * @returns Iterator value
  */
-void* trie_iter_getval(TrieIterator* it);
+void* trie_iter_getval(TrieIterator* iter);
 
 
 #endif /* TRIE */

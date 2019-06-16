@@ -15,34 +15,31 @@ typedef struct trie_node {
 	void* value;
 } trie_node_t;
 
-typedef struct {
+typedef struct trie {
 	trie_node_t* root;
 	struct trie_ops* ops;
 	size_t max_strlen_added;
-} trie_priv_t;
+} Trie;
 
-typedef struct {
+typedef struct trie_iter {
 	Stack *node_stack, *keyptr_stack;
 	size_t max_keylen;
 	char* key;
 	void* value;
-} trie_iter_priv_t;
+} TrieIterator;
 
 
 Trie* trie_create(const struct trie_ops* ops)
 {
-	Trie* trie;
-	trie_priv_t* priv = NULL;
+	Trie* trie = NULL;
 	trie_node_t* root = NULL;
 	char* empty = NULL;
 	if (!ALLOC(trie)
-	    || !ALLOC(priv)
 	    || !ALLOC(root)
 	    || !ALLOC(empty)
 	    || !ALLOC(trie->ops)) {
 		free(empty);
 		free(root);
-		free(priv);
 		free(trie);
 		return NULL;
 	}
@@ -51,10 +48,9 @@ Trie* trie_create(const struct trie_ops* ops)
 	root->segment = empty;
 	root->fchild = root->next = NULL;
 	root->value = NULL;
-	priv->max_strlen_added = 0;
-	priv->root = root;
+	trie->max_strlen_added = 0;
+	trie->root = root;
 	memcpy(trie->ops, ops, sizeof *(trie->ops));
-	trie->priv = priv;
 
 	return trie;
 }
@@ -80,10 +76,8 @@ void trie_destroy(Trie* trie)
 	if (!trie)
 		return;
 
-	trie_priv_t* trie_priv = trie->priv;
-
-	node_recursive_free(trie_priv->root, trie_priv->ops->dtor);
-	free(trie_priv);
+	node_recursive_free(trie->root, trie->ops->dtor);
+	free(trie->ops);
 	free(trie);
 }
 
@@ -165,9 +159,8 @@ static int node_merge(trie_node_t* node)
 }
 
 
-static void find_mismatch(trie_priv_t* trie, const char* key,
-			  trie_node_t** node_p, char** segptr_p,
-			  const char** key_p)
+static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
+			  char** segptr_p, const char** key_p)
 {
 	trie_node_t* node = trie->root;
 	char* segptr = node->segment;
@@ -196,7 +189,7 @@ static void find_mismatch(trie_priv_t* trie, const char* key,
 }
 
 
-static void find_mismatch_parent(trie_priv_t* trie, const char* key,
+static void find_mismatch_parent(Trie* trie, const char* key,
 				 trie_node_t** node_p, trie_node_t** parent_p,
 				 char** segptr_p, const char** key_p)
 {
@@ -230,12 +223,11 @@ static void find_mismatch_parent(trie_priv_t* trie, const char* key,
 
 int trie_insert(Trie* trie, const char* key, void* val)
 {
-	trie_priv_t* trie_priv = trie->priv;
 	const char* key_old = key;
 
 	trie_node_t* node;
 	char *segptr;
-	find_mismatch(trie_priv, key, &node, &segptr, &key);
+	find_mismatch(trie, key, &node, &segptr, &key);
 
 	trie_node_t* keybranch = NULL;
 	if (*key && !(keybranch = node_create(key, val)))
@@ -250,8 +242,8 @@ int trie_insert(Trie* trie, const char* key, void* val)
 	}
 
 	size_t key_strlen = strlen(key_old);
-	if (key_strlen > trie_priv->max_strlen_added)
-		trie_priv->max_strlen_added = key_strlen;
+	if (key_strlen > trie->max_strlen_added)
+		trie->max_strlen_added = key_strlen;
 
 	if (keybranch) {
 		keybranch->next = node->fchild;
@@ -259,7 +251,7 @@ int trie_insert(Trie* trie, const char* key, void* val)
 		return 0;
 	}
 	if (node->value)
-		trie_priv->ops->dtor(node->value);
+		trie->ops->dtor(node->value);
 	node->value = val;
 	return 0;
 }
@@ -267,18 +259,16 @@ int trie_insert(Trie* trie, const char* key, void* val)
 
 int trie_delete(Trie* trie, const char* key)
 {
-	trie_priv_t* trie_priv = trie->priv;
-
 	trie_node_t *node, *parent;
 	char *segptr;
-	find_mismatch_parent(trie_priv, key, &node, &parent, &segptr, &key);
+	find_mismatch_parent(trie, key, &node, &parent, &segptr, &key);
 
 	if (*key || *segptr)
 		/* Not found */
 		return 0;
 
 	if (node->value)
-		trie_priv->ops->dtor(node->value);
+		trie->ops->dtor(node->value);
 	node->value = NULL;
 
 	if (!parent)
@@ -297,7 +287,7 @@ void* trie_find(Trie* trie, const char* key)
 {
 	trie_node_t* node;
 	char* segptr;
-	find_mismatch(trie->priv, key, &node, &segptr, &key);
+	find_mismatch(trie, key, &node, &segptr, &key);
 	if (*key || *segptr)
 		/* Not found */
 		return NULL;
@@ -333,33 +323,29 @@ static inline char* key_add_segment(char* key, const char* segment,
 }
 
 
-void trie_iter_destroy(TrieIterator* it)
+void trie_iter_destroy(TrieIterator* iter)
 {
-	if (!it)
+	if (!iter)
 		return;
 
-	trie_iter_priv_t* priv = it->priv;
-	stack_destroy(priv->node_stack);
-	stack_destroy(priv->keyptr_stack);
-	free(priv->key);
-	free(priv);
-	free(it);
+	stack_destroy(iter->node_stack);
+	stack_destroy(iter->keyptr_stack);
+	free(iter->key);
+	free(iter);
 }
 
 
-static bool trie_iter_step(TrieIterator** it_p)
+static bool trie_iter_step(TrieIterator** iter_p)
 {
-	TrieIterator* it = *it_p;
-	if (!it)
+	TrieIterator* iter = *iter_p;
+	if (!iter)
 		return true;
 
 	/* TODO: Rewrite functions to free variables at an end label */
-	/* TODO: Make this more efficient or remove the opaque thing */
-	trie_iter_priv_t* priv = it->priv;
-	Stack* node_stack = priv->node_stack;
-	Stack* keyptr_stack = priv->keyptr_stack;
-	const size_t max_keylen = priv->max_keylen;
-	char* key = priv->key;
+	Stack* node_stack = iter->node_stack;
+	Stack* keyptr_stack = iter->keyptr_stack;
+	const size_t max_keylen = iter->max_keylen;
+	char* key = iter->key;
 
 	if (stack_empty(node_stack))
 		goto end_iterator;
@@ -379,12 +365,12 @@ static bool trie_iter_step(TrieIterator** it_p)
 		       || stack_push(keyptr_stack, keyend) < 0))
 		goto oom;
 
-	return (priv->value = node->value) ? true : false;
+	return (iter->value = node->value) ? true : false;
 
 oom:
 end_iterator:
-	trie_iter_destroy(it);
-	*it_p = NULL;
+	trie_iter_destroy(iter);
+	*iter_p = NULL;
 	return true;
 }
 
@@ -415,12 +401,11 @@ end_iterator:
 static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      trie_node_t* node, size_t max_keylen)
 {
-	TrieIterator* it = NULL;
-	trie_iter_priv_t* priv = NULL;
+	TrieIterator* iter = NULL;
 	char* keybuf = NULL;
 	Stack *node_stack = NULL, *keyptr_stack = NULL;
 
-	if (!ALLOC(it) || !ALLOC(priv))
+	if (!ALLOC(iter))
 		goto oom;
 
 	char* fchild_keyptr;
@@ -437,24 +422,22 @@ static TrieIterator* trie_iter_create(const char* truncated_prefix,
 			     || stack_push(keyptr_stack, fchild_keyptr) < 0))
 		goto oom;
 
-	priv->node_stack = node_stack;
-	priv->keyptr_stack = keyptr_stack;
-	priv->max_keylen = max_keylen;
-	priv->key = keybuf;
-	priv->value = node->value;
-	it->priv = priv;
+	iter->node_stack = node_stack;
+	iter->keyptr_stack = keyptr_stack;
+	iter->max_keylen = max_keylen;
+	iter->key = keybuf;
+	iter->value = node->value;
 
-	if (priv->value)
-		return it;
+	if (iter->value)
+		return iter;
 
-	while (!trie_iter_step(&it))
+	while (!trie_iter_step(&iter))
 		continue;
-	return it;
+	return iter;
 
 oom:
 return_empty_iterator:
-	free(it);
-	free(priv);
+	free(iter);
 	free(keybuf);
 	stack_destroy(node_stack);
 	stack_destroy(keyptr_stack);
@@ -465,11 +448,9 @@ return_empty_iterator:
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 			   size_t max_keylen)
 {
-	trie_priv_t* trie_priv = trie->priv;
-
 	trie_node_t* node;
 	char *segptr, *prefix_left;
-	find_mismatch(trie_priv, key_prefix, &node, &segptr, &prefix_left);
+	find_mismatch(trie, key_prefix, &node, &segptr, &prefix_left);
 
 	if (*prefix_left)
 		/* Full prefix not found */
@@ -485,29 +466,21 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 }
 
 
-void trie_iter_next(TrieIterator** it_p)
+void trie_iter_next(TrieIterator** iter_p)
 {
-	while (!trie_iter_step(it_p));
+	while (!trie_iter_step(iter_p));
 }
 
 
-const char* trie_iter_getkey(TrieIterator* it)
+const char* trie_iter_getkey(TrieIterator* iter)
 {
-	if (!it)
-		return NULL;
-
-	trie_iter_priv_t* priv = it->priv;
-	return priv->key;
+	return iter ? iter->key : NULL;
 }
 
 
-void* trie_iter_getval(TrieIterator* it)
+void* trie_iter_getval(TrieIterator* iter)
 {
-	if (!it)
-		return NULL;
-
-	trie_iter_priv_t* priv = it->priv;
-	return priv->value;
+	return iter ? iter->value : NULL;
 }
 
 

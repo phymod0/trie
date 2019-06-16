@@ -17,7 +17,9 @@
 	}
 
 
-typedef struct {void* priv;} Stack;
+struct stack;
+typedef struct stack Stack;
+
 struct stack_ops {
 	void (*dtor)(void*);
 };

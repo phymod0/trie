@@ -9,51 +9,43 @@ typedef struct stack_elem {
 	struct stack_elem* next;
 } stack_elem_t;
 
-typedef struct {
+typedef struct stack {
 	stack_elem_t* head;
 	struct stack_ops* ops;
-} stack_priv_t;
+} Stack;
 
 
 Stack* stack_create(struct stack_ops* ops)
 {
 	Stack* s;
-	stack_priv_t* priv = NULL;
-	if (!ALLOC(s) || !ALLOC(priv) || !ALLOC(priv->ops)) {
-		free(s);
-		free(priv);
+	if (!ALLOC(s) || !ALLOC(s->ops))
 		return NULL;
-	}
-	priv->head = NULL;
-	memcpy(priv->ops, ops, sizeof *(priv->ops));
-	s->priv = priv;
+	s->head = NULL;
+	memcpy(s->ops, ops, sizeof *(s->ops));
 	return s;
 }
 
 
 int stack_push(Stack* s, void* data)
 {
-	stack_priv_t* priv = s->priv;
-
 	stack_elem_t* head_new;
 	if (!ALLOC(head_new))
 		return -1;
 	head_new->val = data;
-	head_new->next = priv->head;
+	head_new->next = s->head;
 
-	priv->head = head_new;
+	s->head = head_new;
 }
 
 
 void* stack_pop(Stack* s)
 {
-	stack_priv_t* priv = s->priv;
-	stack_elem_t* head = priv->head;
+	stack_elem_t* head = s->head;
 
 	if (!head)
 		return NULL;
 	void* val = head->val;
-	priv->head = head->next;
+	s->head = head->next;
 	free(head);
 	return val;
 }
@@ -61,17 +53,13 @@ void* stack_pop(Stack* s)
 
 void* stack_top(Stack* s)
 {
-	stack_priv_t* priv = s->priv;
-
-	return priv->head ? priv->head->val : NULL;
+	return s->head ? s->head->val : NULL;
 }
 
 
 bool stack_empty(Stack* s)
 {
-	stack_priv_t* priv = s->priv;
-
-	return priv->head == NULL;
+	return s->head == NULL;
 }
 
 
@@ -80,9 +68,8 @@ void stack_destroy(Stack* s)
 	if (!s)
 		return;
 
-	stack_priv_t* priv = s->priv;
-	stack_elem_t* elem = priv->head;
-	void (*dtor)(void*) = priv->ops->dtor;
+	stack_elem_t* elem = s->head;
+	void (*dtor)(void*) = s->ops->dtor;
 
 	while (elem) {
 		stack_elem_t* next = elem->next;
@@ -91,7 +78,6 @@ void stack_destroy(Stack* s)
 		free(elem);
 		elem = next;
 	}
-	free(priv);
 	free(s);
 }
 
