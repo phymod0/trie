@@ -34,15 +34,12 @@ Trie* trie_create(const struct trie_ops* ops)
 	Trie* trie = NULL;
 	trie_node_t* root = NULL;
 	char* empty = NULL;
+	struct trie_ops* trie_ops = NULL;
 	if (!ALLOC(trie)
 	    || !ALLOC(root)
 	    || !ALLOC(empty)
-	    || !ALLOC(trie->ops)) {
-		free(empty);
-		free(root);
-		free(trie);
-		return NULL;
-	}
+	    || !ALLOC(trie_ops))
+		goto oom;
 
 	empty[0] = '\0';
 	root->segment = empty;
@@ -50,9 +47,17 @@ Trie* trie_create(const struct trie_ops* ops)
 	root->value = NULL;
 	trie->max_strlen_added = 0;
 	trie->root = root;
-	memcpy(trie->ops, ops, sizeof *(trie->ops));
+	memcpy(trie_ops, ops, sizeof *trie_ops);
+	trie->ops = trie_ops;
 
 	return trie;
+
+oom:
+	free(trie);
+	free(root);
+	free(empty);
+	free(trie_ops);
+	return NULL;
 }
 
 
@@ -342,7 +347,6 @@ static bool trie_iter_step(TrieIterator** iter_p)
 	if (!iter)
 		return true;
 
-	/* TODO: Rewrite functions to free variables at an end label */
 	Stack* node_stack = iter->node_stack;
 	Stack* keyptr_stack = iter->keyptr_stack;
 	const size_t max_keylen = iter->max_keylen;
