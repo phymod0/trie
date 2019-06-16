@@ -22,9 +22,10 @@ typedef struct {
 } trie_priv_t;
 
 typedef struct {
-	Stack* node_stack;
-	char *keybuf, *bufptr;
+	Stack *node_stack, *keyptr_stack;
 	size_t max_keylen;
+	char* key;
+	void* value;
 } trie_iter_priv_t;
 
 
@@ -304,31 +305,160 @@ void* trie_find(Trie* trie, const char* key)
 }
 
 
-static TrieIterator* trie_iter_create(const char* trunc_prefix,
+static inline key_buffer_create(size_t max_keylen)
+{
+	char* buf;
+	if (!VALLOC(buf, max_keylen + 1))
+		return NULL;
+	buf[0] = '\0';
+	return buf;
+}
+
+
+/* Copy at most n bytes to dest up to the terminating 0 of src */
+static inline char* segncpy(char* dest, const char* src, size_t n)
+{
+	while (n-- && (*dest++ = *src++));
+	return dest - 1;
+}
+
+
+static inline char* key_add_segment(char* key, const char* segment,
+				    char* keybuf, size_t max_keylen)
+{
+	char* keybuf_end = keybuf + max_keylen + 1;
+	ptrdiff_t keybuf_left = keybuf_end - key;
+	char* key_end = segncpy(key, segment, (size_t)keybuf_left);
+	return *key_end ? NULL : key_end;
+}
+
+
+void trie_iter_destroy(TrieIterator* it)
+{
+	if (!it)
+		return;
+
+	trie_iter_priv_t* priv = it->priv;
+	stack_destroy(priv->node_stack);
+	stack_destroy(priv->keyptr_stack);
+	free(priv->key);
+	free(priv);
+	free(it);
+}
+
+
+static bool trie_iter_step(TrieIterator** it_p)
+{
+	TrieIterator* it = *it_p;
+	if (!it)
+		return true;
+
+	/* TODO: Rewrite functions to free variables at an end label */
+	/* TODO: Make this more efficient or remove the opaque thing */
+	trie_iter_priv_t* priv = it->priv;
+	Stack* node_stack = priv->node_stack;
+	Stack* keyptr_stack = priv->keyptr_stack;
+	const size_t max_keylen = priv->max_keylen;
+	char* key = priv->key;
+
+	if (stack_empty(node_stack))
+		goto end_iterator;
+	trie_node_t* node = stack_pop(node_stack);
+
+	trie_node_t* next = node->next;
+	char* keyptr = stack_pop(keyptr_stack);
+	if (next && (stack_push(node_stack, next) < 0
+		     || stack_push(keyptr_stack, keyptr) < 0))
+		goto oom;
+
+	trie_node_t* fchild = node->fchild;
+	char* keyend = key_add_segment(keyptr, node->segment, key, max_keylen);
+	if (!keyend)
+		return false;
+	if (fchild && (stack_push(node_stack, fchild) < 0
+		       || stack_push(keyptr_stack, keyend) < 0))
+		goto oom;
+
+	return (priv->value = node->value) ? true : false;
+
+oom:
+end_iterator:
+	trie_iter_destroy(it);
+	*it_p = NULL;
+	return true;
+}
+
+
+/*
+ * OVERVIEW:
+ *	- Stepping:
+ *		o If iter is NULL return true
+ *		o Attempt segment copy onto key pointer
+ *			+ on failure, push next if valid and return false
+ *		o Push (next, key), (fchild, keyreturn) if valid
+ *		o Copy value pointer, return whether value was valid
+ *	- Init:
+ *		o Instantiate iterator
+ *		o Instantiate key buffer
+ *		o Instantiate both stacks
+ *		o Attempt segment copy onto raw key buffer
+ *			+ on failure, abort and return NULL
+ *		o Push (fchild, keyreturn) if valid
+ *		o Copy value pointer
+ *		o If value valid, return new iterator
+ *		o Step until a valid entry (including NULL) is found
+ *	- Nexting:
+ *		o Step until a valid entry (including NULL) is found
+ */
+
+
+static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      trie_node_t* node, size_t max_keylen)
 {
-	TrieIterator* it;
+	TrieIterator* it = NULL;
 	trie_iter_priv_t* priv = NULL;
 	char* keybuf = NULL;
-	Stack* node_stack = NULL;
-	if (!ALLOC(it)
-	    || !ALLOC(priv)
-	    || !VALLOC(keybuf, max_keylen + 1)
-	    || !(node_stack = stack_create(STACK_OPS_NULL))
-	    || stack_push(node_stack, node) < 0) {
-		free(it);
-		free(priv);
-		free(keybuf);
-		stack_destroy(node_stack);
-		return NULL;
-	}
+	Stack *node_stack = NULL, *keyptr_stack = NULL;
+
+	if (!ALLOC(it) || !ALLOC(priv))
+		goto oom;
+
+	char* fchild_keyptr;
+	if (!(keybuf = key_buffer_create(max_keylen)))
+		goto oom;
+	if (!(fchild_keyptr = key_add_segment(keybuf, truncated_prefix, keybuf,
+					      max_keylen)))
+		goto return_empty_iterator;
+
+	if (!(node_stack = stack_create(STACK_OPS_NULL))
+	    || !(keyptr_stack = stack_create(STACK_OPS_NULL)))
+		goto oom;
+	if (node->fchild && (stack_push(node_stack, node->fchild) < 0
+			     || stack_push(keyptr_stack, fchild_keyptr) < 0))
+		goto oom;
 
 	priv->node_stack = node_stack;
-	priv->keybuf = strcpy(keybuf, trunc_prefix);
-	priv->bufptr = keybuf + strlen(trunc_prefix);
+	priv->keyptr_stack = keyptr_stack;
 	priv->max_keylen = max_keylen;
+	priv->key = keybuf;
+	priv->value = node->value;
 	it->priv = priv;
+
+	if (priv->value)
+		return it;
+
+	while (!trie_iter_step(&it))
+		continue;
 	return it;
+
+oom:
+return_empty_iterator:
+	free(it);
+	free(priv);
+	free(keybuf);
+	stack_destroy(node_stack);
+	stack_destroy(keyptr_stack);
+	return NULL;
 }
 
 
@@ -345,19 +475,19 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 		/* Full prefix not found */
 		return NULL;
 
-	char* trunc_prefix = add_strs(key_prefix, segptr);
-	if (!trunc_prefix)
+	size_t key_pfxlen = strlen(key_prefix);
+	ptrdiff_t seg_sfxlen = segptr - node->segment;
+	char* truncated_prefix = strndup(key_prefix, key_pfxlen - seg_sfxlen);
+	if (!truncated_prefix)
 		return NULL;
 
-	return trie_iter_create(trunc_prefix, node, max_keylen);
+	return trie_iter_create(truncated_prefix, node, max_keylen);
 }
 
 
-/* TODO: Note that iterator should not include key text from root */
-void trie_iter_step(TrieIterator** it)
+void trie_iter_next(TrieIterator** it_p)
 {
-	/* TODO: Complete */
-	/* TODO: Make sure *it is NULL before the stack is empty */
+	while (!trie_iter_step(it_p));
 }
 
 
@@ -367,7 +497,7 @@ const char* trie_iter_getkey(TrieIterator* it)
 		return NULL;
 
 	trie_iter_priv_t* priv = it->priv;
-	return priv->keybuf;
+	return priv->key;
 }
 
 
@@ -377,20 +507,7 @@ void* trie_iter_getval(TrieIterator* it)
 		return NULL;
 
 	trie_iter_priv_t* priv = it->priv;
-	return stack_top(priv->node_stack)->value;
-}
-
-
-void trie_iter_destroy(TrieIterator* it)
-{
-	if (!it)
-		return;
-
-	trie_iter_priv_t* priv = it->priv;
-	stack_destroy(priv->node_stack);
-	free(priv->keybuf);
-	free(priv);
-	free(it);
+	return priv->value;
 }
 
 
