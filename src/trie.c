@@ -374,29 +374,6 @@ end_iterator:
 }
 
 
-/*
- * OVERVIEW:
- *	- Stepping:
- *		o If iter is NULL return true
- *		o Attempt segment copy onto key pointer
- *			+ on failure, push next if valid and return false
- *		o Push (next, key), (fchild, keyreturn) if valid
- *		o Copy value pointer, return whether value was valid
- *	- Init:
- *		o Instantiate iterator
- *		o Instantiate key buffer
- *		o Instantiate both stacks
- *		o Attempt segment copy onto raw key buffer
- *			+ on failure, abort and return NULL
- *		o Push (fchild, keyreturn) if valid
- *		o Copy value pointer
- *		o If value valid, return new iterator
- *		o Step until a valid entry (including NULL) is found
- *	- Nexting:
- *		o Step until a valid entry (including NULL) is found
- */
-
-
 static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      trie_node_t* node, size_t max_keylen)
 {
