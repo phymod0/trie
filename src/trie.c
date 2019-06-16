@@ -65,7 +65,8 @@ static void node_recursive_free(trie_node_t* node, trieval_destructor_t dtor)
 	node_recursive_free(node->next, dtor);
 
 	free(node->segment);
-	dtor(node->value);
+	if (dtor)
+		dtor(node->value);
 
 	free(node);
 }
@@ -250,7 +251,7 @@ int trie_insert(Trie* trie, const char* key, void* val)
 		node->fchild = keybranch;
 		return 0;
 	}
-	if (node->value)
+	if (node->value && trie->ops->dtor)
 		trie->ops->dtor(node->value);
 	node->value = val;
 	return 0;
@@ -267,7 +268,7 @@ int trie_delete(Trie* trie, const char* key)
 		/* Not found */
 		return 0;
 
-	if (node->value)
+	if (node->value && trie->ops->dtor)
 		trie->ops->dtor(node->value);
 	node->value = NULL;
 

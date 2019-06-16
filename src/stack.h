@@ -11,7 +11,8 @@
 	&(struct stack_ops){	\
 		.dtor = free,	\
 	}
-#define STACK_OPS_NULL		\
+
+#define STACK_OPS_NONE		\
 	&(struct stack_ops){	\
 		.dtor = NULL,	\
 	}

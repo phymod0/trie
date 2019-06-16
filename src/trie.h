@@ -7,6 +7,17 @@
 #include <stddef.h>
 
 
+#define TRIE_OPS_FREE		\
+	&(struct trie_ops){	\
+		.dtor = free,	\
+	}
+
+#define TRIE_OPS_NONE		\
+	&(struct trie_ops){	\
+		.dtor = NULL,	\
+	}
+
+
 //////////////////////////////////////////////////////
 //////////////////// TRIE SECTION ////////////////////
 //////////////////////////////////////////////////////
@@ -15,12 +26,9 @@
 struct trie;
 typedef struct trie Trie;
 
-/** Destructor type for a trie node value. */
-typedef void (*trieval_destructor_t)(void*);
-
 /** Trie operations. */
 struct trie_ops {
-	trieval_destructor_t dtor;
+	void (*dtor)(void*);
 };
 
 
@@ -111,8 +119,6 @@ void trie_iter_destroy(TrieIterator* iter);
  */
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 			   size_t max_keylen);
-/* TODO: Create trie operation defaults */
-/* TODO: Handle NULL-iterator freeing */
 /* TODO: Lexical sorting of keys maybe? */
 
 /**
