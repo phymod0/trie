@@ -32,7 +32,6 @@ struct trie_ops {
 struct trie;
 typedef struct trie Trie;
 
-/* TODO: Rewrite for loops and keep declaration in parenthesis */
 
 /**
  * Instantiate a trie.
