@@ -18,8 +18,10 @@ typedef struct stack {
 Stack* stack_create(struct stack_ops* ops)
 {
 	Stack* s;
-	if (!ALLOC(s) || !ALLOC(s->ops))
+	if (!ALLOC(s) || !ALLOC(s->ops)) {
+		free(s);
 		return NULL;
+	}
 	s->head = NULL;
 	memcpy(s->ops, ops, sizeof *(s->ops));
 	return s;
