@@ -37,6 +37,7 @@ int stack_push(Stack* s, void* data)
 	head_new->next = s->head;
 
 	s->head = head_new;
+	return 0;
 }
 
 
