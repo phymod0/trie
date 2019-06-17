@@ -7,6 +7,12 @@
 #include <stddef.h>
 
 
+/** Trie operations. */
+struct trie_ops {
+	void (*dtor)(void*);
+};
+
+
 #define TRIE_OPS_FREE		\
 	&(struct trie_ops){	\
 		.dtor = free,	\
@@ -25,11 +31,6 @@
 /** Trie data structure. */
 struct trie;
 typedef struct trie Trie;
-
-/** Trie operations. */
-struct trie_ops {
-	void (*dtor)(void*);
-};
 
 
 /**
