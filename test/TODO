@@ -1,0 +1,2 @@
+- Test with valgrind
+- Aggregate results of all tests and display final
