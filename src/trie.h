@@ -119,7 +119,6 @@ void trie_iter_destroy(TrieIterator* iter);
  */
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 			   size_t max_keylen);
-/* TODO: Lexical sorting of keys maybe? */
 
 /**
  * Advance an iterator to the next valid (key, value) pair.

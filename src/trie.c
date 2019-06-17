@@ -216,9 +216,32 @@ static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
 }
 
 
+static void add_keybranch(trie_node_t* node, trie_node_t* keybranch)
+{
+	char find = keybranch->segment[0];
+	trie_node_t* child = node->fchild;
+
+	if (!child || find < child->segment[0]) {
+		keybranch->next = node->fchild;
+		node->fchild = keybranch;
+		return;
+	}
+
+	while (child) {
+		trie_node_t* next = child->next;
+		if (!next || find < next->segment[0]) {
+			child->next = keybranch;
+			keybranch->next = next;
+			return;
+		}
+		child = next;
+	}
+}
+
+
 int trie_insert(Trie* trie, const char* key, void* val)
 {
-	const char* key_old = key;
+	const size_t key_strlen = strlen(key);
 
 	trie_node_t* node;
 	char *segptr;
@@ -236,13 +259,11 @@ int trie_insert(Trie* trie, const char* key, void* val)
 		return -1;
 	}
 
-	size_t key_strlen = strlen(key_old);
 	if (key_strlen > trie->max_strlen_added)
 		trie->max_strlen_added = key_strlen;
 
 	if (keybranch) {
-		keybranch->next = node->fchild;
-		node->fchild = keybranch;
+		add_keybranch(node, keybranch);
 		return 0;
 	}
 	if (node->value && trie->ops->dtor)
