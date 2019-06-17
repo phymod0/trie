@@ -23,12 +23,8 @@ TEST_DEFINE(test_hello_reverse, res)
 }
 
 
-int main(void)
-{
-	TEST_RUN(
-		test_add_ints,
-		test_hello_reverse,
-	);
-
-	return 0;
-}
+TEST_START
+(
+	test_add_ints,
+	test_hello_reverse,
+)
