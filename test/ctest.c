@@ -18,7 +18,6 @@ typedef struct test_result {
 
 static void print_test_results(test_result_t* result)
 {
-	/* TODO: Warnings enabled */
 	const char* status = result->passed == result->total ? "PASS" : "FAIL";
 	const char* test_name = result->test_name;
 	if (!test_name)
