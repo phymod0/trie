@@ -2,6 +2,7 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <string.h>
 
 
 #define PSTDOUT(...) fprintf(stdout, __VA_ARGS__)
@@ -10,6 +11,7 @@
 #define RED "\x1B[31m"
 #define GREEN "\x1B[32m"
 #define BLUE "\x1B[34m"
+#define YELLOW "\x1B[33m"
 #define RESET "\033[01;30m"
 
 
@@ -56,6 +58,18 @@ static bool run_single_test(test_t test)
 }
 
 
+static void print_bar(const char* color, const char* hdr)
+{
+	size_t hdr_len = strlen(hdr), n_dashes = PRINT_WIDTH - 4 - hdr_len;
+	for (size_t i=0; i<(n_dashes+1)/2; ++i)
+		PSTDOUT("-");
+	PSTDOUT("[ %s%s%s ]", color, hdr, RESET);
+	for (size_t i=0; i<n_dashes/2; ++i)
+		PSTDOUT("-");
+	PSTDOUT("\n");
+}
+
+
 void test_acheck(test_result_t* result, bool check)
 {
 	++result->total;
@@ -84,24 +98,25 @@ void test_name(test_result_t* result, const char* name)
 }
 
 
-int test_run(const test_t* tests, size_t n_tests)
+int test_run(const test_t* tests, size_t n_tests, const char* module_name)
 {
 	size_t n_passed = 0;
 	PSTDOUT("\n");
-	PSTDOUT("-----------------[ " BLUE "RUNNING TEST CASES" RESET
-		" ]-----------------\n");
+	print_bar(RESET, module_name);
 	for (size_t i=0; i<n_tests; ++i)
 		if (run_single_test(tests[i]))
 			++n_passed;
 	bool passed = n_passed == n_tests;
-	PSTDOUT("------------------------[ %s ]------------------------\n",
-		status_str(passed));
+	char result[PRINT_WIDTH - 4];
+	snprintf(result, sizeof result, "Passed %lu/%lu", n_passed, n_tests);
+	print_bar(passed ? GREEN : RED, result);
 	PSTDOUT("\n");
 	return (int)(n_tests - n_passed);
 }
 
 
 #undef RESET
+#undef YELLOW
 #undef BLUE
 #undef GREEN
 #undef RED
