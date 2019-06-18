@@ -23,7 +23,7 @@ TEST_DEFINE(test_stack_pushpop, res)
 	TEST_AUTONAME(res);
 
 	Stack* s = stack_create(STACK_OPS_FREE);
-	const char* message = "racecar Hello world! wasitacatisar";
+	const char* message = "racecar Hello world! wasitacatisaw";
 	const char* reverse = "wasitacatisaw !dlrow olleH racecar";
 
 	bool match = true;
