@@ -7,6 +7,11 @@
 #define PSTDOUT(...) fprintf(stdout, __VA_ARGS__)
 #define PSTDERR(...) fprintf(stderr, __VA_ARGS__)
 
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
+#define BLUE "\x1B[34m"
+#define RESET "\033[01;30m"
+
 
 typedef struct test_result {
 	const char* test_name;
@@ -16,9 +21,15 @@ typedef struct test_result {
 } test_result_t;
 
 
+static const char* status_str(bool condition)
+{
+	return condition ? BLUE "PASS" RESET : RED "FAIL" RESET;
+}
+
+
 static void print_test_results(test_result_t* result)
 {
-	const char* status = result->passed == result->total ? "PASS" : "FAIL";
+	const char* status = status_str(result->passed == result->total);
 	const char* test_name = result->test_name;
 	if (!test_name)
 		test_name = "(unnamed)";
@@ -85,12 +96,17 @@ int test_run(const test_t* tests, size_t n_tests)
 			++n_passed;
 	PSTDOUT("*********************** ALL DONE ***********************\n");
 	bool passed = n_passed == n_tests;
-	PSTDOUT("[%s] %lu/%lu test cases passed.\n",
-		passed ? "PASS" : "FAIL", n_passed, n_tests);
+	PSTDOUT("[%s] %lu/%lu test cases passed.\n", status_str(passed),
+		n_passed, n_tests);
 	PSTDOUT("--------------------------------------------------------\n");
 	return (int)(n_tests - n_passed);
 }
 
+
+#undef RESET
+#undef BLUE
+#undef GREEN
+#undef RED
 
 #undef PSTDERR
 #undef PSTDOUT
