@@ -1,6 +1,6 @@
-#include "ctest.h"
+#include "stack.c"
 
-#include "stack.h"
+#include "ctest.h"
 
 
 TEST_DEFINE(test_stack_create, res)
