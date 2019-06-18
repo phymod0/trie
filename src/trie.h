@@ -71,7 +71,7 @@ size_t trie_maxstrlen_added(Trie* trie);
  * @param val Pointer to the value
  * @returns 0 on success or -1 if out of memory
  */
-int trie_insert(Trie* trie, const char* key, void* val);
+int trie_insert(Trie* trie, char* key, void* val);
 
 /**
  * Delete a key-value pair from the trie.
@@ -81,7 +81,7 @@ int trie_insert(Trie* trie, const char* key, void* val);
  * @returns 0 on success or -1 if out of memory
  */
 /* XXX: Remove memory dependency */
-int trie_delete(Trie* trie, const char* key);
+int trie_delete(Trie* trie, char* key);
 
 /**
  * Find a value from the trie given it's key.
@@ -90,7 +90,7 @@ int trie_delete(Trie* trie, const char* key);
  * @param key C-string of the key the requested value was inserted with.
  * @returns Requested value or NULL if not found
  */
-void* trie_find(Trie* trie, const char* key);
+void* trie_find(Trie* trie, char* key);
 
 
 //////////////////////////////////////////////////////////

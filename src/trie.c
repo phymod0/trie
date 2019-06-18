@@ -18,7 +18,7 @@ typedef struct trie_node {
 typedef struct trie {
 	trie_node_t* root;
 	struct trie_ops* ops;
-	size_t max_strlen_added;
+	size_t max_keylen_added;
 } Trie;
 
 typedef struct trie_iter {
@@ -45,7 +45,7 @@ Trie* trie_create(const struct trie_ops* ops)
 	root->segment = empty;
 	root->fchild = root->next = NULL;
 	root->value = NULL;
-	trie->max_strlen_added = 0;
+	trie->max_keylen_added = 0;
 	trie->root = root;
 	memcpy(trie_ops, ops, sizeof *trie_ops);
 	trie->ops = trie_ops;
@@ -61,7 +61,7 @@ oom:
 }
 
 
-static void node_recursive_free(trie_node_t* node, trieval_destructor_t dtor)
+static void node_recursive_free(trie_node_t* node, void (*dtor)(void*))
 {
 	if (!node)
 		return;
@@ -90,7 +90,7 @@ void trie_destroy(Trie* trie)
 
 size_t trie_maxstrlen_added(Trie* trie)
 {
-	return trie->max_strlen_added;
+	return trie->max_keylen_added;
 }
 
 
@@ -120,7 +120,7 @@ static int node_split(trie_node_t* node, char* segptr)
 	ptrdiff_t segment_len = segptr - node->segment;
 	char* segment = strndup(node->segment, (size_t)segment_len);
 	if (!segment) {
-		free(child->segptr);
+		free(child->segment);
 		free(child);
 		return -1;
 	}
@@ -196,19 +196,18 @@ static inline bool advance_and_check_mismatch(trie_node_t** node_p,
 
 
 static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
-			  trie_node_t** pred_p, char** segptr_p,
-			  const char** key_p)
+			  trie_node_t** pred_p, char** segptr_p, char** key_p)
 {
 	*node_p = trie->root;
 	if (pred_p)
 		*pred_p = NULL;
-	*segptr_p = node->segment;
+	*segptr_p = trie->root->segment;
 
-	char* key = *key_p;
 	STR_FOREACH(key)
 		if (advance_and_check_mismatch(node_p, segptr_p, *key, pred_p))
 			break;
-	*key_p = key;
+
+	*key_p = (char*)key;
 
 	if (!key[0] && (*segptr_p)[0])
 		/* The only case in which the mismatch comes next */
@@ -239,7 +238,7 @@ static void add_keybranch(trie_node_t* node, trie_node_t* keybranch)
 }
 
 
-int trie_insert(Trie* trie, const char* key, void* val)
+int trie_insert(Trie* trie, char* key, void* val)
 {
 	const size_t key_strlen = strlen(key);
 
@@ -259,8 +258,8 @@ int trie_insert(Trie* trie, const char* key, void* val)
 		return -1;
 	}
 
-	if (key_strlen > trie->max_strlen_added)
-		trie->max_strlen_added = key_strlen;
+	if (key_strlen > trie->max_keylen_added)
+		trie->max_keylen_added = key_strlen;
 
 	if (keybranch) {
 		add_keybranch(node, keybranch);
@@ -273,7 +272,7 @@ int trie_insert(Trie* trie, const char* key, void* val)
 }
 
 
-int trie_delete(Trie* trie, const char* key)
+int trie_delete(Trie* trie, char* key)
 {
 	trie_node_t *node, *pred;
 	char *segptr;
@@ -298,17 +297,17 @@ int trie_delete(Trie* trie, const char* key)
 	else
 		pred->next = node->next;
 
-	free(node->segptr);
+	free(node->segment);
 	free(node);
 	return 0;
 }
 
 
-void* trie_find(Trie* trie, const char* key)
+void* trie_find(Trie* trie, char* key)
 {
 	trie_node_t* node;
 	char* segptr;
-	find_mismatch(trie, key, &node, &segptr, &key);
+	find_mismatch(trie, key, &node, NULL, &segptr, &key);
 	if (*key || *segptr)
 		/* Not found */
 		return NULL;
@@ -316,7 +315,7 @@ void* trie_find(Trie* trie, const char* key)
 }
 
 
-static inline key_buffer_create(size_t max_keylen)
+static inline char* key_buffer_create(size_t max_keylen)
 {
 	char* buf;
 	if (!VALLOC(buf, max_keylen + 1))
@@ -412,8 +411,8 @@ static TrieIterator* trie_iter_create(const char* truncated_prefix,
 					      max_keylen)))
 		goto return_empty_iterator;
 
-	if (!(node_stack = stack_create(STACK_OPS_NULL))
-	    || !(keyptr_stack = stack_create(STACK_OPS_NULL)))
+	if (!(node_stack = stack_create(STACK_OPS_NONE))
+	    || !(keyptr_stack = stack_create(STACK_OPS_NONE)))
 		goto oom;
 	if (node->fchild && (stack_push(node_stack, node->fchild) < 0
 			     || stack_push(keyptr_stack, fchild_keyptr) < 0))
@@ -447,7 +446,7 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 {
 	trie_node_t* node;
 	char *segptr, *prefix_left;
-	find_mismatch(trie, key_prefix, &node, &segptr, &prefix_left);
+	find_mismatch(trie, key_prefix, &node, NULL, &segptr, &prefix_left);
 
 	if (*prefix_left)
 		/* Full prefix not found */
