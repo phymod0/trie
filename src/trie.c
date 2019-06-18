@@ -88,7 +88,7 @@ void trie_destroy(Trie* trie)
 }
 
 
-size_t trie_maxstrlen_added(Trie* trie)
+size_t trie_maxkeylen_added(Trie* trie)
 {
 	return trie->max_keylen_added;
 }

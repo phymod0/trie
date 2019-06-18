@@ -58,7 +58,7 @@ void trie_destroy(Trie* trie);
  * @param trie Trie context
  * @returns Size of the longest key
  */
-size_t trie_maxstrlen_added(Trie* trie);
+size_t trie_maxkeylen_added(Trie* trie);
 
 /**
  * Insert a key-value pair into a trie.
