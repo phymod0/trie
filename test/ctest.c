@@ -87,16 +87,16 @@ void test_name(test_result_t* result, const char* name)
 int test_run(const test_t* tests, size_t n_tests)
 {
 	size_t n_passed = 0;
-	PSTDOUT("--------------------------------------------------------\n");
-	PSTDOUT("****************** RUNNING TEST CASES ******************\n");
+	PSTDOUT("\n");
+	PSTDOUT("-----------------[ " BLUE "RUNNING TEST CASES" RESET
+		" ]-----------------\n");
 	for (size_t i=0; i<n_tests; ++i)
 		if (run_single_test(tests[i]))
 			++n_passed;
-	PSTDOUT("*********************** ALL DONE ***********************\n");
 	bool passed = n_passed == n_tests;
-	PSTDOUT("[%s] %lu/%lu test cases passed\n", status_str(passed),
-		n_passed, n_tests);
-	PSTDOUT("--------------------------------------------------------\n");
+	PSTDOUT("------------------------[ %s ]------------------------\n",
+		status_str(passed));
+	PSTDOUT("\n");
 	return (int)(n_tests - n_passed);
 }
 
