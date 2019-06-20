@@ -106,7 +106,6 @@ static trie_node_t* node_create(char* segment, void* value)
 	return node;
 }
 
-
 static int node_split(trie_node_t* node, char* segptr)
 {
 	if (!*segptr)
@@ -138,6 +137,7 @@ static char* add_strs(const char* str1, const char* str2)
 	char* result = malloc(strlen(str1) + strlen(str2) + 1);
 	if (!result)
 		return NULL;
+	result[0] = '\0';
 	strcat(result, str1);
 	strcat(result, str2);
 	return result;
