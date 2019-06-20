@@ -4,9 +4,11 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <sys/cdefs.h>
 
 
 #define MAX_CHECKNAMES_PER_UNIT 256
+#define N_RUNS_PER_TEST 4096
 #define PRINT_WIDTH 64
 
 
@@ -22,7 +24,8 @@ void test_check(test_result_t* result, const char* name, bool check);
 int test_run(const test_t* tests, size_t n_tests, const char* module_name);
 
 
-#define TEST_DEFINE(name, result) void name(test_result_t* result)
+#define TEST_DEFINE(name, result) \
+	void name(test_result_t* result) __attribute_pure__
 #define TEST_AUTONAME(result) test_name(result, __func__)
 #define TEST_START(...)							\
 int main(void)								\

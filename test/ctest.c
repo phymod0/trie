@@ -49,9 +49,14 @@ static void print_test_results(test_result_t* result)
 static bool run_single_test(test_t test)
 {
 	srand(time(NULL));
-	test_result_t result = {0};
 
-	test(&result);
+	test_result_t result;
+	for (int i=0; i<N_RUNS_PER_TEST; ++i) {
+		result = (test_result_t){0};
+		test(&result);
+		if (result.passed != result.total)
+			break;
+	}
 	print_test_results(&result);
 
 	return result.passed == result.total;
