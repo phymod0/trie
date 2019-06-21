@@ -165,28 +165,30 @@ static int node_merge(trie_node_t* node)
 }
 
 
-static inline bool advance_and_check_mismatch(trie_node_t** node_p,
-					      char** segptr_p, char c_key,
-					      trie_node_t** node_prev_p)
+/* Advances the current segment pointer and checks if it was unexpected */
+static inline bool advance(trie_node_t** node_p, char** segptr_p, char expect,
+			   trie_node_t** prev_p, trie_node_t** parent_p)
 {
 	trie_node_t* node = *node_p;
 	char *segptr = *segptr_p;
 
 	if (segptr[0] && (++segptr)[0]) {
 		*segptr_p = segptr;
-		return segptr[0] != c_key;
+		return segptr[0] != expect;
 	}
 
 	trie_node_t* node_prev = node;
 	for (trie_node_t* child = node->fchild; child; child = child->next) {
-		if (child->segment[0] != c_key) {
+		if (child->segment[0] != expect) {
 			node_prev = child;
 			continue;
 		}
 		*node_p = child;
 		*segptr_p = child->segment;
-		if (node_prev_p)
-			*node_prev_p = node_prev;
+		if (prev_p)
+			*prev_p = node_prev;
+		if (parent_p)
+			*parent_p = node;
 		return false;
 	}
 
@@ -196,15 +198,18 @@ static inline bool advance_and_check_mismatch(trie_node_t** node_p,
 
 
 static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
-			  trie_node_t** pred_p, char** segptr_p, char** key_p)
+			  trie_node_t** pred_p, trie_node_t** parent_p,
+			  char** segptr_p, char** key_p)
 {
 	*node_p = trie->root;
 	if (pred_p)
 		*pred_p = NULL;
+	if (parent_p)
+		*parent_p = NULL;
 	*segptr_p = trie->root->segment;
 
 	STR_FOREACH(key)
-		if (advance_and_check_mismatch(node_p, segptr_p, *key, pred_p))
+		if (advance(node_p, segptr_p, *key, pred_p, parent_p))
 			break;
 
 	*key_p = (char*)key;
@@ -244,7 +249,7 @@ int trie_insert(Trie* trie, char* key, void* val)
 
 	trie_node_t* node;
 	char *segptr;
-	find_mismatch(trie, key, &node, NULL, &segptr, &key);
+	find_mismatch(trie, key, &node, NULL, NULL, &segptr, &key);
 
 	trie_node_t* keybranch = NULL;
 	if (*key && !(keybranch = node_create(key, val)))
@@ -274,9 +279,9 @@ int trie_insert(Trie* trie, char* key, void* val)
 
 int trie_delete(Trie* trie, char* key)
 {
-	trie_node_t *node, *pred;
+	trie_node_t *node, *pred, *parent;
 	char *segptr;
-	find_mismatch(trie, key, &node, &pred, &segptr, &key);
+	find_mismatch(trie, key, &node, &pred, &parent, &segptr, &key);
 
 	if (*key || *segptr)
 		/* Not found */
@@ -290,15 +295,21 @@ int trie_delete(Trie* trie, char* key)
 		return 0;
 
 	if (node->fchild)
-		return node_merge(node);
+		return node->fchild->next ? 0 : node_merge(node);
 
-	if (node == pred->fchild)
-		pred->fchild = node->next;
-	else
-		pred->next = node->next;
-
+	trie_node_t* next = node->next;
 	free(node->segment);
 	free(node);
+
+	if (pred == parent)
+		parent->fchild = next;
+	else
+		pred->next = next;
+
+	if (!parent->value && parent->fchild && !parent->fchild->next
+	    && parent != trie->root)
+		return node_merge(parent);
+
 	return 0;
 }
 
@@ -307,7 +318,7 @@ void* trie_find(Trie* trie, char* key)
 {
 	trie_node_t* node;
 	char* segptr;
-	find_mismatch(trie, key, &node, NULL, &segptr, &key);
+	find_mismatch(trie, key, &node, NULL, NULL, &segptr, &key);
 	if (*key || *segptr)
 		/* Not found */
 		return NULL;
@@ -446,7 +457,7 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 {
 	trie_node_t* node;
 	char *segptr, *prefix_left;
-	find_mismatch(trie, key_prefix, &node, NULL, &segptr, &prefix_left);
+	find_mismatch(trie, key_prefix, &node, NULL, NULL, &segptr, &prefix_left);
 
 	if (*prefix_left)
 		/* Full prefix not found */
