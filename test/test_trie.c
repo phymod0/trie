@@ -518,6 +518,22 @@ static bool tries_equal(trie_node_t* node1, trie_node_t* node2)
 		&& tries_equal(node1->next, node2->next);
 }
 
+static bool test_compactness_invariant(trie_node_t* node)
+{
+	if (!node)
+		return true;
+	if (!node->value && node->fchild && !node->fchild->next)
+		return false;
+
+	return test_compactness_invariant(node->fchild)
+		&& test_compactness_invariant(node->next);
+}
+
+static bool test_compact(Trie* t)
+{
+	return test_compactness_invariant(t->root->fchild);
+}
+
 TEST_DEFINE(test_delete, res)
 {
 	TEST_AUTONAME(res);
@@ -537,7 +553,6 @@ TEST_DEFINE(test_delete, res)
 	size_t n_rec, N = rand() & 1 ? 5 : 50;
 	record* records = malloc((n_rec=gen_len_bw(3, N)) * sizeof *records);
 
-	bool empty_noaffect = true, add_delete = true;
 	for (size_t i=0; i<n_rec; ++i) {
 		records[i].key = gen_rand_str(gen_len_bw(1, N));
 		for (size_t j=0; j<i; ++j)
@@ -547,6 +562,7 @@ TEST_DEFINE(test_delete, res)
 			}
 	}
 
+	bool empty_noaffect = true, add_delete = true, compact = true;
 	for (size_t iters=0; iters<N; ++iters) {
 		Trie* trie_a = trie_create(TRIE_OPS_FREE);
 		Trie* trie_b = trie_create(TRIE_OPS_FREE);
@@ -558,9 +574,11 @@ TEST_DEFINE(test_delete, res)
 			switch (records[i].ins) {
 			case INSERT:
 				trie_insert(trie_a, key, malloc(10));
+				compact = compact && test_compact(trie_a);
 				// fallthrough
 			case BOTH:
 				trie_insert(trie_b, key, malloc(10));
+				compact = compact && test_compact(trie_b);
 				// fallthrough
 			default:
 				break;
@@ -572,9 +590,11 @@ TEST_DEFINE(test_delete, res)
 			switch (records[i].ins) {
 			case DELETE:
 				trie_delete(trie_a, key);
+				compact = compact && test_compact(trie_a);
 				// fallthrough
 			case BOTH:
 				trie_delete(trie_b, key);
+				compact = compact && test_compact(trie_b);
 				// fallthrough
 			default:
 				break;
@@ -582,7 +602,9 @@ TEST_DEFINE(test_delete, res)
 		}
 
 		trie_delete(trie_a, "");
+		compact = compact && test_compact(trie_a);
 		trie_delete(trie_b, "");
+		compact = compact && test_compact(trie_b);
 		empty_noaffect = empty_noaffect
 			&& trie_a->root && trie_a->root->segment[0] == '\0'
 			&& !trie_a->root->next
@@ -598,6 +620,8 @@ TEST_DEFINE(test_delete, res)
 		   add_delete);
 	test_check(res, "Empty value deletion does not affect structure",
 		   empty_noaffect);
+	test_check(res, "Trie stays as compact as possible after an operation",
+		   compact);
 
 	for (size_t i=0; i<n_rec; ++i)
 		free(records[i].key);
@@ -605,7 +629,6 @@ TEST_DEFINE(test_delete, res)
 }
 
 
-#if 0
 TEST_DEFINE(test_, res)
 {
 	TEST_AUTONAME(res);
@@ -618,6 +641,7 @@ TEST_DEFINE(test_, res)
 }
 
 
+#if 0
 TEST_DEFINE(test_, res)
 {
 	TEST_AUTONAME(res);
