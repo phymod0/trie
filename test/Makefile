@@ -4,11 +4,16 @@ CFLAGS += $(patsubst %,-I%,$(INCLUDE_DIRS))
 
 SRC_FILES := $(wildcard test_*.c)
 TESTS := $(patsubst %.c,%,$(SRC_FILES))
+EXEC := $(patsubst %.c,.__test_exec_%,$(SRC_FILES))
 
-.DELETE_ON_ERROR:
-check: $(TESTS)
+compile: $(TESTS)
+check: $(EXEC) clean
+clean:
 	@rm -rf $(TESTS)
+.DELETE_ON_ERROR:
+$(EXEC):
+	@$(CC) $(CFLAGS) ctest.c $(patsubst .__test_exec_%,%.c,$@) -o $@
+	@./$@
+	@rm -rf $@
 $(TESTS):
 	@$(CC) $(CFLAGS) ctest.c $@.c -o $@
-	@./$@
-	@rm -rf $(TESTS)
