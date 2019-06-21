@@ -247,6 +247,9 @@ int trie_insert(Trie* trie, char* key, void* val)
 {
 	const size_t key_strlen = strlen(key);
 
+	if (!val)
+		return -1;
+
 	trie_node_t* node;
 	char *segptr;
 	find_mismatch(trie, key, &node, NULL, NULL, &segptr, &key);
