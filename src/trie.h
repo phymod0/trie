@@ -66,15 +66,18 @@ size_t trie_maxkeylen_added(Trie* trie);
  * Values inserted with a pre-existing key will replace the corresponding
  * pre-existing value and the pre-existing value will be destroyed.
  *
+ * If <code>val</code> is NULL, the insertion will fail and the function will
+ * return -1.
+ *
  * @param trie Trie context
  * @param key C-string of the key
- * @param val Pointer to the value
- * @returns 0 on success or -1 if out of memory
+ * @param val Non-null pointer to the value
+ * @returns 0 on success or -1 if out of memory or if val is NULL
  */
 int trie_insert(Trie* trie, char* key, void* val);
 
 /**
- * Delete a key-value pair from the trie.
+ * Delete a key from the trie.
  *
  * @param trie Trie context
  * @param key C-string of the key to remove
@@ -128,8 +131,8 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
  * which is prefixed by <code>key_prefix</code> and also prefixes the current
  * iterator key.
  *
- * <code>*iter_p</code> would be set to NULL if either the iterator has ended
- * or there is no memory to proceed with the iteration.
+ * <code>*iter_p</code> would be invalidated (set to NULL) if either the
+ * iterator has ended or there is no memory to proceed with the iteration.
  *
  * @param iter_p Pointer to valid iterator or NULL
  */
@@ -147,7 +150,7 @@ const char* trie_iter_getkey(TrieIterator* iter);
  * Get the value at the current iterator.
  *
  * @param iter Current iterator
- * @returns Iterator value
+ * @returns Iterator value or NULL if the iterator is invalid
  */
 void* trie_iter_getval(TrieIterator* iter);
 
