@@ -508,15 +508,100 @@ TEST_DEFINE(test_insert, res)
 }
 
 
+static bool tries_equal(trie_node_t* node1, trie_node_t* node2)
+{
+	if (!node1 || !node2)
+		return !node1 && !node2;
+	if (strcmp(node1->segment, node2->segment) != 0)
+		return false;
+	return tries_equal(node1->fchild, node2->fchild)
+		&& tries_equal(node1->next, node2->next);
+}
+
 TEST_DEFINE(test_delete, res)
 {
 	TEST_AUTONAME(res);
 
-	Trie* trie = trie_create(TRIE_OPS_FREE);
+	typedef enum {
+		PASS,
+		INSERT,
+		DELETE,
+		BOTH,
+	} instruction;
 
-	/* TODO: Continue below */
+	typedef struct record {
+		char* key;
+		instruction ins;
+	} record;
 
-	trie_destroy(trie);
+	size_t n_rec, N = rand() & 1 ? 5 : 50;
+	record* records = malloc((n_rec=gen_len_bw(3, N)) * sizeof *records);
+
+	bool empty_noaffect = true, add_delete = true;
+	for (size_t i=0; i<n_rec; ++i) {
+		records[i].key = gen_rand_str(gen_len_bw(1, N));
+		for (size_t j=0; j<i; ++j)
+			if (!strcmp(records[i].key, records[j].key)) {
+				free(records[i--].key);
+				continue;
+			}
+	}
+
+	for (size_t iters=0; iters<N; ++iters) {
+		Trie* trie_a = trie_create(TRIE_OPS_FREE);
+		Trie* trie_b = trie_create(TRIE_OPS_FREE);
+		for (size_t i=0; i<n_rec; ++i)
+			records[i].ins = rand() % 4;
+
+		for (size_t i=0; i<n_rec; ++i) {
+			char* key = records[i].key;
+			switch (records[i].ins) {
+			case INSERT:
+				trie_insert(trie_a, key, malloc(10));
+				// fallthrough
+			case BOTH:
+				trie_insert(trie_b, key, malloc(10));
+				// fallthrough
+			default:
+				break;
+			}
+		}
+
+		for (size_t i=0; i<n_rec; ++i) {
+			char* key = records[i].key;
+			switch (records[i].ins) {
+			case DELETE:
+				trie_delete(trie_a, key);
+				// fallthrough
+			case BOTH:
+				trie_delete(trie_b, key);
+				// fallthrough
+			default:
+				break;
+			}
+		}
+
+		trie_delete(trie_a, "");
+		trie_delete(trie_b, "");
+		empty_noaffect = empty_noaffect
+			&& trie_a->root && trie_a->root->segment[0] == '\0'
+			&& !trie_a->root->next
+			&& trie_b->root && trie_b->root->segment[0] == '\0'
+			&& !trie_b->root->next;
+
+		add_delete = add_delete
+			&& tries_equal(trie_a->root, trie_b->root);
+		trie_destroy(trie_a);
+		trie_destroy(trie_b);
+	}
+	test_check(res, "Trie stays the same under corresponding add/deletes",
+		   add_delete);
+	test_check(res, "Empty value deletion does not affect structure",
+		   empty_noaffect);
+
+	for (size_t i=0; i<n_rec; ++i)
+		free(records[i].key);
+	free(records);
 }
 
 
@@ -581,4 +666,5 @@ TEST_START
 	test_node_merge,
 	test_add_keybranch,
 	test_insert,
+	test_delete,
 )
