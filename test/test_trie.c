@@ -115,7 +115,7 @@ TEST_DEFINE(test_max_keylen, res)
 		size_t len = gen_len_bw(100, 200);
 		char* seg = gen_rand_str(len);
 		M = len > M ? len : M;
-		trie_insert(trie, seg, NULL);
+		trie_insert(trie, seg, malloc(1));
 		free(seg);
 		if (trie_maxkeylen_added(trie) != M) {
 			consistent = false;
@@ -267,7 +267,7 @@ TEST_DEFINE(test_add_strs, res)
 		correct = correct && test_add(str1, str2, strsum);
 		free(strsum);
 	}
-	test_check(res, "Strings concatenating under addition", correct);
+	test_check(res, "Strings concatenating under concat", correct);
 }
 
 
@@ -447,6 +447,13 @@ TEST_DEFINE(test_insert, res)
 
 	Trie* trie = trie_create(TRIE_OPS_FREE);
 
+	test_check(res, "Inserting a NULL value fails with -1",
+		   trie_insert(trie, "", NULL) == -1);
+
+	void* __v = malloc(1);
+	trie_insert(trie, "", __v);
+	test_check(res, "Empty key inserted", trie->root->value == __v);
+
 	// node1->node2
 	// node2->node4
 	// node2->node5
@@ -554,7 +561,7 @@ TEST_DEFINE(test_delete, res)
 	record* records = malloc((n_rec=gen_len_bw(3, N)) * sizeof *records);
 
 	for (size_t i=0; i<n_rec; ++i) {
-		records[i].key = gen_rand_str(gen_len_bw(1, N));
+		records[i].key = gen_rand_str(gen_len_bw(0, N));
 		for (size_t j=0; j<i; ++j)
 			if (!strcmp(records[i].key, records[j].key)) {
 				free(records[i--].key);
@@ -629,54 +636,233 @@ TEST_DEFINE(test_delete, res)
 }
 
 
-TEST_DEFINE(test_, res)
+TEST_DEFINE(test_find, res)
+{
+	TEST_AUTONAME(res);
+
+	typedef struct key_val {
+		char* key;
+		void* val;
+		bool ins;
+	} key_val_t;
+
+	size_t n_kv = rand() & 1 ? gen_len_bw(1, 4) : gen_len_bw(1, 50);
+	key_val_t* kv = malloc(n_kv * sizeof kv[0]);
+	for (size_t i=0; i<n_kv; ++i) {
+		kv[i].key = gen_rand_str(gen_len_bw(1, 100));
+		for (size_t j=0; j<i; ++j) {
+			if (strcmp(kv[j].key, kv[i].key) == 0) {
+				free(kv[i--].key);
+				break;
+			}
+		}
+	}
+	for (size_t i=0; i<n_kv; ++i)
+		kv[i].val = malloc(1);
+
+	bool false_neg = false, false_pos = false;
+	int n_iters = (int)gen_len_bw(100, 200);
+	for (int iter = 0; iter < n_iters; ++iter) {
+		Trie* trie = trie_create(TRIE_OPS_NONE);
+		for (size_t i=0; i<n_kv; ++i) {
+			if (rand()&1) {
+				kv[i].ins = false;
+				continue;
+			}
+			kv[i].ins = true;
+			trie_insert(trie, kv[i].key, kv[i].val);
+		}
+		for (size_t i=0; i<n_kv; ++i) {
+			void* val = trie_find(trie, kv[i].key);
+			if (kv[i].ins && val != kv[i].val)
+				false_neg = true;
+			else if (!kv[i].ins && val)
+				false_pos = true;
+		}
+		trie_destroy(trie);
+	}
+	test_check(res, "No false negatives when finding", !false_neg);
+	test_check(res, "No false positives when finding", !false_pos);
+
+	for (size_t i=0; i<n_kv; ++i) {
+		free(kv[i].key);
+		free(kv[i].val);
+	}
+	free(kv);
+}
+
+
+TEST_DEFINE(test_segncpy, res)
+{
+	TEST_AUTONAME(res);
+
+	char *buf = key_buffer_create(15), *oldbuf = buf;
+
+	bool concat = true;
+	buf = segncpy(buf, "Hello ", 100);
+	concat = concat && strcmp(oldbuf, "Hello ") == 0;
+	buf = segncpy(buf, "world!", 100);
+	concat = concat && strcmp(oldbuf, "Hello world!") == 0;
+	buf[15] = '\0';
+	buf = segncpy(buf, "Additional text", 3);
+	bool partial_concat = strcmp(oldbuf, "Hello world!Add") == 0;
+
+	test_check(res, "Normal concat correct", concat);
+	test_check(res, "Partial concat correct", partial_concat);
+
+	free(oldbuf);
+}
+
+
+TEST_DEFINE(test_key_add_segment, res)
+{
+	TEST_AUTONAME(res);
+
+	char *buf = key_buffer_create(15), *oldbuf = buf;
+
+	bool concat = true;
+	buf = key_add_segment(buf, "Hello ", oldbuf, 15);
+	concat = concat && strcmp(oldbuf, "Hello ") == 0;
+	buf = key_add_segment(buf, "world!", oldbuf, 15);
+	concat = concat && strcmp(oldbuf, "Hello world!") == 0;
+	char* invalid_buf = key_add_segment(buf, "Additional", oldbuf, 15);
+	char* valid_buf = key_add_segment(buf, "Add", oldbuf, 15);
+	bool oob_concat = !invalid_buf;
+	bool last_concat = strcmp(oldbuf, "Hello world!Add") == 0 && valid_buf
+			     && oldbuf[15] == '\0' && valid_buf == &oldbuf[15];
+
+	test_check(res, "Middle concat correct", concat);
+	test_check(res, "NULL returned on out-of-bounds concat", oob_concat);
+	test_check(res, "Last concat correct", last_concat);
+
+	free(oldbuf);
+}
+
+
+TEST_DEFINE(vg_test_iter_destroy, res)
 {
 	TEST_AUTONAME(res);
 
 	Trie* trie = trie_create(TRIE_OPS_FREE);
+	size_t n_iters = gen_len_bw(100, 200);
+	char* pref = NULL;
+	for (size_t i=0; i<n_iters; ++i) {
+		char* key = gen_rand_str(gen_len_bw(10, 100));
+		trie_insert(trie, key, malloc(1));
+		if (!pref)
+			pref = key, pref[2] = '\0';
+		else
+			free(key);
+	}
 
-	/* Continue below */
+	TrieIterator* iter = trie_findall(trie, pref, 150);
+	trie_iter_destroy(iter);
 
 	trie_destroy(trie);
+	free(pref);
 }
 
 
-#if 0
-TEST_DEFINE(test_, res)
+static bool is_prefix(const char* prefix, const char* str)
+{
+	for (; prefix[0] && str[0]; ++prefix, ++str)
+		if (prefix[0] != str[0])
+			return false;
+	return !prefix[0];
+}
+
+static bool lexical_lt(const char* str1, const char* str2)
+{
+	return str1 ? strcmp(str1, str2) < 0 : true;
+}
+
+TEST_DEFINE(test_iterator, res)
 {
 	TEST_AUTONAME(res);
 
-	Trie* trie = trie_create(TRIE_OPS_FREE);
-
-	/* Continue below */
-
-	trie_destroy(trie);
-}
-
-
-TEST_DEFINE(test_, res)
-{
-	TEST_AUTONAME(res);
+	typedef struct key_val {
+		char* key;
+		void* val;
+		bool ins;
+	} key_val_t;
 
 	Trie* trie = trie_create(TRIE_OPS_FREE);
 
-	/* Continue below */
+	size_t N = rand()&1 ? 10 : 100, n_kv = gen_len_bw(100, 200),
+	       pf_len = rand()&1 ? 0 : 3, max_keylen = gen_len_bw(N/4, 3*N/4),
+	       n_findable = 0, n_found = 0;
+	key_val_t* kv = malloc(n_kv * sizeof kv[0]);
+	char* prf = NULL;
+	for (size_t i=0; i<n_kv; ++i) {
+		kv[i].key = gen_rand_str(gen_len_bw(10, N));
+		kv[i].val = malloc(1);
+		if (!prf) {
+			prf = strdup(kv[i].key), prf[pf_len] = 0;
+			continue;
+		}
+		for (size_t j=0; j<i; ++j) {
+			if (strcmp(kv[j].key, kv[i].key) == 0) {
+				free(kv[i].key);
+				free(kv[i].val);
+				--i;
+				break;
+			}
+		}
+	}
+	for (size_t i=0; i<n_kv; ++i) {
+		if ((kv[i].ins = rand()&1)) {
+			trie_insert(trie, kv[i].key, kv[i].val);
+			if (is_prefix(prf, kv[i].key)
+			    && strlen(kv[i].key) <= max_keylen)
+				++n_findable;
+		}
+	}
 
+	bool sorted = true, complete = true, sound = true, bounded = true,
+	     prefixed = true, val_correct = true;
+	TrieIterator* iter = trie_findall(trie, prf, max_keylen);
+	const char* key = NULL;
+	while (iter) {
+		char* key_prev = key ? strdup(key) : NULL;
+		const char* key = trie_iter_getkey(iter);
+		void* val = trie_iter_getval(iter);
+		size_t i;
+		for (i=0; i<n_kv; ++i) {
+			if (strcmp(kv[i].key, key) == 0)
+				break;
+		}
+		if (i == n_kv) {
+			sound = false;
+			trie_iter_next(&iter);
+			free(key_prev);
+			continue;
+		}
+		n_found += is_prefix(prf, key) && strlen(key) <= max_keylen;
+		sorted = sorted && lexical_lt(key_prev, key);
+		bounded = bounded && strlen(key) <= max_keylen;
+		prefixed = prefixed && is_prefix(prf, key);
+		val_correct = val_correct && val == kv[i].val;
+
+		trie_iter_next(&iter);
+		free(key_prev);
+	}
+	complete = n_findable == n_found;
+	sound = sound && bounded && prefixed;
+
+	test_check(res, "Iterated over keys in ascending order", sorted);
+	test_check(res, "Did not iterate over out-of-bound keys", bounded);
+	test_check(res, "Only covered keys with the given prefix", prefixed);
+	test_check(res, "Value seen matched the value inserted", val_correct);
+	test_check(res, "Iteration was complete", complete);
+	test_check(res, "Iteration was sound", sound);
+
+	trie_iter_destroy(iter);
 	trie_destroy(trie);
+	for (size_t i=0; i<n_kv; ++i)
+		free(kv[i].key);
+	free(kv);
+	free(prf);
 }
-
-
-TEST_DEFINE(test_, res)
-{
-	TEST_AUTONAME(res);
-
-	Trie* trie = trie_create(TRIE_OPS_FREE);
-
-	/* Continue below */
-
-	trie_destroy(trie);
-}
-#endif
 
 
 TEST_START
@@ -691,4 +877,9 @@ TEST_START
 	test_add_keybranch,
 	test_insert,
 	test_delete,
+	test_find,
+	test_segncpy,
+	test_key_add_segment,
+	vg_test_iter_destroy,
+	test_iterator,
 )
