@@ -1,0 +1,100 @@
+\hypertarget{stack_8c}{}\section{src/stack.c File Reference}
+\label{stack_8c}\index{src/stack.c@{src/stack.c}}
+{\ttfamily \#include \char`\"{}stack.\+h\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structstack__elem}{stack\+\_\+elem}}
+\item 
+struct \mbox{\hyperlink{structstack}{stack}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{stack_8c_a1028406e5758a7a90a39a9e32a26fdd6}{A\+L\+L\+OC}}(x)~(x = malloc(sizeof $\ast$(x)))
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structstack__elem}{stack\+\_\+elem}} \mbox{\hyperlink{stack_8c_ac5cddd37a51910f4e5c2ca6cf371b961}{stack\+\_\+elem\+\_\+t}}
+\item 
+typedef struct \mbox{\hyperlink{structstack}{stack}} \mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$ \mbox{\hyperlink{stack_8c_a5910f8e89a821ac4f52ab756e85581bb}{stack\+\_\+create}} (struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}} $\ast$ops)
+\item 
+int \mbox{\hyperlink{stack_8c_a8b046328734e118cf1b7907c68d9407f}{stack\+\_\+push}} (\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$s, void $\ast$data)
+\item 
+void $\ast$ \mbox{\hyperlink{stack_8c_a21832629d58719d2635446a64539c45e}{stack\+\_\+pop}} (\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$s)
+\item 
+void $\ast$ \mbox{\hyperlink{stack_8c_a3cd891d3a10df4a0e60ee1571afae7aa}{stack\+\_\+top}} (\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$s)
+\item 
+bool \mbox{\hyperlink{stack_8c_ab6801f20e4f62e8345c490440a90e734}{stack\+\_\+empty}} (\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$s)
+\item 
+void \mbox{\hyperlink{stack_8c_a0af60e9b0394b97c5bf843e44ffc6e6d}{stack\+\_\+destroy}} (\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$s)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{stack_8c_a1028406e5758a7a90a39a9e32a26fdd6}\label{stack_8c_a1028406e5758a7a90a39a9e32a26fdd6}} 
+\index{stack.c@{stack.c}!ALLOC@{ALLOC}}
+\index{ALLOC@{ALLOC}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{ALLOC}{ALLOC}}
+{\footnotesize\ttfamily \#define A\+L\+L\+OC(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})~(x = malloc(sizeof $\ast$(x)))}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\Hypertarget{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}\label{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}} 
+\index{stack.c@{stack.c}!Stack@{Stack}}
+\index{Stack@{Stack}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{Stack}{Stack}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structstack}{stack}}  \mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}}}
+
+\mbox{\Hypertarget{stack_8c_ac5cddd37a51910f4e5c2ca6cf371b961}\label{stack_8c_ac5cddd37a51910f4e5c2ca6cf371b961}} 
+\index{stack.c@{stack.c}!stack\_elem\_t@{stack\_elem\_t}}
+\index{stack\_elem\_t@{stack\_elem\_t}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_elem\_t}{stack\_elem\_t}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structstack__elem}{stack\+\_\+elem}}  \mbox{\hyperlink{stack_8c_ac5cddd37a51910f4e5c2ca6cf371b961}{stack\+\_\+elem\+\_\+t}}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{stack_8c_a5910f8e89a821ac4f52ab756e85581bb}\label{stack_8c_a5910f8e89a821ac4f52ab756e85581bb}} 
+\index{stack.c@{stack.c}!stack\_create@{stack\_create}}
+\index{stack\_create@{stack\_create}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_create()}{stack\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}}$\ast$ stack\+\_\+create (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}} $\ast$}]{ops }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{stack_8c_a0af60e9b0394b97c5bf843e44ffc6e6d}\label{stack_8c_a0af60e9b0394b97c5bf843e44ffc6e6d}} 
+\index{stack.c@{stack.c}!stack\_destroy@{stack\_destroy}}
+\index{stack\_destroy@{stack\_destroy}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_destroy()}{stack\_destroy()}}
+{\footnotesize\ttfamily void stack\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{stack_8c_ab6801f20e4f62e8345c490440a90e734}\label{stack_8c_ab6801f20e4f62e8345c490440a90e734}} 
+\index{stack.c@{stack.c}!stack\_empty@{stack\_empty}}
+\index{stack\_empty@{stack\_empty}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_empty()}{stack\_empty()}}
+{\footnotesize\ttfamily bool stack\+\_\+empty (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{stack_8c_a21832629d58719d2635446a64539c45e}\label{stack_8c_a21832629d58719d2635446a64539c45e}} 
+\index{stack.c@{stack.c}!stack\_pop@{stack\_pop}}
+\index{stack\_pop@{stack\_pop}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_pop()}{stack\_pop()}}
+{\footnotesize\ttfamily void$\ast$ stack\+\_\+pop (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{stack_8c_a8b046328734e118cf1b7907c68d9407f}\label{stack_8c_a8b046328734e118cf1b7907c68d9407f}} 
+\index{stack.c@{stack.c}!stack\_push@{stack\_push}}
+\index{stack\_push@{stack\_push}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_push()}{stack\_push()}}
+{\footnotesize\ttfamily int stack\+\_\+push (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$}]{s,  }\item[{void $\ast$}]{data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{stack_8c_a3cd891d3a10df4a0e60ee1571afae7aa}\label{stack_8c_a3cd891d3a10df4a0e60ee1571afae7aa}} 
+\index{stack.c@{stack.c}!stack\_top@{stack\_top}}
+\index{stack\_top@{stack\_top}!stack.c@{stack.c}}
+\subsubsection{\texorpdfstring{stack\_top()}{stack\_top()}}
+{\footnotesize\ttfamily void$\ast$ stack\+\_\+top (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8c_a2ef239a3a7982dbfb73694e0d427bae7}{Stack}} $\ast$}]{s }\end{DoxyParamCaption})}
+

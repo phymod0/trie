@@ -1,3 +1,9 @@
+/**
+ * @file stack.h
+ * @brief Methods for stack operations.
+ */
+
+
 #ifndef STACK
 #define STACK
 
@@ -7,22 +13,26 @@
 #include <stdbool.h>
 
 
+/** Free all inserted values with <code>free()</code>. */
 #define STACK_OPS_FREE		\
 	&(struct stack_ops){	\
 		.dtor = free,	\
 	}
 
+/** Do not free inserted values. */
 #define STACK_OPS_NONE		\
 	&(struct stack_ops){	\
 		.dtor = NULL,	\
 	}
 
 
+/** Stack data structure. */
 struct stack;
 typedef struct stack Stack;
 
+/** Operations on stack values. */
 struct stack_ops {
-	void (*dtor)(void*);
+	void (*dtor)(void*); /**< Destructor for an inserted value. */
 };
 
 

@@ -1,3 +1,9 @@
+/**
+ * @file trie.h
+ * @brief Methods for trie operations.
+ */
+
+
 #ifndef TRIE
 #define TRIE
 
@@ -7,9 +13,9 @@
 #include <stddef.h>
 
 
-/** Trie operations. */
+/** Operations on trie value. */
 struct trie_ops {
-	void (*dtor)(void*);
+	void (*dtor)(void*); /**< Destructor for an inserted value. */
 };
 
 
