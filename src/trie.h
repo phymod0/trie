@@ -54,6 +54,7 @@ void trie_destroy(Trie* trie);
  * Get the length of the longest key added in the trie.
  *
  * Sizes of keys that were previously added but do not exist are also counted.
+ * Sizes of keys that were not added due to a failure are not counted.
  *
  * @param trie Trie context
  * @returns Size of the longest key
