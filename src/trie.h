@@ -13,7 +13,7 @@
 #include <stddef.h>
 
 
-/** Operations on trie value. */
+/** Operations on trie values. */
 struct trie_ops {
 	void (*dtor)(void*); /**< Destructor for an inserted value. */
 };
