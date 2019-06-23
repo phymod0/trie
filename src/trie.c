@@ -460,15 +460,14 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 {
 	trie_node_t* node;
 	char *segptr, *prefix_left;
-	find_mismatch(trie, key_prefix, &node, NULL, NULL, &segptr, &prefix_left);
+	find_mismatch(trie, key_prefix, &node, NULL, NULL, &segptr,
+		      &prefix_left);
 
 	if (*prefix_left)
 		/* Full prefix not found */
 		return NULL;
 
-	size_t key_pfxlen = strlen(key_prefix);
-	ptrdiff_t seg_sfxlen = segptr - node->segment;
-	char* truncated_prefix = strndup(key_prefix, key_pfxlen - seg_sfxlen);
+	char* truncated_prefix = add_strs(key_prefix, segptr);
 	if (!truncated_prefix)
 		return NULL;
 
