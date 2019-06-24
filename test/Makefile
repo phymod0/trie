@@ -1,5 +1,5 @@
 INCLUDE_DIRS := ../src/ ../
-CFLAGS := -g -Wall -Werror -Wextra
+CFLAGS := -g -Wall -Werror -Wextra -std=gnu11 # -O3 -finline-functions -Winline
 CFLAGS += $(patsubst %,-I%,$(INCLUDE_DIRS))
 
 SRC_FILES := $(wildcard test_*.c)
