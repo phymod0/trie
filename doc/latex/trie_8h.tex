@@ -73,7 +73,7 @@ Methods for trie operations.
 \DoxyCodeLine{    \}}
 
 \end{DoxyCode}
-\mbox{\Hypertarget{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}\label{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}} 
+Free all inserted values with {\ttfamily free()}. \mbox{\Hypertarget{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}\label{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}} 
 \index{trie.h@{trie.h}!TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}}
 \index{TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_NONE}{TRIE\_OPS\_NONE}}
@@ -86,7 +86,7 @@ Methods for trie operations.
 \DoxyCodeLine{    \}}
 
 \end{DoxyCode}
-
+Do not free inserted values. 
 
 \subsection{Typedef Documentation}
 \mbox{\Hypertarget{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}\label{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}} 
@@ -116,7 +116,7 @@ Instantiate a trie.
 
 
 \begin{DoxyParams}{Parameters}
-{\em ops} & Set of trie operations \\
+{\em ops} & Set of trie value operations \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

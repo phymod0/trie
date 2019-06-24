@@ -142,7 +142,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">&amp;(<span class="keyword">struct </span><a class="code" href="structtrie__ops.html">trie_ops</a>){ \</div><div class="line">        .dtor = free,   \</div><div class="line">    }</div><div class="ttc" id="structtrie__ops_html"><div class="ttname"><a href="structtrie__ops.html">trie_ops</a></div><div class="ttdef"><b>Definition:</b> trie.h:17</div></div>
-</div><!-- fragment -->
+</div><!-- fragment --><p>Free all inserted values with <code>free()</code>. </p>
+
 </div>
 </div>
 <a id="ae61a15b5f69ebdaa373035943c57d04e"></a>
@@ -157,7 +158,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">&amp;(<span class="keyword">struct </span><a class="code" href="structtrie__ops.html">trie_ops</a>){ \</div><div class="line">        .dtor = NULL,   \</div><div class="line">    }</div><div class="ttc" id="structtrie__ops_html"><div class="ttname"><a href="structtrie__ops.html">trie_ops</a></div><div class="ttdef"><b>Definition:</b> trie.h:17</div></div>
-</div><!-- fragment -->
+</div><!-- fragment --><p>Do not free inserted values. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -209,7 +211,7 @@ Functions</h2></td></tr>
 <p><code>ops</code> will be duplicated and then used.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ops</td><td>Set of trie operations </td></tr>
+    <tr><td class="paramname">ops</td><td>Set of trie value operations </td></tr>
   </table>
   </dd>
 </dl>

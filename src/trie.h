@@ -19,11 +19,13 @@ struct trie_ops {
 };
 
 
+/** Free all inserted values with <code>free()</code>. */
 #define TRIE_OPS_FREE		\
 	&(struct trie_ops){	\
 		.dtor = free,	\
 	}
 
+/** Do not free inserted values. */
 #define TRIE_OPS_NONE		\
 	&(struct trie_ops){	\
 		.dtor = NULL,	\
@@ -44,7 +46,7 @@ typedef struct trie Trie;
  *
  * <code>ops</code> will be duplicated and then used.
  *
- * @param ops Set of trie operations
+ * @param ops Set of trie value operations
  * @returns Allocated trie structure
  */
 Trie* trie_create(const struct trie_ops* ops);
