@@ -2,3 +2,7 @@
 - Aggregate results of all tests and display final
 - Force function inlining in compilation mode
 - Create README for testing framework
+- Force ANSI compliance
+- Check that functions are indeed inlined
+- Use binary searches for finds
+- Increase string search speed with intmax_t
