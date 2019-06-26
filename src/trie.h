@@ -40,11 +40,8 @@ typedef struct trie Trie;
 /**
  * Instantiate a trie.
  *
- * <code>ops</code> may be freed explicitly if required after this function is
- * called.
- *
  * @param ops Set of trie value operations
- * @returns Allocated trie structure
+ * @returns Allocated trie structure or NULL if out of memory
  */
 Trie* trie_create(const struct trie_ops* ops);
 
@@ -58,7 +55,7 @@ void trie_destroy(Trie* trie);
 /**
  * Get the length of the longest key added in the trie.
  *
- * Sizes of keys that were previously added but do not exist are also counted.
+ * Sizes of keys that were previously added but do not exist are counted.
  * Sizes of keys that were not added due to a failure are not counted.
  *
  * @param trie Trie context
@@ -91,7 +88,7 @@ int trie_insert(Trie* trie, char* key, void* val);
  *
  * @param trie Trie context
  * @param key C-string of the key to remove
- * @returns 0 on success or -1 if out of memory
+ * @returns 0 on success or -1 on failure
  */
 int trie_delete(Trie* trie, char* key);
 
@@ -160,8 +157,6 @@ void trie_iter_next(TrieIterator** iter_p);
 
 /**
  * Get the key at the current iterator.
- *
- * Any string returned string is invalidated once the iterator is advanced.
  *
  * The content of the string returned by this function is undefined if the
  * iterator is subsequently advanced.

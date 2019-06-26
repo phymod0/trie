@@ -116,15 +116,13 @@ void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_
 
 Instantiate a trie.
 
-{\ttfamily ops} may be freed explicitly if required after this function is called.
-
 
 \begin{DoxyParams}{Parameters}
 {\em ops} & Set of trie value operations \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Allocated trie structure 
+Allocated trie structure or N\+U\+LL if out of memory 
 \end{DoxyReturn}
 \mbox{\Hypertarget{trie_8c_ae126fc59d33595f7dd6c689c241d2080}\label{trie_8c_ae126fc59d33595f7dd6c689c241d2080}} 
 \index{trie.c@{trie.c}!trie\_delete@{trie\_delete}}
@@ -144,7 +142,7 @@ The deletion will fail if the required amount of free memory is not available. I
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success or -\/1 if out of memory 
+0 on success or -\/1 on failure 
 \end{DoxyReturn}
 \mbox{\Hypertarget{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}\label{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}} 
 \index{trie.c@{trie.c}!trie\_destroy@{trie\_destroy}}
@@ -252,8 +250,6 @@ Destroy an iterator.
 
 Get the key at the current iterator.
 
-Any string returned string is invalidated once the iterator is advanced.
-
 The content of the string returned by this function is undefined if the iterator is subsequently advanced.
 
 
@@ -305,7 +301,7 @@ Behavior of a valid iterator, after any trie modification, is undefined.
 
 Get the length of the longest key added in the trie.
 
-Sizes of keys that were previously added but do not exist are also counted. Sizes of keys that were not added due to a failure are not counted.
+Sizes of keys that were previously added but do not exist are counted. Sizes of keys that were not added due to a failure are not counted.
 
 
 \begin{DoxyParams}{Parameters}

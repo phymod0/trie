@@ -271,14 +271,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Instantiate a trie.</p>
-<p><code>ops</code> may be freed explicitly if required after this function is called.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ops</td><td>Set of trie value operations </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Allocated trie structure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Allocated trie structure or NULL if out of memory </dd></dl>
 
 </div>
 </div>
@@ -316,7 +315,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success or -1 if out of memory </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success or -1 on failure </dd></dl>
 
 </div>
 </div>
@@ -517,7 +516,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Get the key at the current iterator.</p>
-<p>Any string returned string is invalidated once the iterator is advanced.</p>
 <p>The content of the string returned by this function is undefined if the iterator is subsequently advanced.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -598,7 +596,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Get the length of the longest key added in the trie.</p>
-<p>Sizes of keys that were previously added but do not exist are also counted. Sizes of keys that were not added due to a failure are not counted.</p>
+<p>Sizes of keys that were previously added but do not exist are counted. Sizes of keys that were not added due to a failure are not counted.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">trie</td><td>Trie context </td></tr>
