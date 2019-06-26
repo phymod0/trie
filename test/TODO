@@ -3,4 +3,6 @@
 - Force ANSI compliance
 - Check that functions are indeed inlined
 - Use binary searches for finds
+- Code comments
 - Increase string search speed with intmax_t
+- Remove line wrap
