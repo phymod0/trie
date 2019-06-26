@@ -1,5 +1,3 @@
-- Test with valgrind
-- Aggregate results of all tests and display final
 - Force function inlining in compilation mode
 - Create README for testing framework
 - Force ANSI compliance
