@@ -77,6 +77,7 @@ TEST_DEFINE(test_stack_top, res)
 			free(c);
 			break;
 		}
+		free(c);
 		stack_pop(s);
 	}
 	test_check(res, "Top correct while popping", match);
