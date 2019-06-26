@@ -6,3 +6,4 @@
 - Code comments
 - Increase string search speed with intmax_t
 - Remove line wrap
+- Inline manually
