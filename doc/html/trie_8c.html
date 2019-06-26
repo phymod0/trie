@@ -104,6 +104,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:af8796219642500b0eb2eea8a8239f282"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9248480fc35591e853551dd02773d4a6"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtrie__iter.html">trie_iter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a9248480fc35591e853551dd02773d4a6">TrieIterator</a></td></tr>
 <tr class="separator:a9248480fc35591e853551dd02773d4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2930134ffa16d71fb37514b22bc3ff46"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a2930134ffa16d71fb37514b22bc3ff46">destructor_t</a>) (void *)</td></tr>
+<tr class="separator:a2930134ffa16d71fb37514b22bc3ff46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -196,6 +198,20 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
+<a id="a2930134ffa16d71fb37514b22bc3ff46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2930134ffa16d71fb37514b22bc3ff46">&#9670;&nbsp;</a></span>destructor_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* destructor_t) (void *)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af8796219642500b0eb2eea8a8239f282"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8796219642500b0eb2eea8a8239f282">&#9670;&nbsp;</a></span>Trie</h2>
 
@@ -292,6 +308,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Delete a key from the trie.</p>
+<p>The deletion will fail if the required amount of free memory is not available. In case of failure, the trie is left unchanged.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">trie</td><td>Trie context </td></tr>
@@ -396,16 +413,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Find all values from a trie given a common prefix of their keys.</p>
+<p>Create an iterator to cover all keys with a given prefix and maximum size.</p>
+<p>NULL will be returned either if the amount of free memory required is not available or if there are no keys to begin with subject to the given prefix and length constraints.</p>
+<p>Keys will be enumerated in ascending lexicographic order, i.e. <code>strcmp(key1, key2)</code> will be negative if <code>key1</code> is enumerated before <code>key2</code>.</p>
+<p>Enumeration without a maximum length constraint can be done by passing the return value of <code>trie_maxkeylen_added</code> in the third argmuent. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="trie_8h.html#a3cfd530552e7ec075229aa9e22979ede">trie_maxkeylen_added</a></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">trie</td><td>Trie context </td></tr>
-    <tr><td class="paramname">key_prefix</td><td>C-string prefixing all keys to consider </td></tr>
-    <tr><td class="paramname">max_keylen</td><td>Maximum key size to iterate over </td></tr>
+    <tr><td class="paramname">key_prefix</td><td>C-string prefixing all keys to enumerate </td></tr>
+    <tr><td class="paramname">max_keylen</td><td>Upper bound on the lengths of the keys to enumerate </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>TrieIterator to iterate over all requested values or NULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Valid iterator or NULL </dd></dl>
 <dl class="section see"><dt>See also</dt><dd>trie_iterator.h </dd></dl>
 
 </div>
@@ -443,7 +463,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Insert a key-value pair into a trie.</p>
 <p>Values inserted with a pre-existing key will replace the corresponding pre-existing value and the pre-existing value will be destroyed.</p>
-<p>If <code>val</code> is NULL, the insertion will fail and the function will return -1.</p>
+<p>The insertion will fail either if the required amount of free memory is not available or if <code>val</code> is NULL. In case of failure, the trie is left unchanged.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">trie</td><td>Trie context </td></tr>
@@ -452,7 +472,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success or -1 if out of memory or if val is NULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success or -1 on failure </dd></dl>
 
 </div>
 </div>
@@ -497,6 +517,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Get the key at the current iterator.</p>
+<p>Any string returned string is invalidated once the iterator is advanced.</p>
+<p>The content of the string returned by this function is undefined if the iterator is subsequently advanced.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>Current iterator </td></tr>
@@ -549,8 +571,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Advance an iterator to the next valid (key, value) pair.</p>
-<p>An iterator may be invalidated after instantiation only if a key is deleted which is prefixed by <code>key_prefix</code> and also prefixes the current iterator key.</p>
-<p><code>*iter_p</code> would be invalidated (set to NULL) if either the iterator has ended or there is no memory to proceed with the iteration.</p>
+<p>Iterators are invalidated either if the iterator has ended or if the amount of free memory required to proceed with the iteration is not available. <code>*iter_p</code>, if invalidated, is set to NULL.</p>
+<p>Behavior of a valid iterator, after any trie modification, is undefined.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter_p</td><td>Pointer to valid iterator or NULL </td></tr>

@@ -130,6 +130,8 @@ Allocated trie structure
 
 Delete a key from the trie.
 
+The deletion will fail if the required amount of free memory is not available. In case of failure, the trie is left unchanged.
+
 
 \begin{DoxyParams}{Parameters}
 {\em trie} & Trie context \\
@@ -177,19 +179,26 @@ Requested value or N\+U\+LL if not found
 \subsubsection{\texorpdfstring{trie\_findall()}{trie\_findall()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}}$\ast$ trie\+\_\+findall (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie,  }\item[{const char $\ast$}]{key\+\_\+prefix,  }\item[{size\+\_\+t}]{max\+\_\+keylen }\end{DoxyParamCaption})}
 
-Find all values from a trie given a common prefix of their keys.
+Create an iterator to cover all keys with a given prefix and maximum size.
 
+N\+U\+LL will be returned either if the amount of free memory required is not available or if there are no keys to begin with subject to the given prefix and length constraints.
+
+Keys will be enumerated in ascending lexicographic order, i.\+e. {\ttfamily strcmp(key1, key2)} will be negative if {\ttfamily key1} is enumerated before {\ttfamily key2}.
+
+Enumeration without a maximum length constraint can be done by passing the return value of {\ttfamily trie\+\_\+maxkeylen\+\_\+added} in the third argmuent. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{trie_8h_a3cfd530552e7ec075229aa9e22979ede}{trie\+\_\+maxkeylen\+\_\+added}}
+\end{DoxySeeAlso}
 
 \begin{DoxyParams}{Parameters}
 {\em trie} & Trie context \\
 \hline
-{\em key\+\_\+prefix} & C-\/string prefixing all keys to consider \\
+{\em key\+\_\+prefix} & C-\/string prefixing all keys to enumerate \\
 \hline
-{\em max\+\_\+keylen} & Maximum key size to iterate over \\
+{\em max\+\_\+keylen} & Upper bound on the lengths of the keys to enumerate \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Trie\+Iterator to iterate over all requested values or N\+U\+LL 
+Valid iterator or N\+U\+LL 
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
 trie\+\_\+iterator.\+h 
@@ -204,7 +213,7 @@ Insert a key-\/value pair into a trie.
 
 Values inserted with a pre-\/existing key will replace the corresponding pre-\/existing value and the pre-\/existing value will be destroyed.
 
-If {\ttfamily val} is N\+U\+LL, the insertion will fail and the function will return -\/1.
+The insertion will fail either if the required amount of free memory is not available or if {\ttfamily val} is N\+U\+LL. In case of failure, the trie is left unchanged.
 
 
 \begin{DoxyParams}{Parameters}
@@ -216,7 +225,7 @@ If {\ttfamily val} is N\+U\+LL, the insertion will fail and the function will re
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success or -\/1 if out of memory or if val is N\+U\+LL 
+0 on success or -\/1 on failure 
 \end{DoxyReturn}
 \mbox{\Hypertarget{trie_8h_a9c497ea4aae3f4eced8749368e93698d}\label{trie_8h_a9c497ea4aae3f4eced8749368e93698d}} 
 \index{trie.h@{trie.h}!trie\_iter\_destroy@{trie\_iter\_destroy}}
@@ -238,6 +247,10 @@ Destroy an iterator.
 {\footnotesize\ttfamily const char$\ast$ trie\+\_\+iter\+\_\+getkey (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Get the key at the current iterator.
+
+Any string returned string is invalidated once the iterator is advanced.
+
+The content of the string returned by this function is undefined if the iterator is subsequently advanced.
 
 
 \begin{DoxyParams}{Parameters}
@@ -271,9 +284,9 @@ Iterator value or N\+U\+LL if the iterator is invalid
 
 Advance an iterator to the next valid (key, value) pair.
 
-An iterator may be invalidated after instantiation only if a key is deleted which is prefixed by {\ttfamily key\+\_\+prefix} and also prefixes the current iterator key.
+Iterators are invalidated either if the iterator has ended or if the amount of free memory required to proceed with the iteration is not available. {\ttfamily $\ast$iter\+\_\+p}, if invalidated, is set to N\+U\+LL.
 
-{\ttfamily $\ast$iter\+\_\+p} would be invalidated (set to N\+U\+LL) if either the iterator has ended or there is no memory to proceed with the iteration.
+Behavior of a valid iterator, after any trie modification, is undefined.
 
 
 \begin{DoxyParams}{Parameters}
