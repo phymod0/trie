@@ -11,19 +11,19 @@ typedef struct stack_elem {
 
 typedef struct stack {
 	stack_elem_t* head;
-	struct stack_ops* ops;
+	struct stack_ops ops;
 } Stack;
 
 
-Stack* stack_create(struct stack_ops* ops)
+Stack* stack_create(const struct stack_ops* ops)
 {
 	Stack* s;
-	if (!ALLOC(s) || !ALLOC(s->ops)) {
+	if (!ALLOC(s)) {
 		free(s);
 		return NULL;
 	}
 	s->head = NULL;
-	memcpy(s->ops, ops, sizeof *(s->ops));
+	s->ops = *ops;
 	return s;
 }
 
@@ -72,7 +72,7 @@ void stack_destroy(Stack* s)
 		return;
 
 	stack_elem_t* elem = s->head;
-	void (*dtor)(void*) = s->ops->dtor;
+	void (*dtor)(void*) = s->ops.dtor;
 
 	while (elem) {
 		stack_elem_t* next = elem->next;
