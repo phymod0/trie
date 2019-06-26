@@ -36,8 +36,6 @@ TEST_DEFINE(test_instantiation, res)
 
 static inline char rand_char(void)
 {
-	/* TODO: Remove this line when testing is complete */
-	return (char)((rand() % 26) + 'a');
 	return (char)((rand() % 255) + 1);
 }
 
@@ -406,7 +404,6 @@ TEST_DEFINE(test_delete, res)
 		free(records[i].key);
 	free(records);
 }
-/* TODO: Have attribute_used set for defined tests */
 
 
 TEST_DEFINE(test_find, res)
