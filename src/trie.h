@@ -75,18 +75,22 @@ size_t trie_maxkeylen_added(Trie* trie);
  * Values inserted with a pre-existing key will replace the corresponding
  * pre-existing value and the pre-existing value will be destroyed.
  *
- * If <code>val</code> is NULL, the insertion will fail and the function will
- * return -1.
+ * The insertion will fail either if the required amount of free memory is not
+ * available or if <code>val</code> is NULL. In case of failure, the trie is
+ * left unchanged.
  *
  * @param trie Trie context
  * @param key C-string of the key
  * @param val Non-null pointer to the value
- * @returns 0 on success or -1 if out of memory or if val is NULL
+ * @returns 0 on success or -1 on failure
  */
 int trie_insert(Trie* trie, char* key, void* val);
 
 /**
  * Delete a key from the trie.
+ *
+ * The deletion will fail if the required amount of free memory is not
+ * available. In case of failure, the trie is left unchanged.
  *
  * @param trie Trie context
  * @param key C-string of the key to remove
@@ -121,12 +125,24 @@ typedef struct trie_iter TrieIterator;
 void trie_iter_destroy(TrieIterator* iter);
 
 /**
- * Find all values from a trie given a common prefix of their keys.
+ * Create an iterator to cover all keys with a given prefix and maximum size.
+ *
+ * NULL will be returned either if the amount of free memory required is not
+ * available or if there are no keys to begin with subject to the given prefix
+ * and length constraints.
+ *
+ * Keys will be enumerated in ascending lexicographic order, i.e.
+ * <code>strcmp(key1, key2)</code> will be negative if <code>key1</code> is
+ * enumerated before <code>key2</code>.
+ *
+ * Enumeration without a maximum length constraint can be done by passing the
+ * return value of <code>trie_maxkeylen_added</code> in the third argmuent.
+ * @see trie_maxkeylen_added
  *
  * @param trie Trie context
- * @param key_prefix C-string prefixing all keys to consider
- * @param max_keylen Maximum key size to iterate over
- * @returns TrieIterator to iterate over all requested values or NULL
+ * @param key_prefix C-string prefixing all keys to enumerate
+ * @param max_keylen Upper bound on the lengths of the keys to enumerate
+ * @returns Valid iterator or NULL
  * @see trie_iterator.h
  */
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
@@ -135,10 +151,11 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 /**
  * Advance an iterator to the next valid (key, value) pair.
  *
- * Behavior of an iterator, after any trie modification, is undefined.
+ * Iterators are invalidated either if the iterator has ended or if the amount
+ * of free memory required to proceed with the iteration is not available.
+ * <code>*iter_p</code>, if invalidated, is set to NULL.
  *
- * <code>*iter_p</code> would be invalidated (set to NULL) if either the
- * iterator has ended or there is no memory to proceed with the iteration.
+ * Behavior of a valid iterator, after any trie modification, is undefined.
  *
  * @param iter_p Pointer to valid iterator or NULL
  */
@@ -147,7 +164,10 @@ void trie_iter_next(TrieIterator** iter_p);
 /**
  * Get the key at the current iterator.
  *
- * The returned string is invalidated whenever the iterator is modified.
+ * Any string returned string is invalidated once the iterator is advanced.
+ *
+ * The content of the string returned by this function is undefined if the
+ * iterator is subsequently advanced.
  *
  * @param iter Current iterator
  * @returns Iterator key
