@@ -149,7 +149,6 @@ int trie_insert(Trie* trie, char* key, void* val)
 }
 
 
-/* TODO: Brief comments on static functions */
 int trie_delete(Trie* trie, char* key)
 {
 	trie_node_t *node, *parent;
@@ -364,7 +363,6 @@ oom:
 
 static inline trie_node_t* leq_child(trie_node_t* node, char find)
 {
-	/* TODO: Binary search */
 	size_t n_children = node->n_children;
 	for (size_t i = 0; i < n_children; ++i)
 		if (node->children[i].segment[0] > find)
@@ -524,7 +522,6 @@ static inline char* key_buffer_create(size_t max_keylen)
 }
 
 
-/* Copy at most n bytes to dest up to the terminating 0 of src */
 static inline char* segncpy(char* dest, const char* src, size_t n)
 {
 	while (n-- && (*dest++ = *src++));
