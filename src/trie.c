@@ -256,7 +256,7 @@ static int node_fork(trie_node_t* node, char* at, trie_node_t* new_child)
 {
 	trie_node_t* new_children = NULL;
 
-	if (!VALLOC(new_children, 2) || node_split(node, at) == -1)
+	if (!VALLOC(new_children, 2) || node_split(node, at) < 0)
 		goto oom;
 
 	trie_node_t* split_child = &node->children[0];
@@ -400,7 +400,7 @@ int trie_delete(Trie* trie, char* key)
 	if (node->n_children == 1)
 		return node_merge(node, dtor);
 
-	if (delete_child(parent, node, dtor) == -1)
+	if (delete_child(parent, node, dtor) < 0)
 		return -1;
 
 	if (!parent->value && parent->n_children == 1 && parent != trie->root)
@@ -493,7 +493,6 @@ end_iterator:
 }
 
 
-/* TODO: Change == -1 to < 0 */
 /* TODO: Per-section comments? */
 static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      trie_node_t* node, size_t max_keylen)
