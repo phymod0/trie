@@ -20,7 +20,7 @@ TEST_DEFINE(test_instantiation, res)
 
 	trie_node_t* root = trie->root;
 	bool root_proper = root && root->segment && root->segment[0] == '\0'
-			   && !root->fchild && !root->next && !root->value;
+			   && root->n_children == 0 && !root->value;
 	test_check(res, "Proper tree structure", root_proper);
 
 	struct trie_ops* ops = trie->ops;
@@ -64,10 +64,23 @@ static void increment(void* junk __attribute__((__unused__)))
 }
 #endif
 
-TEST_DEFINE(vg_test_destroy, res)
+static __attribute_used__ void __verbose_free(void* ptr)
+{
+	printf("About to free: %p\n", ptr), fflush(stdout);
+	return free(ptr);
+}
+
+TEST_DEFINE(asan_test_destroy, res)
 {
 	TEST_AUTONAME(res);
 
+#if 0
+	Trie* trie = trie_create(
+			&(struct trie_ops){
+				.dtor = __verbose_free,
+			}
+		     );
+#endif
 	Trie* trie = trie_create(TRIE_OPS_FREE);
 	Trie* trie2 = trie_create(TRIE_OPS_NONE);
 #if 0
@@ -128,7 +141,7 @@ TEST_DEFINE(test_max_keylen, res)
 }
 
 
-static trie_node_t* gen_singleton_wlen(test_result_t* res, size_t keylen)
+static __attribute_used__ trie_node_t* gen_singleton_wlen(test_result_t* res, size_t keylen)
 {
 	char* seg = gen_rand_str(keylen);
 	void* value = malloc(100);
@@ -140,7 +153,7 @@ static trie_node_t* gen_singleton_wlen(test_result_t* res, size_t keylen)
 }
 
 
-static trie_node_t* gen_singleton(test_result_t* res)
+static __attribute_used__ trie_node_t* gen_singleton(test_result_t* res)
 {
 	char* seg = gen_rand_str(gen_len_bw(1, 10));
 	void* value = malloc(100);
@@ -152,12 +165,13 @@ static trie_node_t* gen_singleton(test_result_t* res)
 }
 
 
-static void singleton_free(trie_node_t* node)
+static __attribute_used__ void singleton_free(trie_node_t* node)
 {
 	if (!node)
 		return;
 	free(node->segment);
 	free(node->value);
+	free(node->children);
 	free(node);
 }
 
@@ -173,8 +187,7 @@ TEST_DEFINE(test_node_create, res)
 	}
 	char* seg = strdup(node->segment);
 	void* value = node->value;
-	test_check(res, "Pointers are initially NULL", !node->fchild &&
-		   !node->next);
+	test_check(res, "No initial children", node->n_children == 0);
 	bool seg_match = node->segment && strcmp(node->segment, seg) == 0;
 	bool val_match = node->value && memcmp(node->value, value, 100) == 0;
 	test_check(res, "Segment and value match", seg_match && val_match);
@@ -184,7 +197,7 @@ TEST_DEFINE(test_node_create, res)
 }
 
 
-static bool test_add(char* str1, char* str2, char* strsum)
+static __attribute_used__ bool test_add(char* str1, char* str2, char* strsum)
 {
 	while (*str1 && *strsum)
 		if (*str1++ != *strsum++)
@@ -193,248 +206,6 @@ static bool test_add(char* str1, char* str2, char* strsum)
 		if (*str2++ != *strsum++)
 			return false;
 	return *str2 == *strsum;
-}
-
-TEST_DEFINE(test_node_split, res)
-{
-	TEST_AUTONAME(res);
-
-	bool result = true;
-	for (size_t split=0; split<=100; ++split) {
-		bool rchild = rand() & 1 ? true : false;
-		bool rnext = rand() & 1 ? true : false;
-		trie_node_t* node = gen_singleton_wlen(res, 100);
-		trie_node_t* child = rchild ? gen_singleton(res) : NULL;
-		trie_node_t* next = rnext ? gen_singleton(res) : NULL;
-		if (!node || (rchild && !child) || (next && !next)) {
-			singleton_free(node);
-			singleton_free(child);
-			singleton_free(next);
-			return;
-		}
-		node->fchild = child;
-		node->next = next;
-		char* seg = strdup(node->segment);
-		void* value = node->value;
-
-		if (node_split(node, node->segment + split) < 0) {
-			test_check(res, "Returns -1 on failure", true);
-			singleton_free(node);
-			singleton_free(child);
-			singleton_free(next);
-			free(seg);
-			return;
-		}
-
-		if (split < 100) {
-			result = result && node->next == next;
-			result = result && node->value == NULL;
-			result = result && node->fchild;
-			result = result && !node->fchild->next;
-			result = result && node->fchild->fchild == child;
-			result = result && node->fchild->value == value;
-			result = result && strlen(node->segment) == split;
-			result = result && test_add(node->segment,
-						    node->fchild->segment,
-						    seg);
-		} else if (split == 100) {
-			result = result && node->fchild == child;
-			result = result && node->next == next;
-		}
-
-		singleton_free(node);
-		singleton_free(child);
-		singleton_free(next);
-		free(seg);
-
-		if (!result)
-			break;
-	}
-	test_check(res, "Correct splitting", result);
-}
-
-
-TEST_DEFINE(test_add_strs, res)
-{
-	TEST_AUTONAME(res);
-
-	bool correct = true;
-	size_t len = gen_len_bw(1000, 2000);
-	while (len --> 0) {
-		char* str1 = gen_rand_str(gen_len_bw(0, 10));
-		char* str2 = gen_rand_str(gen_len_bw(0, 10));
-		char* strsum = add_strs(str1, str2);
-		correct = correct && test_add(str1, str2, strsum);
-		free(strsum);
-	}
-	test_check(res, "Strings concatenating under concat", correct);
-}
-
-
-TEST_DEFINE(test_node_merge, res)
-{
-	TEST_AUTONAME(res);
-
-	bool fchild_result = true;
-	bool next_result = true;
-	bool segment_result = true;
-	bool value_result = true;
-	for (size_t i=1; i<100; ++i) {
-		trie_node_t* node = gen_singleton_wlen(res, 100);
-		if (!node)
-			return;
-		char* __s = strdup(node->segment);
-		void* __v = node->value;
-		trie_node_t* child = node->fchild;
-		trie_node_t* next = node->next;
-
-		if (node_split(node, node->segment + i) == -1) {
-			test_check(res, "Node splitting failed", false);
-			singleton_free(node);
-			free(__s);
-			return;
-		}
-
-		if (node_merge(node) == -1) {
-			test_check(res, "Merge fails with -1", true);
-			singleton_free(node);
-			free(__s);
-			return;
-		}
-
-		if (!node) {
-			fchild_result = false;
-			next_result = false;
-			segment_result = false;
-			value_result = false;
-			singleton_free(node);
-			free(__s);
-			break;
-		}
-		fchild_result = fchild_result && node->fchild == child;
-		next_result = next_result && node->next == next;
-		segment_result = segment_result && node->segment;
-		value_result = value_result && node->value;
-		segment_result = segment_result && !strcmp(node->segment, __s);
-		value_result = value_result && node->value == __v;
-
-		singleton_free(node);
-		free(__s);
-	}
-	test_check(res, "Node value correct after merge", value_result);
-	test_check(res, "Node segment correct after merge", segment_result);
-	test_check(res, "Node next correct after merge", next_result);
-	test_check(res, "Node child correct after merge", fchild_result);
-}
-
-
-#if 0
-TEST_DEFINE(test_mischeck_incr, res)
-{
-	TEST_AUTONAME(res);
-
-	while (1) {
-		trie_node_t* root = gen_singleton_wlen(res, gen_len_bw(0, 4));
-		trie_node_t* child1 = gen_singleton(res);
-		trie_node_t* child2 = gen_singleton(res);
-		trie_node_t* child3 = gen_singleton(res);
-		if (!root || !child1 || !child2 || !child3)
-			goto _return;
-		char c1 = child1->segment[0];
-		char c2 = child2->segment[0];
-		char c3 = child3->segment[0];
-		if (c1 <= (char)1 || c1 > c2 || c2 > c3 || *seg == CHAR_MAX)
-			goto _retry;
-		root->fchild = child1;
-		child1->next = child2;
-		child2->next = child3;
-
-		trie_node_t* iter = root;
-		char* seg = root->segment;
-		trie_node_t* prev = NULL;
-		/* Test midsegment mismatch */
-		iter = root, prev = NULL;
-		seg = root->segment + gen_len_bw(0, strlen(root->segment)-1);
-		bool ret =
-			advance_and_check_mismatch(&iter, &seg, *seg+1, &prev);
-		test_check(res, "Returns false on mismatch", !ret);
-
-		/* Check full match */
-		iter = root, seg = root->segment, prev = NULL;
-		trie_node_t* iter = root;
-		char* seg = root->segment;
-		trie_node_t* prev = NULL;
-		for (; *seg; ++seg) {
-			advance_and_check_mismatch(&iter, &seg, *seg);
-		}
-
-_return:
-		singleton_free(root);
-		singleton_free(child1);
-		singleton_free(child2);
-		singleton_free(child3);
-		return;
-_retry:
-		singleton_free(root);
-		singleton_free(child1);
-		singleton_free(child2);
-		singleton_free(child3);
-	}
-}
-
-
-TEST_DEFINE(test_mischeck, res)
-{
-	TEST_AUTONAME(res);
-
-	Trie* trie = trie_create(TRIE_OPS_FREE);
-
-	/* Continue below */
-
-	trie_destroy(trie);
-}
-#endif
-
-
-TEST_DEFINE(test_add_keybranch, res)
-{
-	TEST_AUTONAME(res);
-
-	size_t b = gen_len_bw(1, 3);
-	trie_node_t* node = gen_singleton(res);
-	trie_node_t* child1 = gen_singleton(res);
-	trie_node_t* child2 = gen_singleton(res);
-	trie_node_t* child_add = gen_singleton(res);
-	if (!node || !child1 || !child2 || !child_add) {
-		singleton_free(node);
-		singleton_free(child1);
-		singleton_free(child2);
-		singleton_free(child_add);
-		return;
-	}
-	child1->segment[0] = 'f';
-	child2->segment[0] = 'q';
-	while (1) {
-		char c = child_add->segment[0] = (char)(rand() & 0xFF);
-		if (c != 'f' && c != 'q')
-			break;
-	}
-	if (b > 1)
-		node->fchild = child1;
-	if (b > 2)
-		child1->next = child2;
-
-	bool sorted = true, child_exists = false;
-	add_keybranch(node, child_add);
-	for (trie_node_t* i = node->fchild; i; i = i->next, --b) {
-		if (i->next && i->next->segment[0] <= i->segment[0])
-			sorted = false;
-		if (i == child_add)
-			child_exists = true;
-	}
-	test_check(res, "One additional node added", b == 0);
-	test_check(res, "Children sorted after addition", sorted);
-	test_check(res, "Added child exists", child_exists);
 }
 
 
@@ -479,11 +250,16 @@ TEST_DEFINE(test_insert, res)
 	KEY_INSERT(seg3, seg6);
 
 	trie_node_t* node1 = trie ? trie->root : NULL;
-	trie_node_t* node2 = node1 ? node1->fchild : NULL;
-	trie_node_t* node4 = node2 ? node2->fchild : NULL;
-	trie_node_t* node5 = node4 ? node4->next : NULL;
-	trie_node_t* node3 = node2 ? node2->next : NULL;
-	trie_node_t* node6 = node3 ? node3->fchild : NULL;
+	trie_node_t* node2 = node1 && node1->n_children > 0 ?
+		&node1->children[0] : NULL;
+	trie_node_t* node4 = node2 && node2->n_children > 0 ?
+		&node2->children[0]: NULL;
+	trie_node_t* node5 = node2 && node2->n_children > 1 ?
+		&node2->children[1]: NULL;
+	trie_node_t* node3 = node1 && node1->n_children > 1 ?
+		&node1->children[1] : NULL;
+	trie_node_t* node6 = node3 && node3->n_children > 0 ?
+		&node3->children[0] : NULL;
 	test_check(res, "Trie structure complete",
 		   node1 && node2 && node3 && node4 && node5 && node6);
 	test_check(res, "Trie segments formed as expected",
@@ -493,14 +269,6 @@ TEST_DEFINE(test_insert, res)
 		   && node4 && strcmp(node4->segment, seg4) == 0
 		   && node5 && strcmp(node5->segment, seg5) == 0
 		   && node6 && strcmp(node6->segment, seg6) == 0);
-	test_check(res, "Trie structure does not contain bad links",
-		   (!node1 || node1->next == NULL)
-		   && (!node3 || node3->next == NULL)
-		   && (!node4 || node4->fchild == NULL)
-		   && (!node5 || node5->next == NULL)
-		   && (!node5 || node5->fchild == NULL)
-		   && (!node6 || node6->next == NULL)
-		   && (!node6 || node6->fchild == NULL));
 
 	free(seg1);
 	free(seg2_1);
@@ -515,30 +283,36 @@ TEST_DEFINE(test_insert, res)
 }
 
 
-static bool tries_equal(trie_node_t* node1, trie_node_t* node2)
+static __attribute_used__ bool tries_equal(trie_node_t* node1, trie_node_t* node2)
 {
 	if (!node1 || !node2)
 		return !node1 && !node2;
 	if (strcmp(node1->segment, node2->segment) != 0)
 		return false;
-	return tries_equal(node1->fchild, node2->fchild)
-		&& tries_equal(node1->next, node2->next);
+	if (node1->n_children != node2->n_children)
+		return false;
+	size_t n_children = node1->n_children;
+	for (size_t i = 0; i < n_children; ++i)
+		if (!tries_equal(&node1->children[i], &node2->children[i]))
+			return false;
+	return true;
 }
 
 static bool test_compactness_invariant(trie_node_t* node)
 {
-	if (!node)
-		return true;
-	if (!node->value && node->fchild && !node->fchild->next)
+	if (!node->value && node->n_children == 1)
 		return false;
-
-	return test_compactness_invariant(node->fchild)
-		&& test_compactness_invariant(node->next);
+	for (size_t i = 0; i < node->n_children; ++i)
+		if (!test_compactness_invariant(&node->children[i]))
+			return false;
+	return true;
 }
 
-static bool test_compact(Trie* t)
+static __attribute_used__ bool test_compact(Trie* t)
 {
-	return test_compactness_invariant(t->root->fchild);
+	if (t->root->n_children < 1)
+		return true;
+	return test_compactness_invariant(&t->root->children[0]);
 }
 
 TEST_DEFINE(test_delete, res)
@@ -614,9 +388,7 @@ TEST_DEFINE(test_delete, res)
 		compact = compact && test_compact(trie_b);
 		empty_noaffect = empty_noaffect
 			&& trie_a->root && trie_a->root->segment[0] == '\0'
-			&& !trie_a->root->next
-			&& trie_b->root && trie_b->root->segment[0] == '\0'
-			&& !trie_b->root->next;
+			&& trie_b->root && trie_b->root->segment[0] == '\0';
 
 		add_delete = add_delete
 			&& tries_equal(trie_a->root, trie_b->root);
@@ -634,6 +406,7 @@ TEST_DEFINE(test_delete, res)
 		free(records[i].key);
 	free(records);
 }
+/* TODO: Have attribute_used set for defined tests */
 
 
 TEST_DEFINE(test_find, res)
@@ -676,7 +449,7 @@ TEST_DEFINE(test_find, res)
 			void* val = trie_find(trie, kv[i].key);
 			if (kv[i].ins && val != kv[i].val)
 				false_neg = true;
-			else if (!kv[i].ins && val)
+			if (!kv[i].ins && val)
 				false_pos = true;
 		}
 		trie_destroy(trie);
@@ -703,7 +476,7 @@ TEST_DEFINE(test_segncpy, res)
 	concat = concat && strcmp(oldbuf, "Hello ") == 0;
 	buf = segncpy(buf, "world!", 100);
 	concat = concat && strcmp(oldbuf, "Hello world!") == 0;
-	buf[15] = '\0';
+	oldbuf[15] = '\0';
 	buf = segncpy(buf, "Additional text", 3);
 	bool partial_concat = strcmp(oldbuf, "Hello world!Add") == 0;
 
@@ -739,7 +512,7 @@ TEST_DEFINE(test_key_add_segment, res)
 }
 
 
-TEST_DEFINE(vg_test_iter_destroy, res)
+TEST_DEFINE(asan_test_iter_destroy, res)
 {
 	TEST_AUTONAME(res);
 
@@ -815,7 +588,7 @@ TEST_DEFINE(test_iterator, res)
 			if (is_prefix(prf, kv[i].key)
 			    && strlen(kv[i].key) <= max_keylen)
 				++n_findable;
-		}
+		} else free(kv[i].val);
 	}
 
 	bool sorted = true, complete = true, sound = true, bounded = true,
@@ -868,18 +641,14 @@ TEST_DEFINE(test_iterator, res)
 TEST_START
 (
 	test_instantiation,
-	vg_test_destroy,
+	asan_test_destroy,
 	test_max_keylen,
 	test_node_create,
-	test_node_split,
-	test_add_strs,
-	test_node_merge,
-	test_add_keybranch,
 	test_insert,
 	test_delete,
 	test_find,
 	test_segncpy,
 	test_key_add_segment,
-	vg_test_iter_destroy,
+	asan_test_iter_destroy,
 	test_iterator,
 )
