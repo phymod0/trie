@@ -90,9 +90,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#aa17de87c06bbd97024f1ae249b9c26c6">TRIE_OPS_FREE</a></td></tr>
+<tr class="memitem:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#aa17de87c06bbd97024f1ae249b9c26c6">TRIE_OPS_FREE</a>&#160;&#160;&#160;&amp;(struct <a class="el" href="structtrie__ops.html">trie_ops</a>){.dtor = free}</td></tr>
 <tr class="separator:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae61a15b5f69ebdaa373035943c57d04e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#ae61a15b5f69ebdaa373035943c57d04e">TRIE_OPS_NONE</a></td></tr>
+<tr class="memitem:ae61a15b5f69ebdaa373035943c57d04e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#ae61a15b5f69ebdaa373035943c57d04e">TRIE_OPS_NONE</a>&#160;&#160;&#160;&amp;(struct <a class="el" href="structtrie__ops.html">trie_ops</a>){.dtor = NULL}</td></tr>
 <tr class="separator:ae61a15b5f69ebdaa373035943c57d04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -137,12 +137,11 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRIE_OPS_FREE</td>
+          <td class="memname">#define TRIE_OPS_FREE&#160;&#160;&#160;&amp;(struct <a class="el" href="structtrie__ops.html">trie_ops</a>){.dtor = free}</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">&amp;(<span class="keyword">struct </span><a class="code" href="structtrie__ops.html">trie_ops</a>){ \</div><div class="line">        .dtor = free,   \</div><div class="line">    }</div><div class="ttc" id="structtrie__ops_html"><div class="ttname"><a href="structtrie__ops.html">trie_ops</a></div><div class="ttdef"><b>Definition:</b> trie.h:17</div></div>
-</div><!-- fragment --><p>Free all inserted values with <code>free()</code>. </p>
+<p>Free all inserted values with <code>free()</code>. </p>
 
 </div>
 </div>
@@ -153,12 +152,11 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRIE_OPS_NONE</td>
+          <td class="memname">#define TRIE_OPS_NONE&#160;&#160;&#160;&amp;(struct <a class="el" href="structtrie__ops.html">trie_ops</a>){.dtor = NULL}</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">&amp;(<span class="keyword">struct </span><a class="code" href="structtrie__ops.html">trie_ops</a>){ \</div><div class="line">        .dtor = NULL,   \</div><div class="line">    }</div><div class="ttc" id="structtrie__ops_html"><div class="ttname"><a href="structtrie__ops.html">trie_ops</a></div><div class="ttdef"><b>Definition:</b> trie.h:17</div></div>
-</div><!-- fragment --><p>Do not free inserted values. </p>
+<p>Do not free inserted values. </p>
 
 </div>
 </div>
@@ -208,7 +206,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Instantiate a trie.</p>
-<p><code>ops</code> will be duplicated and then used.</p>
+<p><code>ops</code> may be freed explicitly if required after this functions is called.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ops</td><td>Set of trie value operations </td></tr>

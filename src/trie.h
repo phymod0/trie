@@ -21,15 +21,11 @@ struct trie_ops {
 
 /** Free all inserted values with <code>free()</code>. */
 #define TRIE_OPS_FREE		\
-	&(struct trie_ops){	\
-		.dtor = free,	\
-	}
+	&(struct trie_ops){.dtor = free}
 
 /** Do not free inserted values. */
 #define TRIE_OPS_NONE		\
-	&(struct trie_ops){	\
-		.dtor = NULL,	\
-	}
+	&(struct trie_ops){.dtor = NULL}
 
 
 //////////////////////////////////////////////////////
@@ -44,7 +40,8 @@ typedef struct trie Trie;
 /**
  * Instantiate a trie.
  *
- * <code>ops</code> will be duplicated and then used.
+ * <code>ops</code> may be freed explicitly if required after this functions is
+ * called.
  *
  * @param ops Set of trie value operations
  * @returns Allocated trie structure

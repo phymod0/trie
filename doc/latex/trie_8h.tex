@@ -16,9 +16,9 @@ struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}
+\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = free\}
 \item 
-\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}
+\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = N\+U\+LL\}
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -64,28 +64,14 @@ Methods for trie operations.
 \index{trie.h@{trie.h}!TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}}
 \index{TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_FREE}{TRIE\_OPS\_FREE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = free\}}
 
-{\bfseries Value\+:}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\&(\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__ops}{trie\_ops}})\{ \(\backslash\)}
-\DoxyCodeLine{        .dtor = free,   \(\backslash\)}
-\DoxyCodeLine{    \}}
-
-\end{DoxyCode}
 Free all inserted values with {\ttfamily free()}. \mbox{\Hypertarget{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}\label{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}} 
 \index{trie.h@{trie.h}!TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}}
 \index{TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_NONE}{TRIE\_OPS\_NONE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = N\+U\+LL\}}
 
-{\bfseries Value\+:}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\&(\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__ops}{trie\_ops}})\{ \(\backslash\)}
-\DoxyCodeLine{        .dtor = NULL,   \(\backslash\)}
-\DoxyCodeLine{    \}}
-
-\end{DoxyCode}
 Do not free inserted values. 
 
 \subsection{Typedef Documentation}
@@ -112,7 +98,7 @@ Do not free inserted values.
 
 Instantiate a trie.
 
-{\ttfamily ops} will be duplicated and then used.
+{\ttfamily ops} may be freed explicitly if required after this functions is called.
 
 
 \begin{DoxyParams}{Parameters}
