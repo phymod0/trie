@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 
 #include "trie.h"
@@ -11,7 +12,8 @@
 
 typedef struct trie_node {
 	char* segment;
-	struct trie_node *fchild, *next;
+	size_t n_children;
+	struct trie_node* children;
 	void* value;
 } trie_node_t;
 
@@ -35,15 +37,18 @@ Trie* trie_create(const struct trie_ops* ops)
 	trie_node_t* root = NULL;
 	char* empty = NULL;
 	struct trie_ops* trie_ops = NULL;
+	trie_node_t* children = NULL;
 	if (!ALLOC(trie)
 	    || !ALLOC(root)
-	    || !ALLOC(empty)
-	    || !ALLOC(trie_ops))
+	    || !VALLOC(empty, 1)
+	    || !ALLOC(trie_ops)
+	    || !VALLOC(children, 0))
 		goto oom;
 
 	empty[0] = '\0';
 	root->segment = empty;
-	root->fchild = root->next = NULL;
+	root->n_children = 0;
+	root->children = children;
 	root->value = NULL;
 	trie->max_keylen_added = 0;
 	trie->root = root;
@@ -57,23 +62,22 @@ oom:
 	free(root);
 	free(empty);
 	free(trie_ops);
+	free(children);
 	return NULL;
 }
 
 
 static void node_recursive_free(trie_node_t* node, void (*dtor)(void*))
 {
-	if (!node)
-		return;
-
-	node_recursive_free(node->fchild, dtor);
-	node_recursive_free(node->next, dtor);
+	size_t n_children = node->n_children;
+	trie_node_t* children = node->children;
+	for (size_t i = 0; i < n_children; ++i)
+		node_recursive_free(&children[i], dtor);
+	free(children);
 
 	free(node->segment);
 	if (dtor)
 		dtor(node->value);
-
-	free(node);
 }
 
 
@@ -83,6 +87,7 @@ void trie_destroy(Trie* trie)
 		return;
 
 	node_recursive_free(trie->root, trie->ops->dtor);
+	free(trie->root);
 	free(trie->ops);
 	free(trie);
 }
@@ -94,238 +99,322 @@ size_t trie_maxkeylen_added(Trie* trie)
 }
 
 
-static trie_node_t* node_create(char* segment, void* value)
+static void raw_node_destroy(trie_node_t* node)
 {
-	trie_node_t* node;
-	if (!ALLOC(node) || !(node->segment = strdup(segment))) {
-		free(node);
-		return NULL;
-	}
-	node->fchild = node->next = NULL;
-	node->value = value;
-	return node;
+	if (!node)
+		return;
+	free(node->segment);
+	free(node->children);
+	free(node);
 }
 
-static int node_split(trie_node_t* node, char* segptr)
+static trie_node_t* node_create(char* segment, void* value)
 {
-	if (!*segptr)
+	char* seg = NULL;
+	trie_node_t *node = NULL, *children = NULL;
+	if (!ALLOC(node) || !(seg = strdup(segment)) || !VALLOC(children, 0))
+		goto oom;
+
+	node->segment = seg;
+	node->n_children = 0;
+	node->children = children;
+	node->value = value;
+	return node;
+
+oom:
+	free(node);
+	free(seg);
+	free(children);
+	return NULL;
+}
+
+static int node_split(trie_node_t* node, char* at)
+{
+	if (!at[0])
 		return 0;
 
-	trie_node_t *child = node_create(segptr, node->value);
-	if (!child)
-		return -1;
-	child->fchild = node->fchild;
+	char* segment = NULL;
+	trie_node_t *child = NULL;
+	size_t parent_seglen = (size_t)(at - node->segment);
 
-	ptrdiff_t segment_len = segptr - node->segment;
-	char* segment = strndup(node->segment, (size_t)segment_len);
-	if (!segment) {
-		free(child->segment);
-		free(child);
-		return -1;
-	}
+	if (!(segment = strndup(node->segment, parent_seglen))
+	    || !(child = node_create(at, node->value)))
+		goto oom;
+
+	child->n_children = node->n_children;
+	free(child->children);
+	child->children = node->children;
 
 	free(node->segment);
 	node->segment = segment;
-	node->fchild = child;
+	node->n_children = 1;
+	node->children = &child[0];
 	node->value = NULL;
 	return 0;
-}
 
+oom:
+	free(segment);
+	raw_node_destroy(child);
+	return -1;
+}
 
 static char* add_strs(const char* str1, const char* str2)
 {
-	char* result = malloc(strlen(str1) + strlen(str2) + 1);
-	if (!result)
+	size_t len1 = strlen(str1), len2 = strlen(str2);
+	char* result;
+	if (!VALLOC(result, len1 + len2 + 1))
 		return NULL;
-	result[0] = '\0';
-	strcat(result, str1);
-	strcat(result, str2);
+	strcpy(result, str1);
+	strcpy(result + len1, str2);
 	return result;
 }
 
-
-static int node_merge(trie_node_t* node)
+static void val_insert(trie_node_t* node, void* val, void (*dtor)(void*))
 {
-	trie_node_t* child = node->fchild;
-	if (!child || child->next || node->value)
-		return 0;
-
-	char* segment = add_strs(node->segment, child->segment);
-	if (!segment)
-		/* FIXME: Merge failure violates the 'compactness' invariant */
-		return -1;
-	free(node->segment);
-	node->segment = segment;
-	node->fchild = child->fchild;
-	node->value = child->value;
-
-	free(child->segment);
-	free(child);
-	return 0;
+	if (node->value && dtor)
+		dtor(node->value);
+	node->value = val;
 }
 
-
-/* Advances the current segment pointer and checks if it was unexpected */
-static inline bool advance(trie_node_t** node_p, char** segptr_p, char expect,
-			   trie_node_t** prev_p, trie_node_t** parent_p)
+static int node_merge(trie_node_t* node, void (*dtor)(void*))
 {
-	trie_node_t* node = *node_p;
-	char *segptr = *segptr_p;
+	if (node->n_children != 1)
+		return 0;
+	trie_node_t* child = node->children;
 
+	char* new_segment = NULL;
+	if (!(new_segment = add_strs(node->segment, child->segment)))
+		goto oom;
+	free(node->segment);
+	free(child->segment);
+
+	node->segment = new_segment;
+	node->n_children = child->n_children;
+	node->children = child->children;
+	val_insert(node, child->value, dtor);
+
+	free(child);
+	return 0;
+
+oom:
+	free(new_segment);
+	return -1;
+}
+
+static inline trie_node_t* leq_child(trie_node_t* node, char find)
+{
+	/* TODO: Binary search */
+	size_t n_children = node->n_children;
+	for (size_t i = 0; i < n_children; ++i)
+		if (node->children[i].segment[0] > find)
+			return i > 0 ? &node->children[i - 1] : NULL;
+	return n_children ? &node->children[n_children - 1] : NULL;
+}
+
+static inline bool advance_to_mismatch(trie_node_t** node_p, char** seg_p,
+				       char expect, trie_node_t** parent_p)
+{
+	char *segptr = *seg_p;
 	if (segptr[0] && (++segptr)[0]) {
-		*segptr_p = segptr;
+		*seg_p = segptr;
 		return segptr[0] != expect;
 	}
 
-	trie_node_t* node_prev = node;
-	for (trie_node_t* child = node->fchild; child; child = child->next) {
-		if (child->segment[0] != expect) {
-			node_prev = child;
-			continue;
-		}
-		*node_p = child;
-		*segptr_p = child->segment;
-		if (prev_p)
-			*prev_p = node_prev;
-		if (parent_p)
-			*parent_p = node;
-		return false;
+	trie_node_t *node = *node_p, *child = leq_child(node, expect);
+	if (!child || child->segment[0] != expect) {
+		*seg_p = segptr;
+		return true;
 	}
 
-	*segptr_p = segptr;
-	return true;
+	*node_p = child;
+	*seg_p = child->segment;
+	if (parent_p)
+		*parent_p = node;
+	return false;
 }
 
-
 static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
-			  trie_node_t** pred_p, trie_node_t** parent_p,
-			  char** segptr_p, char** key_p)
+			  trie_node_t** parent_p, char** seg_p, char** key_p)
 {
 	*node_p = trie->root;
-	if (pred_p)
-		*pred_p = NULL;
 	if (parent_p)
 		*parent_p = NULL;
-	*segptr_p = trie->root->segment;
+	*seg_p = trie->root->segment;
 
 	STR_FOREACH(key)
-		if (advance(node_p, segptr_p, *key, pred_p, parent_p))
+		if (advance_to_mismatch(node_p, seg_p, *key, parent_p))
 			break;
 
 	*key_p = (char*)key;
 
-	if (!key[0] && (*segptr_p)[0])
+	if (!key[0] && (*seg_p)[0])
 		/* The only case in which the mismatch comes next */
-		++(*segptr_p);
+		++(*seg_p);
 }
 
-
-static void add_keybranch(trie_node_t* node, trie_node_t* keybranch)
+static int node_fork(trie_node_t* node, char* at, trie_node_t* new_child)
 {
-	char find = keybranch->segment[0];
-	trie_node_t* child = node->fchild;
+	trie_node_t* new_children = NULL;
 
-	if (!child || find < child->segment[0]) {
-		keybranch->next = node->fchild;
-		node->fchild = keybranch;
-		return;
-	}
+	if (!VALLOC(new_children, 2) || node_split(node, at) == -1)
+		goto oom;
 
-	while (child) {
-		trie_node_t* next = child->next;
-		if (!next || find < next->segment[0]) {
-			child->next = keybranch;
-			keybranch->next = next;
-			return;
-		}
-		child = next;
+	trie_node_t* split_child = &node->children[0];
+
+	if (split_child->segment[0] < new_child->segment[0]) {
+		new_children[0] = *split_child;
+		new_children[1] = *new_child;
+	} else {
+		new_children[0] = *new_child;
+		new_children[1] = *split_child;
 	}
+	node->children = new_children;
+	node->n_children = 2;
+
+	free(split_child);
+	free(new_child);
+	return 0;
+
+oom:
+	free(new_children);
+	return -1;
 }
 
+static int node_addchild(trie_node_t* node, trie_node_t* new_child)
+{
+	char find = new_child->segment[0];
+	size_t n_children = node->n_children;
+	trie_node_t *children = node->children, *new_children = NULL;
+
+	if (!VALLOC(new_children, n_children + 1))
+		goto oom;
+
+	trie_node_t* leq = leq_child(node, find);
+	ptrdiff_t ins = leq ? (leq - children) + 1 : 0;
+	size_t sz1 = ins * sizeof children[0];
+	size_t sz2 = (n_children - ins) * sizeof children[0];
+
+	memcpy(new_children, children, sz1);
+	new_children[ins] = *new_child;
+	memcpy(&new_children[ins + 1], &children[ins], sz2);
+	node->children = new_children;
+	++node->n_children;
+
+	free(children);
+	free(new_child);
+	return 0;
+
+oom:
+	free(new_children);
+	return -1;
+}
+
+static int node_branch(trie_node_t* node, char* at, trie_node_t* child)
+{
+	return at[0] ? node_fork(node, at, child) : node_addchild(node, child);
+}
 
 int trie_insert(Trie* trie, char* key, void* val)
 {
+	char *segptr;
+	trie_node_t *new_child = NULL, *node;
 	const size_t key_strlen = strlen(key);
 
 	if (!val)
 		return -1;
 
-	trie_node_t* node;
-	char *segptr;
-	find_mismatch(trie, key, &node, NULL, NULL, &segptr, &key);
+	find_mismatch(trie, key, &node, NULL, &segptr, &key);
 
-	trie_node_t* keybranch = NULL;
-	if (*key && !(keybranch = node_create(key, val)))
-		return -1;
-
-	if (node_split(node, segptr) == -1) {
-		if (keybranch) {
-			free(keybranch->segment);
-			free(keybranch);
-		}
+	bool err;
+	if (key[0]) {
+		err = !(new_child = node_create(key, val))
+		      || node_branch(node, segptr, new_child) < 0;
+	} else {
+		err = node_split(node, segptr) < 0;
+		if (!err)
+			val_insert(node, val, trie->ops->dtor);
+	}
+	if (err) {
+		raw_node_destroy(new_child);
 		return -1;
 	}
 
 	if (key_strlen > trie->max_keylen_added)
 		trie->max_keylen_added = key_strlen;
-
-	if (keybranch) {
-		add_keybranch(node, keybranch);
-		return 0;
-	}
-	if (node->value && trie->ops->dtor)
-		trie->ops->dtor(node->value);
-	node->value = val;
 	return 0;
 }
 
 
+static int delete_child(trie_node_t* node, trie_node_t* child,
+			void (*dtor)(void*))
+{
+	size_t n_children = node->n_children;
+	trie_node_t *new_children, *children = node->children;
+	char* child_segment = child->segment;
+	trie_node_t* child_children = child->children;
+	void* child_value = child->value;
+
+	if (!VALLOC(new_children, n_children - 1))
+		goto oom;
+	ptrdiff_t del = child - children;
+	size_t sz1 = del * sizeof children[0];
+	size_t sz2 = (n_children - del - 1) * sizeof children[0];
+
+	memcpy(new_children, children, sz1);
+	memcpy(&new_children[del], &children[del + 1], sz2);
+
+	node->children = new_children;
+	--node->n_children;
+	free(children);
+
+	free(child_segment);
+	free(child_children);
+	if (child_value && dtor)
+		dtor(child_value);
+	return 0;
+
+oom:
+	return -1;
+}
+
+/* TODO: Document that the trie is not affected on failures */
+/* TODO: Brief comments on static functions and sections? (put in TODO file) */
+/* TODO: Move static functions to the bottom */
 int trie_delete(Trie* trie, char* key)
 {
-	trie_node_t *node, *pred, *parent;
+	trie_node_t *node, *parent;
 	char *segptr;
-	find_mismatch(trie, key, &node, &pred, &parent, &segptr, &key);
+	find_mismatch(trie, key, &node, &parent, &segptr, &key);
 
 	if (*key || *segptr)
 		/* Not found */
 		return 0;
 
-	if (node->value && trie->ops->dtor)
-		trie->ops->dtor(node->value);
-	node->value = NULL;
+	void (*dtor)(void*) = trie->ops->dtor;
 
-	if (!pred)
+	if (node->n_children > 1 || !parent) {
+		val_insert(node, NULL, dtor);
 		return 0;
+	}
 
-	if (node->fchild)
-		return node->fchild->next ? 0 : node_merge(node);
+	if (node->n_children == 1)
+		return node_merge(node, dtor);
 
-	trie_node_t* next = node->next;
-	free(node->segment);
-	free(node);
+	if (delete_child(parent, node, dtor) == -1)
+		return -1;
 
-	if (pred == parent)
-		parent->fchild = next;
-	else
-		pred->next = next;
-
-	if (!parent->value && parent->fchild && !parent->fchild->next
-	    && parent != trie->root)
-		return node_merge(parent);
+	if (!parent->value && parent->n_children == 1 && parent != trie->root)
+		return node_merge(parent, dtor);
 
 	return 0;
 }
-
 
 void* trie_find(Trie* trie, char* key)
 {
 	trie_node_t* node;
 	char* segptr;
-	find_mismatch(trie, key, &node, NULL, NULL, &segptr, &key);
-	if (*key || *segptr)
-		/* Not found */
-		return NULL;
-	return node->value;
+	find_mismatch(trie, key, &node, NULL, &segptr, &key);
+	return *key || *segptr ? NULL : node->value;
 }
 
 
@@ -382,21 +471,17 @@ static bool trie_iter_step(TrieIterator** iter_p)
 
 	if (stack_empty(node_stack))
 		goto end_iterator;
+
 	trie_node_t* node = stack_pop(node_stack);
-
-	trie_node_t* next = node->next;
 	char* keyptr = stack_pop(keyptr_stack);
-	if (next && (stack_push(node_stack, next) < 0
-		     || stack_push(keyptr_stack, keyptr) < 0))
-		goto oom;
-
-	trie_node_t* fchild = node->fchild;
 	char* keyend = key_add_segment(keyptr, node->segment, key, max_keylen);
 	if (!keyend)
 		return false;
-	if (fchild && (stack_push(node_stack, fchild) < 0
-		       || stack_push(keyptr_stack, keyend) < 0))
-		goto oom;
+
+	for (size_t i = node->n_children; i != 0; --i)
+		if (stack_push(node_stack, &node->children[i - 1]) < 0
+		    || stack_push(keyptr_stack, keyend) < 0)
+			goto oom;
 
 	return (iter->value = node->value) ? true : false;
 
@@ -408,6 +493,8 @@ end_iterator:
 }
 
 
+/* TODO: Change == -1 to < 0 */
+/* TODO: Per-section comments? */
 static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      trie_node_t* node, size_t max_keylen)
 {
@@ -418,19 +505,20 @@ static TrieIterator* trie_iter_create(const char* truncated_prefix,
 	if (!ALLOC(iter))
 		goto oom;
 
-	char* fchild_keyptr;
+	char* child_keyptr;
 	if (!(keybuf = key_buffer_create(max_keylen)))
 		goto oom;
-	if (!(fchild_keyptr = key_add_segment(keybuf, truncated_prefix, keybuf,
-					      max_keylen)))
+	if (!(child_keyptr = key_add_segment(keybuf, truncated_prefix, keybuf,
+					     max_keylen)))
 		goto return_empty_iterator;
 
 	if (!(node_stack = stack_create(STACK_OPS_NONE))
 	    || !(keyptr_stack = stack_create(STACK_OPS_NONE)))
 		goto oom;
-	if (node->fchild && (stack_push(node_stack, node->fchild) < 0
-			     || stack_push(keyptr_stack, fchild_keyptr) < 0))
-		goto oom;
+	for (size_t i = node->n_children; i != 0; --i)
+		if (stack_push(node_stack, &node->children[i - 1]) < 0
+		    || stack_push(keyptr_stack, child_keyptr) < 0)
+			goto oom;
 
 	iter->node_stack = node_stack;
 	iter->keyptr_stack = keyptr_stack;
@@ -460,18 +548,19 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 {
 	trie_node_t* node;
 	char *segptr, *prefix_left;
-	find_mismatch(trie, key_prefix, &node, NULL, NULL, &segptr,
-		      &prefix_left);
+	find_mismatch(trie, key_prefix, &node, NULL, &segptr, &prefix_left);
 
 	if (*prefix_left)
 		/* Full prefix not found */
 		return NULL;
 
-	char* truncated_prefix = add_strs(key_prefix, segptr);
-	if (!truncated_prefix)
+	char* trunc_prefix = add_strs(key_prefix, segptr);
+	if (!trunc_prefix)
 		return NULL;
 
-	return trie_iter_create(truncated_prefix, node, max_keylen);
+	TrieIterator* iter = trie_iter_create(trunc_prefix, node, max_keylen);
+	free(trunc_prefix);
+	return iter;
 }
 
 

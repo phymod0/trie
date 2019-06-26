@@ -92,7 +92,6 @@ int trie_insert(Trie* trie, char* key, void* val);
  * @param key C-string of the key to remove
  * @returns 0 on success or -1 if out of memory
  */
-/* XXX: Remove memory dependency */
 int trie_delete(Trie* trie, char* key);
 
 /**
@@ -136,9 +135,7 @@ TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
 /**
  * Advance an iterator to the next valid (key, value) pair.
  *
- * An iterator may be invalidated after instantiation only if a key is deleted
- * which is prefixed by <code>key_prefix</code> and also prefixes the current
- * iterator key.
+ * Behavior of an iterator, after any trie modification, is undefined.
  *
  * <code>*iter_p</code> would be invalidated (set to NULL) if either the
  * iterator has ended or there is no memory to proceed with the iteration.
@@ -149,6 +146,8 @@ void trie_iter_next(TrieIterator** iter_p);
 
 /**
  * Get the key at the current iterator.
+ *
+ * The returned string is invalidated whenever the iterator is modified.
  *
  * @param iter Current iterator
  * @returns Iterator key
