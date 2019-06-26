@@ -40,7 +40,7 @@ typedef struct trie Trie;
 /**
  * Instantiate a trie.
  *
- * <code>ops</code> may be freed explicitly if required after this functions is
+ * <code>ops</code> may be freed explicitly if required after this function is
  * called.
  *
  * @param ops Set of trie value operations
