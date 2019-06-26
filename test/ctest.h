@@ -8,7 +8,7 @@
 
 
 #define MAX_CHECKNAMES_PER_UNIT 256
-#define N_RUNS_PER_TEST 4096
+#define N_RUNS_PER_TEST 1024
 #define PRINT_WIDTH 64
 
 
