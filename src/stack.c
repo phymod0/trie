@@ -7,12 +7,16 @@
 typedef struct stack_elem {
 	void* val;
 	struct stack_elem* next;
-} stack_elem_t;
+} StackElem;
 
-typedef struct stack {
-	stack_elem_t* head;
+struct stack {
+	StackElem* head;
 	struct stack_ops ops;
-} Stack;
+};
+#ifndef STACK_FWD
+#define STACK_FWD
+typedef struct stack Stack;
+#endif /* STACK_FWD */
 
 
 Stack* stack_create(const struct stack_ops* ops)
@@ -30,7 +34,7 @@ Stack* stack_create(const struct stack_ops* ops)
 
 int stack_push(Stack* s, void* data)
 {
-	stack_elem_t* head_new;
+	StackElem* head_new;
 	if (!ALLOC(head_new))
 		return -1;
 	head_new->val = data;
@@ -43,7 +47,7 @@ int stack_push(Stack* s, void* data)
 
 void* stack_pop(Stack* s)
 {
-	stack_elem_t* head = s->head;
+	StackElem* head = s->head;
 
 	if (!head)
 		return NULL;
@@ -71,11 +75,11 @@ void stack_destroy(Stack* s)
 	if (!s)
 		return;
 
-	stack_elem_t* elem = s->head;
+	StackElem* elem = s->head;
 	void (*dtor)(void*) = s->ops.dtor;
 
 	while (elem) {
-		stack_elem_t* next = elem->next;
+		StackElem* next = elem->next;
 		if (dtor)
 			dtor(elem->val);
 		free(elem);

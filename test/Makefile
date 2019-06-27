@@ -1,9 +1,13 @@
 INCLUDE_DIRS := ../src/ ../
-CFLAGS := -g -Wall -Werror -Wextra -std=gnu11 -fsanitize=address \
-	-fsanitize=undefined -Winline # -O3 -finline-functions -Winline
-CFLAGS += $(patsubst %,-I%,$(INCLUDE_DIRS))
-OPT_CFLAGS := -Wall -Werror -Wextra -O3 -Winline -finline-functions
-OPT_CFLAGS += $(patsubst %,-I%,$(INCLUDE_DIRS))
+
+CFLAGS_COMMON := -Wall -Werror -Wextra -Winline -std=c99 -pedantic
+CFLAGS_COMMON += $(patsubst %,-I%,$(INCLUDE_DIRS))
+
+TEST_CFLAGS := -g -fsanitize=address -fsanitize=undefined
+TEST_CFLAGS += $(CFLAGS_COMMON)
+
+OPT_CFLAGS := -O3 -finline-functions
+OPT_CFLAGS += $(CFLAGS_COMMON)
 
 SRC_FILES := $(wildcard test_*.c)
 TESTS := $(patsubst %.c,%,$(SRC_FILES))
@@ -15,7 +19,7 @@ clean:
 	@rm -rf $(TESTS)
 .DELETE_ON_ERROR:
 $(EXEC):
-	@$(CC) $(CFLAGS) ctest.c $(patsubst .__test_exec_%,%.c,$@) -o $@
+	@$(CC) $(TEST_CFLAGS) ctest.c $(patsubst .__test_exec_%,%.c,$@) -o $@
 	@./$@
 	@rm -rf $@
 $(TESTS):

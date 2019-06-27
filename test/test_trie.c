@@ -65,7 +65,7 @@ static void increment(void* junk __attribute__((__unused__)))
 static __attribute_used__ void __verbose_free(void* ptr)
 {
 	printf("About to free: %p\n", ptr), fflush(stdout);
-	return free(ptr);
+	free(ptr);
 }
 
 TEST_DEFINE(asan_test_destroy, res)
@@ -139,7 +139,7 @@ TEST_DEFINE(test_max_keylen, res)
 }
 
 
-static __attribute_used__ TrieNode* gen_singleton_wlen(test_result_t* res, size_t keylen)
+static __attribute_used__ TrieNode* gen_singleton_wlen(TestResult* res, size_t keylen)
 {
 	char* seg = gen_rand_str(keylen);
 	void* value = malloc(100);
@@ -151,7 +151,7 @@ static __attribute_used__ TrieNode* gen_singleton_wlen(test_result_t* res, size_
 }
 
 
-static __attribute_used__ TrieNode* gen_singleton(test_result_t* res)
+static __attribute_used__ TrieNode* gen_singleton(TestResult* res)
 {
 	char* seg = gen_rand_str(gen_len_bw(1, 10));
 	void* value = malloc(100);
@@ -183,7 +183,7 @@ TEST_DEFINE(test_node_create, res)
 		test_check(res, "Node is NULL on failure", true);
 		return;
 	}
-	char* seg = strdup(node->segment);
+	char* seg = str_dup(node->segment);
 	void* value = node->value;
 	test_check(res, "No initial children", node->n_children == 0);
 	bool seg_match = node->segment && strcmp(node->segment, seg) == 0;
@@ -567,7 +567,7 @@ TEST_DEFINE(test_iterator, res)
 		kv[i].key = gen_rand_str(gen_len_bw(10, N));
 		kv[i].val = malloc(1);
 		if (!prf) {
-			prf = strdup(kv[i].key), prf[pf_len] = 0;
+			prf = str_dup(kv[i].key), prf[pf_len] = 0;
 			continue;
 		}
 		for (size_t j=0; j<i; ++j) {
@@ -593,7 +593,7 @@ TEST_DEFINE(test_iterator, res)
 	TrieIterator* iter = trie_findall(trie, prf, max_keylen);
 	const char* key = NULL;
 	while (iter) {
-		char* key_prev = key ? strdup(key) : NULL;
+		char* key_prev = key ? str_dup(key) : NULL;
 		const char* key = trie_iter_getkey(iter);
 		void* val = trie_iter_getval(iter);
 		size_t i;

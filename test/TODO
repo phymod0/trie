@@ -1,4 +1,2 @@
-- Force ANSI compliance
-- Code comments
-- Increase string search speed with inline assembly
-- Remove line wrap
+- Commenting C code
+- Benchmarking feature in the testing framework

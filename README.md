@@ -1,8 +1,11 @@
 # trie
-Memory-efficient trie library with compression for GNU C.
+Memory-efficient trie library for ANSI C (C99).
+Tries remain compact under all operations i.e. existing keys are always partitioned among the minimum required number of nodes.
+
 
 ## Testing
 cd test && make check
+
 
 ## API
 ~~~c

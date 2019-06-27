@@ -24,38 +24,34 @@ struct \mbox{\hyperlink{structtrie__iter}{trie\+\_\+iter}}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef struct \mbox{\hyperlink{structtrie__node}{trie\+\_\+node}} \mbox{\hyperlink{trie_8c_a66fb0a48d7e7c08593e6f31b237dea80}{trie\+\_\+node\+\_\+t}}
-\item 
-typedef struct \mbox{\hyperlink{structtrie}{trie}} \mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}}
-\item 
-typedef struct \mbox{\hyperlink{structtrie__iter}{trie\+\_\+iter}} \mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}}
+typedef struct \mbox{\hyperlink{structtrie__node}{trie\+\_\+node}} \mbox{\hyperlink{trie_8c_aede21e1205c7ee95ed9aa6db21863c00}{Trie\+Node}}
 \item 
 typedef void($\ast$ \mbox{\hyperlink{trie_8c_a2930134ffa16d71fb37514b22bc3ff46}{destructor\+\_\+t}}) (void $\ast$)
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$ \mbox{\hyperlink{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$ops)
+\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$ \mbox{\hyperlink{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$ops)
 \item 
-void \mbox{\hyperlink{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}{trie\+\_\+destroy}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
+void \mbox{\hyperlink{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}{trie\+\_\+destroy}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
 \item 
-size\+\_\+t \mbox{\hyperlink{trie_8c_a3cfd530552e7ec075229aa9e22979ede}{trie\+\_\+maxkeylen\+\_\+added}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
+size\+\_\+t \mbox{\hyperlink{trie_8c_a3cfd530552e7ec075229aa9e22979ede}{trie\+\_\+maxkeylen\+\_\+added}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
 \item 
-int \mbox{\hyperlink{trie_8c_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\+\_\+insert}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key, void $\ast$val)
+int \mbox{\hyperlink{trie_8c_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\+\_\+insert}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key, void $\ast$val)
 \item 
-int \mbox{\hyperlink{trie_8c_ae126fc59d33595f7dd6c689c241d2080}{trie\+\_\+delete}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key)
+int \mbox{\hyperlink{trie_8c_ae126fc59d33595f7dd6c689c241d2080}{trie\+\_\+delete}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key)
 \item 
-void $\ast$ \mbox{\hyperlink{trie_8c_a9f18803659abb76370cd52e8b031c002}{trie\+\_\+find}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key)
+void $\ast$ \mbox{\hyperlink{trie_8c_a9f18803659abb76370cd52e8b031c002}{trie\+\_\+find}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, char $\ast$key)
 \item 
-void \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\+\_\+iter\+\_\+destroy}} (\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$iter)
+void \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\+\_\+iter\+\_\+destroy}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
 \item 
-\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$ \mbox{\hyperlink{trie_8c_a6e521735f7d4b998912170fce1a16eb5}{trie\+\_\+findall}} (\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, const char $\ast$key\+\_\+prefix, size\+\_\+t max\+\_\+keylen)
+\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$ \mbox{\hyperlink{trie_8c_a6e521735f7d4b998912170fce1a16eb5}{trie\+\_\+findall}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}}, const char $\ast$key\+\_\+prefix, size\+\_\+t max\+\_\+keylen)
 \item 
-void \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\+\_\+iter\+\_\+next}} (\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$$\ast$iter\+\_\+p)
+void \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\+\_\+iter\+\_\+next}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$$\ast$iter\+\_\+p)
 \item 
-const char $\ast$ \mbox{\hyperlink{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}{trie\+\_\+iter\+\_\+getkey}} (\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$iter)
+const char $\ast$ \mbox{\hyperlink{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}{trie\+\_\+iter\+\_\+getkey}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
 \item 
-void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_\+iter\+\_\+getval}} (\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$iter)
+void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_\+iter\+\_\+getval}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
 \end{DoxyCompactItemize}
 
 
@@ -87,23 +83,11 @@ void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_
 \subsubsection{\texorpdfstring{destructor\_t}{destructor\_t}}
 {\footnotesize\ttfamily typedef void($\ast$ destructor\+\_\+t) (void $\ast$)}
 
-\mbox{\Hypertarget{trie_8c_af8796219642500b0eb2eea8a8239f282}\label{trie_8c_af8796219642500b0eb2eea8a8239f282}} 
-\index{trie.c@{trie.c}!Trie@{Trie}}
-\index{Trie@{Trie}!trie.c@{trie.c}}
-\subsubsection{\texorpdfstring{Trie}{Trie}}
-{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtrie}{trie}}  \mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}}}
-
-\mbox{\Hypertarget{trie_8c_a66fb0a48d7e7c08593e6f31b237dea80}\label{trie_8c_a66fb0a48d7e7c08593e6f31b237dea80}} 
-\index{trie.c@{trie.c}!trie\_node\_t@{trie\_node\_t}}
-\index{trie\_node\_t@{trie\_node\_t}!trie.c@{trie.c}}
-\subsubsection{\texorpdfstring{trie\_node\_t}{trie\_node\_t}}
-{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtrie__node}{trie\+\_\+node}}  \mbox{\hyperlink{trie_8c_a66fb0a48d7e7c08593e6f31b237dea80}{trie\+\_\+node\+\_\+t}}}
-
-\mbox{\Hypertarget{trie_8c_a9248480fc35591e853551dd02773d4a6}\label{trie_8c_a9248480fc35591e853551dd02773d4a6}} 
-\index{trie.c@{trie.c}!TrieIterator@{TrieIterator}}
-\index{TrieIterator@{TrieIterator}!trie.c@{trie.c}}
-\subsubsection{\texorpdfstring{TrieIterator}{TrieIterator}}
-{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtrie__iter}{trie\+\_\+iter}}  \mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}}}
+\mbox{\Hypertarget{trie_8c_aede21e1205c7ee95ed9aa6db21863c00}\label{trie_8c_aede21e1205c7ee95ed9aa6db21863c00}} 
+\index{trie.c@{trie.c}!TrieNode@{TrieNode}}
+\index{TrieNode@{TrieNode}!trie.c@{trie.c}}
+\subsubsection{\texorpdfstring{TrieNode}{TrieNode}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtrie__node}{trie\+\_\+node}}  \mbox{\hyperlink{trie_8c_aede21e1205c7ee95ed9aa6db21863c00}{Trie\+Node}}}
 
 
 
@@ -112,7 +96,7 @@ void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_
 \index{trie.c@{trie.c}!trie\_create@{trie\_create}}
 \index{trie\_create@{trie\_create}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_create()}{trie\_create()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$}]{ops }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$}]{ops }\end{DoxyParamCaption})}
 
 Instantiate a trie.
 
@@ -128,7 +112,7 @@ Allocated trie structure or N\+U\+LL if out of memory
 \index{trie.c@{trie.c}!trie\_delete@{trie\_delete}}
 \index{trie\_delete@{trie\_delete}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_delete()}{trie\_delete()}}
-{\footnotesize\ttfamily int trie\+\_\+delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int trie\+\_\+delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key }\end{DoxyParamCaption})}
 
 Delete a key from the trie.
 
@@ -148,7 +132,7 @@ The deletion will fail if the required amount of free memory is not available. I
 \index{trie.c@{trie.c}!trie\_destroy@{trie\_destroy}}
 \index{trie\_destroy@{trie\_destroy}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_destroy()}{trie\_destroy()}}
-{\footnotesize\ttfamily void trie\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void trie\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie }\end{DoxyParamCaption})}
 
 Destroy a trie.
 
@@ -161,7 +145,7 @@ Destroy a trie.
 \index{trie.c@{trie.c}!trie\_find@{trie\_find}}
 \index{trie\_find@{trie\_find}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_find()}{trie\_find()}}
-{\footnotesize\ttfamily void$\ast$ trie\+\_\+find (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void$\ast$ trie\+\_\+find (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key }\end{DoxyParamCaption})}
 
 Find a value from the trie given it\textquotesingle{}s key.
 
@@ -179,7 +163,7 @@ Requested value or N\+U\+LL if not found
 \index{trie.c@{trie.c}!trie\_findall@{trie\_findall}}
 \index{trie\_findall@{trie\_findall}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_findall()}{trie\_findall()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}}$\ast$ trie\+\_\+findall (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie,  }\item[{const char $\ast$}]{key\+\_\+prefix,  }\item[{size\+\_\+t}]{max\+\_\+keylen }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}}$\ast$ trie\+\_\+findall (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie,  }\item[{const char $\ast$}]{key\+\_\+prefix,  }\item[{size\+\_\+t}]{max\+\_\+len }\end{DoxyParamCaption})}
 
 Create an iterator to cover all keys with a given prefix and maximum size.
 
@@ -196,7 +180,7 @@ Enumeration without a maximum length constraint can be done by passing the retur
 \hline
 {\em key\+\_\+prefix} & C-\/string prefixing all keys to enumerate \\
 \hline
-{\em max\+\_\+keylen} & Upper bound on the lengths of the keys to enumerate \\
+{\em max\+\_\+len} & Upper bound on the lengths of the keys to enumerate \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -209,7 +193,7 @@ trie\+\_\+iterator.\+h
 \index{trie.c@{trie.c}!trie\_insert@{trie\_insert}}
 \index{trie\_insert@{trie\_insert}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_insert()}{trie\_insert()}}
-{\footnotesize\ttfamily int trie\+\_\+insert (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key,  }\item[{void $\ast$}]{val }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int trie\+\_\+insert (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie,  }\item[{char $\ast$}]{key,  }\item[{void $\ast$}]{val }\end{DoxyParamCaption})}
 
 Insert a key-\/value pair into a trie.
 
@@ -233,7 +217,7 @@ The insertion will fail either if the required amount of free memory is not avai
 \index{trie.c@{trie.c}!trie\_iter\_destroy@{trie\_iter\_destroy}}
 \index{trie\_iter\_destroy@{trie\_iter\_destroy}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_destroy()}{trie\_iter\_destroy()}}
-{\footnotesize\ttfamily void trie\+\_\+iter\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void trie\+\_\+iter\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Destroy an iterator.
 
@@ -246,7 +230,7 @@ Destroy an iterator.
 \index{trie.c@{trie.c}!trie\_iter\_getkey@{trie\_iter\_getkey}}
 \index{trie\_iter\_getkey@{trie\_iter\_getkey}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_getkey()}{trie\_iter\_getkey()}}
-{\footnotesize\ttfamily const char$\ast$ trie\+\_\+iter\+\_\+getkey (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily const char$\ast$ trie\+\_\+iter\+\_\+getkey (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Get the key at the current iterator.
 
@@ -264,7 +248,7 @@ Iterator key
 \index{trie.c@{trie.c}!trie\_iter\_getval@{trie\_iter\_getval}}
 \index{trie\_iter\_getval@{trie\_iter\_getval}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_getval()}{trie\_iter\_getval()}}
-{\footnotesize\ttfamily void$\ast$ trie\+\_\+iter\+\_\+getval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void$\ast$ trie\+\_\+iter\+\_\+getval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Get the value at the current iterator.
 
@@ -280,7 +264,7 @@ Iterator value or N\+U\+LL if the iterator is invalid
 \index{trie.c@{trie.c}!trie\_iter\_next@{trie\_iter\_next}}
 \index{trie\_iter\_next@{trie\_iter\_next}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_next()}{trie\_iter\_next()}}
-{\footnotesize\ttfamily void trie\+\_\+iter\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_a9248480fc35591e853551dd02773d4a6}{Trie\+Iterator}} $\ast$$\ast$}]{iter\+\_\+p }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void trie\+\_\+iter\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$$\ast$}]{iter\+\_\+p }\end{DoxyParamCaption})}
 
 Advance an iterator to the next valid (key, value) pair.
 
@@ -297,7 +281,7 @@ Behavior of a valid iterator, after any trie modification, is undefined.
 \index{trie.c@{trie.c}!trie\_maxkeylen\_added@{trie\_maxkeylen\_added}}
 \index{trie\_maxkeylen\_added@{trie\_maxkeylen\_added}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_maxkeylen\_added()}{trie\_maxkeylen\_added()}}
-{\footnotesize\ttfamily size\+\_\+t trie\+\_\+maxkeylen\+\_\+added (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8c_af8796219642500b0eb2eea8a8239f282}{Trie}} $\ast$}]{trie }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily size\+\_\+t trie\+\_\+maxkeylen\+\_\+added (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$}]{trie }\end{DoxyParamCaption})}
 
 Get the length of the longest key added in the trie.
 

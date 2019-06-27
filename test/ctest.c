@@ -15,12 +15,17 @@
 #define RESET "\033[01;30m"
 
 
-typedef struct test_result {
+struct test_result {
 	const char* test_name;
 	unsigned long long passed, total;
 	const char* failed_checknames[MAX_CHECKNAMES_PER_UNIT];
 	unsigned long long n_failed_names;
-} test_result_t;
+};
+
+#ifndef TR_FWD
+#define TR_FWD
+typedef struct test_result TestResult;
+#endif /* TR_FWD */
 
 
 static const char* status_str(bool condition)
@@ -29,7 +34,7 @@ static const char* status_str(bool condition)
 }
 
 
-static void print_test_results(test_result_t* result)
+static void print_test_results(TestResult* result)
 {
 	const char* status = status_str(result->passed == result->total);
 	const char* test_name = result->test_name;
@@ -50,9 +55,9 @@ static bool run_single_test(test_t test)
 {
 	srand(time(NULL));
 
-	test_result_t result;
+	TestResult result;
 	for (int i=0; i<N_RUNS_PER_TEST; ++i) {
-		result = (test_result_t){0};
+		result = (TestResult){0};
 		test(&result);
 		if (result.passed != result.total)
 			break;
@@ -75,7 +80,7 @@ static void print_bar(const char* color, const char* hdr)
 }
 
 
-void test_acheck(test_result_t* result, bool check)
+void test_acheck(TestResult* result, bool check)
 {
 	++result->total;
 	if (check)
@@ -83,7 +88,7 @@ void test_acheck(test_result_t* result, bool check)
 }
 
 
-void test_check(test_result_t* result, const char* name, bool check)
+void test_check(TestResult* result, const char* name, bool check)
 {
 	++result->total;
 	if (check) {
@@ -97,7 +102,7 @@ void test_check(test_result_t* result, const char* name, bool check)
 }
 
 
-void test_name(test_result_t* result, const char* name)
+void test_name(TestResult* result, const char* name)
 {
 	result->test_name = name;
 }

@@ -28,7 +28,10 @@
 
 /** Stack data structure. */
 struct stack;
+#ifndef STACK_FWD
+#define STACK_FWD
 typedef struct stack Stack;
+#endif /* STACK_FWD */
 
 /** Operations on stack values. */
 struct stack_ops {

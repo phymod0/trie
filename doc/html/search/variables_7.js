@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['root',['root',['../structtrie.html#ac6ad1ecfb194535ac3be0a6c43a16221',1,'trie']]]
+  ['root',['root',['../structtrie.html#a1609e8af6e239efe0185d0009bde08fa',1,'trie']]]
 ];

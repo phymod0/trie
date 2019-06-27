@@ -32,7 +32,10 @@ struct trie_ops {
 
 /** Trie data structure. */
 struct trie;
+#ifndef TRIE_FWD
+#define TRIE_FWD
 typedef struct trie Trie;
+#endif /* TRIE_FWD */
 
 
 /**
@@ -106,7 +109,10 @@ void* trie_find(Trie* trie, char* key);
 
 /** Iterator type for iterating over (key, value) pairs in a subtrie. */
 struct trie_iter;
+#ifndef TRIE_ITER_FWD
+#define TRIE_ITER_FWD
 typedef struct trie_iter TrieIterator;
+#endif /* TRIE_ITER_FWD */
 
 
 /**

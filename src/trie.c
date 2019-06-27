@@ -16,23 +16,33 @@ typedef struct trie_node {
 	void* value;
 } TrieNode;
 
-typedef struct trie {
+struct trie {
 	TrieNode* root;
 	struct trie_ops* ops;
 	size_t max_keylen_added;
-} Trie;
+};
+#ifndef TRIE_FWD
+#define TRIE_FWD
+typedef struct trie Trie;
+#endif /* TRIE_FWD */
 
-typedef struct trie_iter {
+struct trie_iter {
 	Stack *node_stack, *keyptr_stack;
 	size_t max_keylen;
 	char* key;
 	void* value;
-} TrieIterator;
+};
+#ifndef TRIE_ITER_FWD
+#define TRIE_ITER_FWD
+typedef struct trie_iter TrieIterator;
+#endif /* TRIE_ITER_FWD */
 
 typedef void (*destructor_t)(void*);
 
 
 /* Utility functions */
+static char* str_dup(const char*);
+static char* str_n_dup(const char*, size_t);
 static char* add_strs(const char*, const char*);
 static inline char* key_buffer_create(size_t);
 static inline char* segncpy(char*, const char*, size_t);
@@ -262,11 +272,21 @@ static void raw_node_destroy(TrieNode* node)
 }
 
 
+static char* str_dup(const char* str)
+{
+	size_t len = strlen(str);
+	char* result;
+	if (VALLOC(result, len + 1))
+		memcpy(result, str, len + 1);
+	return result;
+}
+
+
 static TrieNode* node_create(char* segment, void* value)
 {
 	char* seg = NULL;
 	TrieNode *node = NULL, *children = NULL;
-	if (!ALLOC(node) || !(seg = strdup(segment)) || !VALLOC(children, 0))
+	if (!ALLOC(node) || !(seg = str_dup(segment)) || !VALLOC(children, 0))
 		goto oom;
 
 	node->segment = seg;
@@ -283,6 +303,18 @@ oom:
 }
 
 
+static char* str_n_dup(const char* str, size_t n)
+{
+	size_t len = strlen(str), min = len < n ? len : n;
+	char* result;
+	if (VALLOC(result, min + 1)) {
+		memcpy(result, str, min);
+		result[min] = '\0';
+	}
+	return result;
+}
+
+
 static int node_split(TrieNode* node, char* at)
 {
 	if (!at[0])
@@ -292,7 +324,7 @@ static int node_split(TrieNode* node, char* at)
 	TrieNode* child = NULL;
 	size_t parent_seglen = (size_t)(at - node->segment);
 
-	if (!(segment = strndup(node->segment, parent_seglen))
+	if (!(segment = str_n_dup(node->segment, parent_seglen))
 	    || !(child = node_create(at, node->value)))
 		goto oom;
 
