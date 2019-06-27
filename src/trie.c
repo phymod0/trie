@@ -37,12 +37,11 @@ static char* add_strs(const char*, const char*);
 static inline char* key_buffer_create(size_t);
 static inline char* segncpy(char*, const char*, size_t);
 static inline char* key_add_segment(char*, const char*, char*, size_t);
+static inline ptrdiff_t pflen_equal(const char*, const char*);
 static void val_insert(trie_node_t*, void*, destructor_t);
 
 /* Search functions */
 static inline trie_node_t* leq_child(trie_node_t*, char);
-static inline bool advance_to_mismatch(trie_node_t**, char**, char,
-				       trie_node_t**);
 static void find_mismatch(Trie*, const char*, trie_node_t**, trie_node_t**,
 			  char**, char**);
 
@@ -120,7 +119,7 @@ size_t trie_maxkeylen_added(Trie* trie)
 
 int trie_insert(Trie* trie, char* key, void* val)
 {
-	char *segptr;
+	char* segptr;
 	trie_node_t *new_child = NULL, *node;
 	const size_t key_strlen = strlen(key);
 
@@ -152,7 +151,7 @@ int trie_insert(Trie* trie, char* key, void* val)
 int trie_delete(Trie* trie, char* key)
 {
 	trie_node_t *node, *parent;
-	char *segptr;
+	char* segptr;
 	find_mismatch(trie, key, &node, &parent, &segptr, &key);
 
 	if (*key || *segptr)
@@ -371,46 +370,34 @@ static inline trie_node_t* leq_child(trie_node_t* node, char find)
 }
 
 
-static inline bool advance_to_mismatch(trie_node_t** node_p, char** seg_p,
-				       char expect, trie_node_t** parent_p)
+static inline ptrdiff_t pflen_equal(const char* of, const char* with)
 {
-	char *segptr = *seg_p;
-	if (segptr[0] && (++segptr)[0]) {
-		*seg_p = segptr;
-		return segptr[0] != expect;
-	}
-
-	trie_node_t *node = *node_p, *child = leq_child(node, expect);
-	if (!child || child->segment[0] != expect) {
-		*seg_p = segptr;
-		return true;
-	}
-
-	*node_p = child;
-	*seg_p = child->segment;
-	if (parent_p)
-		*parent_p = node;
-	return false;
+	const char* of_old = of;
+	while (*of++ == *with++ && of[-1]);
+	return (of - 1) - of_old;
 }
 
 
 static void find_mismatch(Trie* trie, const char* key, trie_node_t** node_p,
 			  trie_node_t** parent_p, char** seg_p, char** key_p)
 {
-	*node_p = trie->root;
-	if (parent_p)
-		*parent_p = NULL;
-	*seg_p = trie->root->segment;
+	trie_node_t *node = trie->root, *parent = NULL;
+	char* seg = trie->root->segment;
 
-	STR_FOREACH(key)
-		if (advance_to_mismatch(node_p, seg_p, *key, parent_p))
+	while (key[0] && !seg[0]) {
+		trie_node_t* child = leq_child(node, key[0]);
+		if (!child || child->segment[0] != key[0])
 			break;
+		parent = node, node = child, seg = child->segment;
+		ptrdiff_t pflen = pflen_equal(key, seg);
+		key += pflen, seg += pflen;
+	}
 
+	*node_p = node;
+	if (parent_p)
+		*parent_p = parent;
+	*seg_p = seg;
 	*key_p = (char*)key;
-
-	if (!key[0] && (*seg_p)[0])
-		/* The only case in which the mismatch comes next */
-		++(*seg_p);
 }
 
 

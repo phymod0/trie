@@ -1,4 +1,3 @@
-- Force function inlining in compilation mode
 - Create README for testing framework
 - Force ANSI compliance
 - Check that functions are indeed inlined
@@ -6,4 +5,3 @@
 - Code comments
 - Increase string search speed with intmax_t
 - Remove line wrap
-- Inline manually
