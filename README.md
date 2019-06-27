@@ -31,11 +31,11 @@ size_t trie_maxkeylen_added(Trie* trie);
 struct trie_iter;
 typedef struct trie_iter TrieIterator;
 
-void trie_iter_destroy(TrieIterator* iter);
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_len);
-void trie_iter_next(TrieIterator** iter_p);
 const char* trie_iter_getkey(TrieIterator* iter);
 void* trie_iter_getval(TrieIterator* iter);
+void trie_iter_next(TrieIterator** iter_p);
+void trie_iter_destroy(TrieIterator* iter);
 ~~~
 Refer to src/trie.h or doc/html/index.html for the documentation
 
