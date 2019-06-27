@@ -1,10 +1,8 @@
 Memory-\/efficient trie library for A\+N\+SI C (C99). Tries remain compact under all operations i.\+e. existing keys are always partitioned among the minimum required number of nodes.
 
-\subsection*{Testing}
+\subsection*{A\+PI}
 
-{\ttfamily cd test \&\& make check}
 
-\#\# A\+PI 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__ops}{trie\_ops}} \{}
 \DoxyCodeLine{    void (*\mbox{\hyperlink{structtrie__ops_aff5ce0c5a4080e51095537fa7736a703}{dtor}})(\textcolor{keywordtype}{void}*);}
@@ -31,4 +29,8 @@ Memory-\/efficient trie library for A\+N\+SI C (C99). Tries remain compact under
 \DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}{trie\_iter\_getkey}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
 \DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\_iter\_getval}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
 \end{DoxyCode}
- Refer to \mbox{\hyperlink{trie_8h}{src/trie.\+h}} or doc/html/index.\+html for the documentation 
+ Refer to \mbox{\hyperlink{trie_8h}{src/trie.\+h}} or doc/html/index.\+html for the documentation
+
+\subsection*{Testing}
+
+{\ttfamily cd test \&\& make check} 
