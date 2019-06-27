@@ -4,7 +4,7 @@ Tries remain compact under all operations i.e. existing keys are always partitio
 
 
 ## Testing
-cd test && make check
+`cd test && make check`
 
 
 ## API
@@ -21,11 +21,11 @@ struct trie;
 typedef struct trie Trie;
 
 Trie* trie_create(const struct trie_ops* ops);
+int trie_insert(Trie* trie, char* key, void* val);
+void* trie_find(Trie* trie, char* key);
+int trie_delete(Trie* trie, char* key);
 void trie_destroy(Trie* trie);
 size_t trie_maxkeylen_added(Trie* trie);
-int trie_insert(Trie* trie, char* key, void* val);
-int trie_delete(Trie* trie, char* key);
-void* trie_find(Trie* trie, char* key);
 
 //////////////////////////////////////////////////////////
 //////////////////// ITERATOR SECTION ////////////////////
@@ -35,7 +35,7 @@ struct trie_iter;
 typedef struct trie_iter TrieIterator;
 
 void trie_iter_destroy(TrieIterator* iter);
-TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_keylen);
+TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_len);
 void trie_iter_next(TrieIterator** iter_p);
 const char* trie_iter_getkey(TrieIterator* iter);
 void* trie_iter_getval(TrieIterator* iter);
