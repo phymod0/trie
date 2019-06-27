@@ -135,7 +135,6 @@ void trie_iter_destroy(TrieIterator* iter);
  *
  * Enumeration without a maximum length constraint can be done by passing the
  * return value of <code>trie_maxkeylen_added</code> in the third argument.
- * @see trie_maxkeylen_added
  *
  * @param trie Trie context
  * @param key_prefix C-string prefixing all keys to enumerate
