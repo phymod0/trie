@@ -362,11 +362,18 @@ oom:
 
 static inline trie_node_t* leq_child(trie_node_t* node, char find)
 {
-	size_t n_children = node->n_children;
-	for (size_t i = 0; i < n_children; ++i)
-		if (node->children[i].segment[0] > find)
-			return i > 0 ? &node->children[i - 1] : NULL;
-	return n_children ? &node->children[n_children - 1] : NULL;
+	if (node->n_children == 0 || find < node->children[0].segment[0])
+		return NULL;
+
+	size_t s = 0, e = node->n_children;
+	while (e - s > 1) {
+		size_t m = (s + e) / 2;
+		if (node->children[m].segment[0] <= find)
+			s = m;
+		else
+			e = m;
+	}
+	return &node->children[s];
 }
 
 
