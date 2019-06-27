@@ -18,7 +18,7 @@ TEST_DEFINE(test_instantiation, res)
 		return;
 	}
 
-	trie_node_t* root = trie->root;
+	TrieNode* root = trie->root;
 	bool root_proper = root && root->segment && root->segment[0] == '\0'
 			   && root->n_children == 0 && !root->value;
 	test_check(res, "Proper tree structure", root_proper);
@@ -139,11 +139,11 @@ TEST_DEFINE(test_max_keylen, res)
 }
 
 
-static __attribute_used__ trie_node_t* gen_singleton_wlen(test_result_t* res, size_t keylen)
+static __attribute_used__ TrieNode* gen_singleton_wlen(test_result_t* res, size_t keylen)
 {
 	char* seg = gen_rand_str(keylen);
 	void* value = malloc(100);
-	trie_node_t* node = node_create(seg, value);
+	TrieNode* node = node_create(seg, value);
 	if (!node)
 		test_check(res, "Node allocation failed", false);
 	free(seg);
@@ -151,11 +151,11 @@ static __attribute_used__ trie_node_t* gen_singleton_wlen(test_result_t* res, si
 }
 
 
-static __attribute_used__ trie_node_t* gen_singleton(test_result_t* res)
+static __attribute_used__ TrieNode* gen_singleton(test_result_t* res)
 {
 	char* seg = gen_rand_str(gen_len_bw(1, 10));
 	void* value = malloc(100);
-	trie_node_t* node = node_create(seg, value);
+	TrieNode* node = node_create(seg, value);
 	if (!node)
 		test_check(res, "Node allocation failed", false);
 	free(seg);
@@ -163,7 +163,7 @@ static __attribute_used__ trie_node_t* gen_singleton(test_result_t* res)
 }
 
 
-static __attribute_used__ void singleton_free(trie_node_t* node)
+static __attribute_used__ void singleton_free(TrieNode* node)
 {
 	if (!node)
 		return;
@@ -178,7 +178,7 @@ TEST_DEFINE(test_node_create, res)
 {
 	TEST_AUTONAME(res);
 
-	trie_node_t* node = gen_singleton(res);
+	TrieNode* node = gen_singleton(res);
 	if (!node) {
 		test_check(res, "Node is NULL on failure", true);
 		return;
@@ -247,16 +247,16 @@ TEST_DEFINE(test_insert, res)
 	KEY_INSERT(seg3, "");
 	KEY_INSERT(seg3, seg6);
 
-	trie_node_t* node1 = trie ? trie->root : NULL;
-	trie_node_t* node2 = node1 && node1->n_children > 0 ?
+	TrieNode* node1 = trie ? trie->root : NULL;
+	TrieNode* node2 = node1 && node1->n_children > 0 ?
 		&node1->children[0] : NULL;
-	trie_node_t* node4 = node2 && node2->n_children > 0 ?
+	TrieNode* node4 = node2 && node2->n_children > 0 ?
 		&node2->children[0]: NULL;
-	trie_node_t* node5 = node2 && node2->n_children > 1 ?
+	TrieNode* node5 = node2 && node2->n_children > 1 ?
 		&node2->children[1]: NULL;
-	trie_node_t* node3 = node1 && node1->n_children > 1 ?
+	TrieNode* node3 = node1 && node1->n_children > 1 ?
 		&node1->children[1] : NULL;
-	trie_node_t* node6 = node3 && node3->n_children > 0 ?
+	TrieNode* node6 = node3 && node3->n_children > 0 ?
 		&node3->children[0] : NULL;
 	test_check(res, "Trie structure complete",
 		   node1 && node2 && node3 && node4 && node5 && node6);
@@ -281,7 +281,7 @@ TEST_DEFINE(test_insert, res)
 }
 
 
-static __attribute_used__ bool tries_equal(trie_node_t* node1, trie_node_t* node2)
+static __attribute_used__ bool tries_equal(TrieNode* node1, TrieNode* node2)
 {
 	if (!node1 || !node2)
 		return !node1 && !node2;
@@ -296,7 +296,7 @@ static __attribute_used__ bool tries_equal(trie_node_t* node1, trie_node_t* node
 	return true;
 }
 
-static bool test_compactness_invariant(trie_node_t* node)
+static bool test_compactness_invariant(TrieNode* node)
 {
 	if (!node->value && node->n_children == 1)
 		return false;
