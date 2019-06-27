@@ -20,12 +20,10 @@ struct trie_ops {
 
 
 /** Free all inserted values with <code>free()</code>. */
-#define TRIE_OPS_FREE		\
-	&(struct trie_ops){.dtor = free}
+#define TRIE_OPS_FREE &(struct trie_ops){.dtor = free}
 
 /** Do not free inserted values. */
-#define TRIE_OPS_NONE		\
-	&(struct trie_ops){.dtor = NULL}
+#define TRIE_OPS_NONE &(struct trie_ops){.dtor = NULL}
 
 
 //////////////////////////////////////////////////////
@@ -135,12 +133,11 @@ void trie_iter_destroy(TrieIterator* iter);
  *
  * @param trie Trie context
  * @param key_prefix C-string prefixing all keys to enumerate
- * @param max_keylen Upper bound on the lengths of the keys to enumerate
+ * @param max_len Upper bound on the lengths of the keys to enumerate
  * @returns Valid iterator or NULL
  * @see trie_iterator.h
  */
-TrieIterator* trie_findall(Trie* trie, const char* key_prefix,
-			   size_t max_keylen);
+TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_len);
 
 /**
  * Advance an iterator to the next valid (key, value) pair.
