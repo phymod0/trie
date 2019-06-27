@@ -6,7 +6,6 @@
 
 #define VALLOC(x, n) (x = malloc((n) * sizeof *(x)))
 #define ALLOC(x) VALLOC(x, 1)
-#define STR_FOREACH(str) for (; *str; ++str)
 
 
 typedef struct trie_node {
@@ -648,6 +647,5 @@ return_empty_iterator:
 }
 
 
-#undef STR_FOREACH
 #undef ALLOC
 #undef VALLOC
