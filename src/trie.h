@@ -141,7 +141,6 @@ void trie_iter_destroy(TrieIterator* iter);
  * @param key_prefix C-string prefixing all keys to enumerate
  * @param max_len Upper bound on the lengths of the keys to enumerate
  * @returns Valid iterator or NULL
- * @see trie_iterator.h
  */
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_len);
 
