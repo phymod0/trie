@@ -1,6 +1,6 @@
 # trie
 Memory-efficient trie library for ANSI C (C99).
-Tries remain compact under all operations i.e. existing keys are always partitioned among the minimum required number of nodes.
+Tries remain compact under all operations i.e. existing strings are always partitioned among the minimum required number of nodes.
 
 
 ## API

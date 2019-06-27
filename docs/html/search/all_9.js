@@ -15,6 +15,5 @@ var searchData=
   ['stack_5fpop',['stack_pop',['../stack_8c.html#a21832629d58719d2635446a64539c45e',1,'stack_pop(Stack *s):&#160;stack.c'],['../stack_8h.html#a21832629d58719d2635446a64539c45e',1,'stack_pop(Stack *s):&#160;stack.c']]],
   ['stack_5fpush',['stack_push',['../stack_8c.html#a8b046328734e118cf1b7907c68d9407f',1,'stack_push(Stack *s, void *data):&#160;stack.c'],['../stack_8h.html#a8b046328734e118cf1b7907c68d9407f',1,'stack_push(Stack *s, void *data):&#160;stack.c']]],
   ['stack_5ftop',['stack_top',['../stack_8c.html#a3cd891d3a10df4a0e60ee1571afae7aa',1,'stack_top(Stack *s):&#160;stack.c'],['../stack_8h.html#a3cd891d3a10df4a0e60ee1571afae7aa',1,'stack_top(Stack *s):&#160;stack.c']]],
-  ['stackelem',['StackElem',['../stack_8c.html#a88b8340a4dfb89fe37115fc2b0719d20',1,'stack.c']]],
-  ['str_5fforeach',['STR_FOREACH',['../trie_8c.html#aa5a39d39fb67a97665821d2bf35f4627',1,'trie.c']]]
+  ['stackelem',['StackElem',['../stack_8c.html#a88b8340a4dfb89fe37115fc2b0719d20',1,'stack.c']]]
 ];
