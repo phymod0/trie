@@ -1,6 +1,7 @@
 # trie
 Strictly conformant C/C++ trie library.
 Tries remain compact under all operations i.e. existing strings are always partitioned among the minimum required number of nodes.
+Wrapper class for C++11 provided in src/cpp11_wrapper/
 
 
 ## API
