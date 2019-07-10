@@ -24,8 +24,8 @@ Memory-\/efficient trie library for A\+N\+SI C (C99). Tries remain compact under
 \DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__iter}{trie\_iter}} \mbox{\hyperlink{structtrie__iter}{TrieIterator}};}
 \DoxyCodeLine{}
 \DoxyCodeLine{\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* \mbox{\hyperlink{trie_8c_a6e521735f7d4b998912170fce1a16eb5}{trie\_findall}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* key\_prefix, \textcolor{keywordtype}{size\_t} max\_len);}
-\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}{trie\_iter\_getkey}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
-\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\_iter\_getval}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
+\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}{trie\_iter\_getkey}}(\textcolor{keyword}{const} \mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
+\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\_iter\_getval}}(\textcolor{keyword}{const} \mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
 \DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\_iter\_next}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}** iter\_p);}
 \DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\_iter\_destroy}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
 \end{DoxyCode}

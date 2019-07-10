@@ -47,9 +47,9 @@ void \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\+\_\+iter\
 \item 
 void \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\+\_\+iter\+\_\+next}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$$\ast$iter\+\_\+p)
 \item 
-const char $\ast$ \mbox{\hyperlink{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}{trie\+\_\+iter\+\_\+getkey}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
+const char $\ast$ \mbox{\hyperlink{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}{trie\+\_\+iter\+\_\+getkey}} (const \mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
 \item 
-void $\ast$ \mbox{\hyperlink{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}{trie\+\_\+iter\+\_\+getval}} (\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
+void $\ast$ \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\+\_\+iter\+\_\+getval}} (const \mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$iter)
 \end{DoxyCompactItemize}
 
 
@@ -214,11 +214,11 @@ Destroy an iterator.
 {\em iter} & Iterator to destroy \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}\label{trie_8c_afd6afb1eebf4f8b41a25f0e01664243a}} 
+\mbox{\Hypertarget{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}\label{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}} 
 \index{trie.c@{trie.c}!trie\_iter\_getkey@{trie\_iter\_getkey}}
 \index{trie\_iter\_getkey@{trie\_iter\_getkey}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_getkey()}{trie\_iter\_getkey()}}
-{\footnotesize\ttfamily const char$\ast$ trie\+\_\+iter\+\_\+getkey (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily const char$\ast$ trie\+\_\+iter\+\_\+getkey (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Get the key at the current iterator.
 
@@ -232,11 +232,11 @@ The content of the string returned by this function is undefined if the iterator
 \begin{DoxyReturn}{Returns}
 Iterator key 
 \end{DoxyReturn}
-\mbox{\Hypertarget{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}\label{trie_8c_a645ab3c3c2c6e0eb436019ab26b9822c}} 
+\mbox{\Hypertarget{trie_8c_a74977c6f67a3f3740ae481759967fafb}\label{trie_8c_a74977c6f67a3f3740ae481759967fafb}} 
 \index{trie.c@{trie.c}!trie\_iter\_getval@{trie\_iter\_getval}}
 \index{trie\_iter\_getval@{trie\_iter\_getval}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_iter\_getval()}{trie\_iter\_getval()}}
-{\footnotesize\ttfamily void$\ast$ trie\+\_\+iter\+\_\+getval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void$\ast$ trie\+\_\+iter\+\_\+getval (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{trie_8h_a324434d4a93e86945d33e8901debd16f}{Trie\+Iterator}} $\ast$}]{iter }\end{DoxyParamCaption})}
 
 Get the value at the current iterator.
 

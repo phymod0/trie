@@ -121,10 +121,10 @@ Functions</h2></td></tr>
 <tr class="separator:a6e521735f7d4b998912170fce1a16eb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29af5e6478255dab9bd6d2ddcd9ebaf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a29af5e6478255dab9bd6d2ddcd9ebaf6">trie_iter_next</a> (<a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> **iter_p)</td></tr>
 <tr class="separator:a29af5e6478255dab9bd6d2ddcd9ebaf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd6afb1eebf4f8b41a25f0e01664243a"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#afd6afb1eebf4f8b41a25f0e01664243a">trie_iter_getkey</a> (<a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *iter)</td></tr>
-<tr class="separator:afd6afb1eebf4f8b41a25f0e01664243a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a645ab3c3c2c6e0eb436019ab26b9822c"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a645ab3c3c2c6e0eb436019ab26b9822c">trie_iter_getval</a> (<a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *iter)</td></tr>
-<tr class="separator:a645ab3c3c2c6e0eb436019ab26b9822c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8cd6936775bf3f25b5c51607dfda62e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#ac8cd6936775bf3f25b5c51607dfda62e">trie_iter_getkey</a> (const <a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *iter)</td></tr>
+<tr class="separator:ac8cd6936775bf3f25b5c51607dfda62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74977c6f67a3f3740ae481759967fafb"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a74977c6f67a3f3740ae481759967fafb">trie_iter_getval</a> (const <a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *iter)</td></tr>
+<tr class="separator:a74977c6f67a3f3740ae481759967fafb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a1028406e5758a7a90a39a9e32a26fdd6"></a>
@@ -447,8 +447,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afd6afb1eebf4f8b41a25f0e01664243a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd6afb1eebf4f8b41a25f0e01664243a">&#9670;&nbsp;</a></span>trie_iter_getkey()</h2>
+<a id="ac8cd6936775bf3f25b5c51607dfda62e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8cd6936775bf3f25b5c51607dfda62e">&#9670;&nbsp;</a></span>trie_iter_getkey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -456,7 +456,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">const char* trie_iter_getkey </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *&#160;</td>
           <td class="paramname"><em>iter</em></td><td>)</td>
           <td></td>
         </tr>
@@ -474,8 +474,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a645ab3c3c2c6e0eb436019ab26b9822c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a645ab3c3c2c6e0eb436019ab26b9822c">&#9670;&nbsp;</a></span>trie_iter_getval()</h2>
+<a id="a74977c6f67a3f3740ae481759967fafb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74977c6f67a3f3740ae481759967fafb">&#9670;&nbsp;</a></span>trie_iter_getval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -483,7 +483,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void* trie_iter_getval </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="trie_8h.html#a324434d4a93e86945d33e8901debd16f">TrieIterator</a> *&#160;</td>
           <td class="paramname"><em>iter</em></td><td>)</td>
           <td></td>
         </tr>

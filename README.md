@@ -32,8 +32,8 @@ struct trie_iter;
 typedef struct trie_iter TrieIterator;
 
 TrieIterator* trie_findall(Trie* trie, const char* key_prefix, size_t max_len);
-const char* trie_iter_getkey(TrieIterator* iter);
-void* trie_iter_getval(TrieIterator* iter);
+const char* trie_iter_getkey(const TrieIterator* iter);
+void* trie_iter_getval(const TrieIterator* iter);
 void trie_iter_next(TrieIterator** iter_p);
 void trie_iter_destroy(TrieIterator* iter);
 ~~~
