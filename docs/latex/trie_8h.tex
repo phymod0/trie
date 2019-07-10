@@ -16,9 +16,9 @@ struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = free\}
+\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~\mbox{\hyperlink{trie_8h_a64536846a74aac12847865e30658ef6a}{trie\+\_\+makeops}}(free)
 \item 
-\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = N\+U\+LL\}
+\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~\mbox{\hyperlink{trie_8h_a64536846a74aac12847865e30658ef6a}{trie\+\_\+makeops}}(N\+U\+LL)
 \item 
 \#define \mbox{\hyperlink{trie_8h_a440318004d0a0b1cfb3c46f4887300a5}{T\+R\+I\+E\+\_\+\+F\+WD}}
 \item 
@@ -34,7 +34,9 @@ typedef struct \mbox{\hyperlink{structtrie__iter}{trie\+\_\+iter}} \mbox{\hyperl
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$ \mbox{\hyperlink{trie_8h_a98dd047eb9fe372e9715b57359dfa0bf}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$ops)
+struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} \mbox{\hyperlink{trie_8h_a64536846a74aac12847865e30658ef6a}{trie\+\_\+makeops}} (void($\ast$dtor)(void $\ast$))
+\item 
+\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$ \mbox{\hyperlink{trie_8h_ad8a5136694c4d88beb46193bbd5ddf12}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} ops)
 \item 
 void \mbox{\hyperlink{trie_8h_a0bae8af01708c30ced3ecfe57e35067a}{trie\+\_\+destroy}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
 \item 
@@ -80,13 +82,13 @@ Methods for trie operations.
 \index{trie.h@{trie.h}!TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}}
 \index{TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_FREE}{TRIE\_OPS\_FREE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = free\}}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~\mbox{\hyperlink{trie_8h_a64536846a74aac12847865e30658ef6a}{trie\+\_\+makeops}}(free)}
 
 Free all inserted values with {\ttfamily free()}. \mbox{\Hypertarget{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}\label{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}} 
 \index{trie.h@{trie.h}!TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}}
 \index{TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_NONE}{TRIE\_OPS\_NONE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~\&(struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}})\{.dtor = N\+U\+LL\}}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~\mbox{\hyperlink{trie_8h_a64536846a74aac12847865e30658ef6a}{trie\+\_\+makeops}}(N\+U\+LL)}
 
 Do not free inserted values. 
 
@@ -106,11 +108,11 @@ Do not free inserted values.
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{trie_8h_a98dd047eb9fe372e9715b57359dfa0bf}\label{trie_8h_a98dd047eb9fe372e9715b57359dfa0bf}} 
+\mbox{\Hypertarget{trie_8h_ad8a5136694c4d88beb46193bbd5ddf12}\label{trie_8h_ad8a5136694c4d88beb46193bbd5ddf12}} 
 \index{trie.h@{trie.h}!trie\_create@{trie\_create}}
 \index{trie\_create@{trie\_create}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{trie\_create()}{trie\_create()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$}]{ops }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}}}]{ops }\end{DoxyParamCaption})}
 
 Instantiate a trie.
 
@@ -287,6 +289,12 @@ Behavior of a valid iterator, after any trie modification, is undefined.
 {\em iter\+\_\+p} & Pointer to valid iterator or N\+U\+LL \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{trie_8h_a64536846a74aac12847865e30658ef6a}\label{trie_8h_a64536846a74aac12847865e30658ef6a}} 
+\index{trie.h@{trie.h}!trie\_makeops@{trie\_makeops}}
+\index{trie\_makeops@{trie\_makeops}!trie.h@{trie.h}}
+\subsubsection{\texorpdfstring{trie\_makeops()}{trie\_makeops()}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} trie\+\_\+makeops (\begin{DoxyParamCaption}\item[{void($\ast$)(void $\ast$)}]{dtor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
 \mbox{\Hypertarget{trie_8h_a3cfd530552e7ec075229aa9e22979ede}\label{trie_8h_a3cfd530552e7ec075229aa9e22979ede}} 
 \index{trie.h@{trie.h}!trie\_maxkeylen\_added@{trie\_maxkeylen\_added}}
 \index{trie\_maxkeylen\_added@{trie\_maxkeylen\_added}!trie.h@{trie.h}}

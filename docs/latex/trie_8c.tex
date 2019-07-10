@@ -15,9 +15,9 @@ struct \mbox{\hyperlink{structtrie__iter}{trie\+\_\+iter}}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{trie_8c_a118a7092427b5e101219b04369927cb8}{V\+A\+L\+L\+OC}}(x,  n)~(x = malloc((n) $\ast$ sizeof $\ast$(x)))
+\#define \mbox{\hyperlink{trie_8c_af1a7c03acee3a2514368aad264dbf1b4}{V\+A\+L\+L\+OC}}(x,  type,  n)~(x = (type$\ast$)malloc((n) $\ast$ sizeof $\ast$(x)))
 \item 
-\#define \mbox{\hyperlink{trie_8c_a1028406e5758a7a90a39a9e32a26fdd6}{A\+L\+L\+OC}}(x)~\mbox{\hyperlink{trie_8c_a118a7092427b5e101219b04369927cb8}{V\+A\+L\+L\+OC}}(x, 1)
+\#define \mbox{\hyperlink{trie_8c_aeec41e4e56ad469263c69f00318d4422}{A\+L\+L\+OC}}(x,  type)~\mbox{\hyperlink{trie_8c_af1a7c03acee3a2514368aad264dbf1b4}{V\+A\+L\+L\+OC}}(x, type, 1)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -29,7 +29,7 @@ typedef void($\ast$ \mbox{\hyperlink{trie_8c_a2930134ffa16d71fb37514b22bc3ff46}{
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$ \mbox{\hyperlink{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$ops)
+\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$ \mbox{\hyperlink{trie_8c_ad8a5136694c4d88beb46193bbd5ddf12}{trie\+\_\+create}} (const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} ops)
 \item 
 void \mbox{\hyperlink{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}{trie\+\_\+destroy}} (\mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}} $\ast$\mbox{\hyperlink{structtrie}{trie}})
 \item 
@@ -54,17 +54,17 @@ void $\ast$ \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\+\_
 
 
 \subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{trie_8c_a1028406e5758a7a90a39a9e32a26fdd6}\label{trie_8c_a1028406e5758a7a90a39a9e32a26fdd6}} 
+\mbox{\Hypertarget{trie_8c_aeec41e4e56ad469263c69f00318d4422}\label{trie_8c_aeec41e4e56ad469263c69f00318d4422}} 
 \index{trie.c@{trie.c}!ALLOC@{ALLOC}}
 \index{ALLOC@{ALLOC}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{ALLOC}{ALLOC}}
-{\footnotesize\ttfamily \#define A\+L\+L\+OC(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})~\mbox{\hyperlink{trie_8c_a118a7092427b5e101219b04369927cb8}{V\+A\+L\+L\+OC}}(x, 1)}
+{\footnotesize\ttfamily \#define A\+L\+L\+OC(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{type }\end{DoxyParamCaption})~\mbox{\hyperlink{trie_8c_af1a7c03acee3a2514368aad264dbf1b4}{V\+A\+L\+L\+OC}}(x, type, 1)}
 
-\mbox{\Hypertarget{trie_8c_a118a7092427b5e101219b04369927cb8}\label{trie_8c_a118a7092427b5e101219b04369927cb8}} 
+\mbox{\Hypertarget{trie_8c_af1a7c03acee3a2514368aad264dbf1b4}\label{trie_8c_af1a7c03acee3a2514368aad264dbf1b4}} 
 \index{trie.c@{trie.c}!VALLOC@{VALLOC}}
 \index{VALLOC@{VALLOC}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{VALLOC}{VALLOC}}
-{\footnotesize\ttfamily \#define V\+A\+L\+L\+OC(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{n }\end{DoxyParamCaption})~(x = malloc((n) $\ast$ sizeof $\ast$(x)))}
+{\footnotesize\ttfamily \#define V\+A\+L\+L\+OC(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{type,  }\item[{}]{n }\end{DoxyParamCaption})~(x = (type$\ast$)malloc((n) $\ast$ sizeof $\ast$(x)))}
 
 
 
@@ -84,11 +84,11 @@ void $\ast$ \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\+\_
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}\label{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}} 
+\mbox{\Hypertarget{trie_8c_ad8a5136694c4d88beb46193bbd5ddf12}\label{trie_8c_ad8a5136694c4d88beb46193bbd5ddf12}} 
 \index{trie.c@{trie.c}!trie\_create@{trie\_create}}
 \index{trie\_create@{trie\_create}!trie.c@{trie.c}}
 \subsubsection{\texorpdfstring{trie\_create()}{trie\_create()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}} $\ast$}]{ops }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{trie_8h_a0ce1853128d258c51a2f0ecccf1885f2}{Trie}}$\ast$ trie\+\_\+create (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structtrie__ops}{trie\+\_\+ops}}}]{ops }\end{DoxyParamCaption})}
 
 Instantiate a trie.
 

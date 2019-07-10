@@ -1,7 +1,7 @@
 #include "stack.h"
 
 
-#define ALLOC(x) (x = malloc(sizeof *(x)))
+#define ALLOC(x, type) (x = (type*)malloc(sizeof *(x)))
 
 
 typedef struct stack_elem {
@@ -19,15 +19,15 @@ typedef struct stack Stack;
 #endif /* STACK_FWD */
 
 
-Stack* stack_create(const struct stack_ops* ops)
+Stack* stack_create(const struct stack_ops ops)
 {
 	Stack* s;
-	if (!ALLOC(s)) {
+	if (!ALLOC(s, Stack)) {
 		free(s);
 		return NULL;
 	}
 	s->head = NULL;
-	s->ops = *ops;
+	s->ops = ops;
 	return s;
 }
 
@@ -35,7 +35,7 @@ Stack* stack_create(const struct stack_ops* ops)
 int stack_push(Stack* s, void* data)
 {
 	StackElem* head_new;
-	if (!ALLOC(head_new))
+	if (!ALLOC(head_new, StackElem))
 		return -1;
 	head_new->val = data;
 	head_new->next = s->head;

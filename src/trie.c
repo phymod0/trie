@@ -4,8 +4,8 @@
 #include "stack.h"
 
 
-#define VALLOC(x, n) (x = malloc((n) * sizeof *(x)))
-#define ALLOC(x) VALLOC(x, 1)
+#define VALLOC(x, type, n) (x = (type*)malloc((n) * sizeof *(x)))
+#define ALLOC(x, type) VALLOC(x, type, 1)
 
 
 typedef struct trie_node {
@@ -72,18 +72,18 @@ static bool trie_iter_step(TrieIterator**);
 static TrieIterator* trie_iter_create(const char*, TrieNode*, size_t);
 
 
-Trie* trie_create(const struct trie_ops* ops)
+Trie* trie_create(const struct trie_ops ops)
 {
 	Trie* trie = NULL;
 	TrieNode* root = NULL;
 	char* empty = NULL;
 	struct trie_ops* trie_ops = NULL;
 	TrieNode* children = NULL;
-	if (!ALLOC(trie)
-	    || !ALLOC(root)
-	    || !VALLOC(empty, 1)
-	    || !ALLOC(trie_ops)
-	    || !VALLOC(children, 0))
+	if (!ALLOC(trie, Trie)
+	    || !ALLOC(root, TrieNode)
+	    || !VALLOC(empty, char, 1)
+	    || !ALLOC(trie_ops, struct trie_ops)
+	    || !VALLOC(children, TrieNode, 0))
 		goto oom;
 
 	empty[0] = '\0';
@@ -93,7 +93,7 @@ Trie* trie_create(const struct trie_ops* ops)
 	root->value = NULL;
 	trie->max_keylen_added = 0;
 	trie->root = root;
-	memcpy(trie_ops, ops, sizeof *trie_ops);
+	memcpy(trie_ops, &ops, sizeof *trie_ops);
 	trie->ops = trie_ops;
 
 	return trie;
@@ -275,7 +275,7 @@ static char* str_dup(const char* str)
 {
 	size_t len = strlen(str);
 	char* result;
-	if (VALLOC(result, len + 1))
+	if (VALLOC(result, char, len + 1))
 		memcpy(result, str, len + 1);
 	return result;
 }
@@ -285,7 +285,9 @@ static TrieNode* node_create(char* segment, void* value)
 {
 	char* seg = NULL;
 	TrieNode *node = NULL, *children = NULL;
-	if (!ALLOC(node) || !(seg = str_dup(segment)) || !VALLOC(children, 0))
+	if (!ALLOC(node, TrieNode)
+	    || !(seg = str_dup(segment))
+	    || !VALLOC(children, TrieNode, 0))
 		goto oom;
 
 	node->segment = seg;
@@ -306,7 +308,7 @@ static char* str_n_dup(const char* str, size_t n)
 {
 	size_t len = strlen(str), min = len < n ? len : n;
 	char* result;
-	if (VALLOC(result, min + 1)) {
+	if (VALLOC(result, char, min + 1)) {
 		memcpy(result, str, min);
 		result[min] = '\0';
 	}
@@ -349,7 +351,7 @@ static char* add_strs(const char* str1, const char* str2)
 {
 	size_t len1 = strlen(str1), len2 = strlen(str2);
 	char* result;
-	if (!VALLOC(result, len1 + len2 + 1))
+	if (!VALLOC(result, char, len1 + len2 + 1))
 		return NULL;
 	strcpy(result, str1);
 	strcpy(result + len1, str2);
@@ -441,12 +443,12 @@ static void find_mismatch(Trie* trie, const char* key, TrieNode** node_p,
 
 static int node_fork(TrieNode* node, char* at, TrieNode* new_child)
 {
-	TrieNode* new_children = NULL;
+	TrieNode *new_children = NULL, *split_child;
 
-	if (!VALLOC(new_children, 2) || node_split(node, at) < 0)
+	if (!VALLOC(new_children, TrieNode, 2) || node_split(node, at) < 0)
 		goto oom;
 
-	TrieNode* split_child = &node->children[0];
+	split_child = &node->children[0];
 
 	if (split_child->segment[0] < new_child->segment[0]) {
 		new_children[0] = *split_child;
@@ -471,16 +473,17 @@ oom:
 static int node_addchild(TrieNode* node, TrieNode* new_child)
 {
 	char find = new_child->segment[0];
-	size_t n_children = node->n_children;
-	TrieNode *children = node->children, *new_children = NULL;
+	ptrdiff_t ins;
+	size_t n_children = node->n_children, sz1, sz2;
+	TrieNode *children = node->children, *new_children = NULL, *leq;
 
-	if (!VALLOC(new_children, n_children + 1))
+	if (!VALLOC(new_children, TrieNode, n_children + 1))
 		goto oom;
 
-	TrieNode* leq = leq_child(node, find);
-	ptrdiff_t ins = leq ? (leq - children) + 1 : 0;
-	size_t sz1 = ins * sizeof children[0];
-	size_t sz2 = (n_children - ins) * sizeof children[0];
+	leq = leq_child(node, find);
+	ins = leq ? (leq - children) + 1 : 0;
+	sz1 = ins * sizeof children[0];
+	sz2 = (n_children - ins) * sizeof children[0];
 
 	memcpy(new_children, children, sz1);
 	new_children[ins] = *new_child;
@@ -507,17 +510,18 @@ static int node_branch(TrieNode* node, char* at, TrieNode* child)
 static int node_delchild(TrieNode* node, TrieNode* child,
 			 destructor_t dtor)
 {
-	size_t n_children = node->n_children;
+	ptrdiff_t del;
+	size_t n_children = node->n_children, sz1, sz2;
 	TrieNode *new_children, *children = node->children;
 	char* child_segment = child->segment;
 	TrieNode* child_children = child->children;
 	void* child_value = child->value;
 
-	if (!VALLOC(new_children, n_children - 1))
+	if (!VALLOC(new_children, TrieNode, n_children - 1))
 		goto oom;
-	ptrdiff_t del = child - children;
-	size_t sz1 = del * sizeof children[0];
-	size_t sz2 = (n_children - del - 1) * sizeof children[0];
+	del = child - children;
+	sz1 = del * sizeof children[0];
+	sz2 = (n_children - del - 1) * sizeof children[0];
 
 	memcpy(new_children, children, sz1);
 	memcpy(&new_children[del], &children[del + 1], sz2);
@@ -540,7 +544,7 @@ oom:
 static inline char* key_buffer_create(size_t max_keylen)
 {
 	char* buf;
-	if (!VALLOC(buf, max_keylen + 1))
+	if (!VALLOC(buf, char, max_keylen + 1))
 		return NULL;
 	buf[0] = '\0';
 	return buf;
@@ -570,6 +574,8 @@ static bool trie_iter_step(TrieIterator** iter_p)
 	if (!iter)
 		return true;
 
+	TrieNode* node;
+	char *keyptr, *keyend;
 	Stack* node_stack = iter->node_stack;
 	Stack* keyptr_stack = iter->keyptr_stack;
 	const size_t max_keylen = iter->max_keylen;
@@ -578,9 +584,9 @@ static bool trie_iter_step(TrieIterator** iter_p)
 	if (stack_empty(node_stack))
 		goto end_iterator;
 
-	TrieNode* node = stack_pop(node_stack);
-	char* keyptr = stack_pop(keyptr_stack);
-	char* keyend = key_add_segment(keyptr, node->segment, key, max_keylen);
+	node = (TrieNode*)stack_pop(node_stack);
+	keyptr = (char*)stack_pop(keyptr_stack);
+	keyend = key_add_segment(keyptr, node->segment, key, max_keylen);
 	if (!keyend)
 		return false;
 
@@ -603,13 +609,12 @@ static TrieIterator* trie_iter_create(const char* truncated_prefix,
 				      TrieNode* node, size_t max_keylen)
 {
 	TrieIterator* iter = NULL;
-	char* keybuf = NULL;
+	char *keybuf = NULL, *child_keyptr;
 	Stack *node_stack = NULL, *keyptr_stack = NULL;
 
-	if (!ALLOC(iter))
+	if (!ALLOC(iter, TrieIterator))
 		goto oom;
 
-	char* child_keyptr;
 	if (!(keybuf = key_buffer_create(max_keylen)))
 		goto oom;
 	if (!(child_keyptr = key_add_segment(keybuf, truncated_prefix, keybuf,

@@ -1,4 +1,4 @@
-Memory-\/efficient trie library for A\+N\+SI C (C99). Tries remain compact under all operations i.\+e. existing strings are always partitioned among the minimum required number of nodes.
+Strictly conformant C/\+C++ trie library. Tries remain compact under all operations i.\+e. existing strings are always partitioned among the minimum required number of nodes.
 
 \subsection*{A\+PI}
 
@@ -12,7 +12,7 @@ Memory-\/efficient trie library for A\+N\+SI C (C99). Tries remain compact under
 \DoxyCodeLine{\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie}{trie}};}
 \DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structtrie}{trie}} \mbox{\hyperlink{structtrie}{Trie}};}
 \DoxyCodeLine{}
-\DoxyCodeLine{\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{trie_8c_a98dd047eb9fe372e9715b57359dfa0bf}{trie\_create}}(\textcolor{keyword}{const} \textcolor{keyword}{struct} \mbox{\hyperlink{structtrie__ops}{trie\_ops}}* \mbox{\hyperlink{structtrie_a06e66563893e1fab35731eeb1522ea4a}{ops}});}
+\DoxyCodeLine{\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{trie_8c_ad8a5136694c4d88beb46193bbd5ddf12}{trie\_create}}(\textcolor{keyword}{const} \textcolor{keyword}{struct} \mbox{\hyperlink{structtrie__ops}{trie\_ops}}* \mbox{\hyperlink{structtrie_a06e66563893e1fab35731eeb1522ea4a}{ops}});}
 \DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\_insert}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key, \textcolor{keywordtype}{void}* val);}
 \DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a9f18803659abb76370cd52e8b031c002}{trie\_find}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key);}
 \DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ae126fc59d33595f7dd6c689c241d2080}{trie\_delete}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key);}

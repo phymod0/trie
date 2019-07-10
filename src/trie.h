@@ -19,11 +19,19 @@ struct trie_ops {
 };
 
 
+inline struct trie_ops trie_makeops(void (*dtor)(void*))
+{
+	struct trie_ops ops;
+	ops.dtor = dtor;
+	return ops;
+}
+
+
 /** Free all inserted values with <code>free()</code>. */
-#define TRIE_OPS_FREE &(struct trie_ops){.dtor = free}
+#define TRIE_OPS_FREE trie_makeops(free)
 
 /** Do not free inserted values. */
-#define TRIE_OPS_NONE &(struct trie_ops){.dtor = NULL}
+#define TRIE_OPS_NONE trie_makeops(NULL)
 
 
 //////////////////////////////////////////////////////
@@ -44,7 +52,7 @@ typedef struct trie Trie;
  * @param ops Set of trie value operations
  * @returns Allocated trie structure or NULL if out of memory
  */
-Trie* trie_create(const struct trie_ops* ops);
+Trie* trie_create(const struct trie_ops ops);
 
 /**
  * Destroy a trie.
