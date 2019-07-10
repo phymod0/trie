@@ -235,13 +235,13 @@ void trie_iter_next(TrieIterator** iter_p)
 }
 
 
-const char* trie_iter_getkey(TrieIterator* iter)
+const char* trie_iter_getkey(const TrieIterator* iter)
 {
 	return iter ? iter->key : NULL;
 }
 
 
-void* trie_iter_getval(TrieIterator* iter)
+void* trie_iter_getval(const TrieIterator* iter)
 {
 	return iter ? iter->value : NULL;
 }

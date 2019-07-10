@@ -165,7 +165,7 @@ void trie_iter_next(TrieIterator** iter_p);
  * @param iter Current iterator
  * @returns Iterator key
  */
-const char* trie_iter_getkey(TrieIterator* iter);
+const char* trie_iter_getkey(const TrieIterator* iter);
 
 /**
  * Get the value at the current iterator.
@@ -173,7 +173,7 @@ const char* trie_iter_getkey(TrieIterator* iter);
  * @param iter Current iterator
  * @returns Iterator value or NULL if the iterator is invalid
  */
-void* trie_iter_getval(TrieIterator* iter);
+void* trie_iter_getval(const TrieIterator* iter);
 
 
 #endif /* TRIE */
