@@ -23,7 +23,7 @@ TEST_DEFINE(test_instantiation, res)
 			   && root->n_children == 0 && !root->value;
 	test_check(res, "Proper tree structure", root_proper);
 
-	struct trie_ops* ops = trie->ops;
+	struct TrieOps* ops = trie->ops;
 	bool ops_proper = ops && ops->dtor == free;
 	test_check(res, "Proper trie operations", ops_proper);
 
@@ -74,7 +74,7 @@ TEST_DEFINE(asan_test_destroy, res)
 
 #if 0
 	Trie* trie = trie_create(
-			&(struct trie_ops){
+			&(struct TrieOps){
 				.dtor = __verbose_free,
 			}
 		     );
@@ -82,7 +82,7 @@ TEST_DEFINE(asan_test_destroy, res)
 	Trie* trie = trie_create(TRIE_OPS_FREE);
 	Trie* trie2 = trie_create(TRIE_OPS_NONE);
 #if 0
-	Trie* trie2 = trie_create(&(struct trie_ops){
+	Trie* trie2 = trie_create(&(struct TrieOps){
 		.dtor = increment,
 	});
 #endif

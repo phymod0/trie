@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['max_5fkeylen',['max_keylen',['../structtrie__iter.html#add40401793ab6e342863b7747af165d1',1,'trie_iter']]],
-  ['max_5fkeylen_5fadded',['max_keylen_added',['../structtrie.html#a32fe8ee6c9099ceca4ea003420eb5870',1,'trie']]]
+  ['max_5fkeylen',['max_keylen',['../structTrieIterator.html#abdeaac0e322f45e7b8d0e5f3dc0eeb20',1,'TrieIterator']]],
+  ['max_5fkeylen_5fadded',['max_keylen_added',['../structTrie.html#a1fe017d88dc057b0efb1bed507c418c7',1,'Trie']]]
 ];

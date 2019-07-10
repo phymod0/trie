@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['n_5fchildren',['n_children',['../structtrie__node.html#acd63f818f932e0092f463360c7895e6e',1,'trie_node']]],
+  ['n_5fchildren',['n_children',['../structTrieNode.html#a5a7fb981e437053d15ead5058eea05ec',1,'TrieNode']]],
   ['next',['next',['../structstack__elem.html#a0b69757c46a31aba40df13ee60c64dad',1,'stack_elem']]],
-  ['node_5fstack',['node_stack',['../structtrie__iter.html#a64c95d56b672bb241db8e24c438e6f07',1,'trie_iter']]]
+  ['node_5fstack',['node_stack',['../structTrieIterator.html#a7371ff311cb4d122b327db7d36a853b6',1,'TrieIterator']]]
 ];

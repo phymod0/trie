@@ -8,24 +8,24 @@
 #define ALLOC(x, type) VALLOC(x, type, 1)
 
 
-typedef struct trie_node {
+typedef struct TrieNode {
 	char* segment;
 	size_t n_children;
-	struct trie_node* children;
+	struct TrieNode* children;
 	void* value;
 } TrieNode;
 
-struct trie {
+struct Trie {
 	TrieNode* root;
-	struct trie_ops* ops;
+	struct TrieOps* ops;
 	size_t max_keylen_added;
 };
 #ifndef TRIE_FWD
 #define TRIE_FWD
-typedef struct trie Trie;
+typedef struct Trie Trie;
 #endif /* TRIE_FWD */
 
-struct trie_iter {
+struct TrieIterator {
 	Stack *node_stack, *keyptr_stack;
 	size_t max_keylen;
 	char* key;
@@ -33,7 +33,7 @@ struct trie_iter {
 };
 #ifndef TRIE_ITER_FWD
 #define TRIE_ITER_FWD
-typedef struct trie_iter TrieIterator;
+typedef struct TrieIterator TrieIterator;
 #endif /* TRIE_ITER_FWD */
 
 typedef void (*destructor_t)(void*);
@@ -72,17 +72,17 @@ static bool trie_iter_step(TrieIterator**);
 static TrieIterator* trie_iter_create(const char*, TrieNode*, size_t);
 
 
-Trie* trie_create(const struct trie_ops ops)
+Trie* trie_create(const struct TrieOps ops)
 {
 	Trie* trie = NULL;
 	TrieNode* root = NULL;
 	char* empty = NULL;
-	struct trie_ops* trie_ops = NULL;
+	struct TrieOps* trie_ops = NULL;
 	TrieNode* children = NULL;
 	if (!ALLOC(trie, Trie)
 	    || !ALLOC(root, TrieNode)
 	    || !VALLOC(empty, char, 1)
-	    || !ALLOC(trie_ops, struct trie_ops)
+	    || !ALLOC(trie_ops, struct TrieOps)
 	    || !VALLOC(children, TrieNode, 0))
 		goto oom;
 

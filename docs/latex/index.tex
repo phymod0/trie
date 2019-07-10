@@ -4,30 +4,30 @@ Strictly conformant C/\+C++ trie library. Tries remain compact under all operati
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__ops}{trie\_ops}} \{}
-\DoxyCodeLine{    void (*\mbox{\hyperlink{structtrie__ops_aff5ce0c5a4080e51095537fa7736a703}{dtor}})(\textcolor{keywordtype}{void}*);}
+\DoxyCodeLine{\textcolor{keyword}{struct }trie\_ops \{}
+\DoxyCodeLine{    void (*dtor)(\textcolor{keywordtype}{void}*);}
 \DoxyCodeLine{\};}
 \DoxyCodeLine{}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie}{trie}};}
-\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structtrie}{trie}} \mbox{\hyperlink{structtrie}{Trie}};}
+\DoxyCodeLine{\textcolor{keyword}{struct }trie;}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }trie \mbox{\hyperlink{structTrie}{Trie}};}
 \DoxyCodeLine{}
-\DoxyCodeLine{\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{trie_8c_ad8a5136694c4d88beb46193bbd5ddf12}{trie\_create}}(\textcolor{keyword}{const} \textcolor{keyword}{struct} \mbox{\hyperlink{structtrie__ops}{trie\_ops}}* \mbox{\hyperlink{structtrie_a06e66563893e1fab35731eeb1522ea4a}{ops}});}
-\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\_insert}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key, \textcolor{keywordtype}{void}* val);}
-\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a9f18803659abb76370cd52e8b031c002}{trie\_find}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key);}
-\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ae126fc59d33595f7dd6c689c241d2080}{trie\_delete}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keywordtype}{char}* key);}
-\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}{trie\_destroy}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}});}
-\DoxyCodeLine{\textcolor{keywordtype}{size\_t} \mbox{\hyperlink{trie_8c_a3cfd530552e7ec075229aa9e22979ede}{trie\_maxkeylen\_added}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}});}
+\DoxyCodeLine{\mbox{\hyperlink{structTrie}{Trie}}* \mbox{\hyperlink{trie_8c_a0b4926c622607e593ec9ceeeacc6d5d9}{trie\_create}}(\textcolor{keyword}{const} \textcolor{keyword}{struct} trie\_ops* ops);}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\_insert}}(\mbox{\hyperlink{structTrie}{Trie}}* trie, \textcolor{keywordtype}{char}* key, \textcolor{keywordtype}{void}* val);}
+\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a9f18803659abb76370cd52e8b031c002}{trie\_find}}(\mbox{\hyperlink{structTrie}{Trie}}* trie, \textcolor{keywordtype}{char}* key);}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{trie_8c_ae126fc59d33595f7dd6c689c241d2080}{trie\_delete}}(\mbox{\hyperlink{structTrie}{Trie}}* trie, \textcolor{keywordtype}{char}* key);}
+\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a0bae8af01708c30ced3ecfe57e35067a}{trie\_destroy}}(\mbox{\hyperlink{structTrie}{Trie}}* trie);}
+\DoxyCodeLine{\textcolor{keywordtype}{size\_t} \mbox{\hyperlink{trie_8c_a3cfd530552e7ec075229aa9e22979ede}{trie\_maxkeylen\_added}}(\mbox{\hyperlink{structTrie}{Trie}}* trie);}
 \DoxyCodeLine{}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__iter}{trie\_iter}};}
-\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structtrie__iter}{trie\_iter}} \mbox{\hyperlink{structtrie__iter}{TrieIterator}};}
+\DoxyCodeLine{\textcolor{keyword}{struct }trie\_iter;}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }trie\_iter \mbox{\hyperlink{structTrieIterator}{TrieIterator}};}
 \DoxyCodeLine{}
-\DoxyCodeLine{\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* \mbox{\hyperlink{trie_8c_a6e521735f7d4b998912170fce1a16eb5}{trie\_findall}}(\mbox{\hyperlink{structtrie}{Trie}}* \mbox{\hyperlink{structtrie}{trie}}, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* key\_prefix, \textcolor{keywordtype}{size\_t} max\_len);}
-\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}{trie\_iter\_getkey}}(\textcolor{keyword}{const} \mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
-\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\_iter\_getval}}(\textcolor{keyword}{const} \mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
-\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\_iter\_next}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}** iter\_p);}
-\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\_iter\_destroy}}(\mbox{\hyperlink{structtrie__iter}{TrieIterator}}* iter);}
+\DoxyCodeLine{\mbox{\hyperlink{structTrieIterator}{TrieIterator}}* \mbox{\hyperlink{trie_8c_a6e521735f7d4b998912170fce1a16eb5}{trie\_findall}}(\mbox{\hyperlink{structTrie}{Trie}}* trie, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* key\_prefix, \textcolor{keywordtype}{size\_t} max\_len);}
+\DoxyCodeLine{\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{trie_8c_ac8cd6936775bf3f25b5c51607dfda62e}{trie\_iter\_getkey}}(\textcolor{keyword}{const} \mbox{\hyperlink{structTrieIterator}{TrieIterator}}* iter);}
+\DoxyCodeLine{\textcolor{keywordtype}{void}* \mbox{\hyperlink{trie_8c_a74977c6f67a3f3740ae481759967fafb}{trie\_iter\_getval}}(\textcolor{keyword}{const} \mbox{\hyperlink{structTrieIterator}{TrieIterator}}* iter);}
+\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a29af5e6478255dab9bd6d2ddcd9ebaf6}{trie\_iter\_next}}(\mbox{\hyperlink{structTrieIterator}{TrieIterator}}** iter\_p);}
+\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{trie_8c_a9c497ea4aae3f4eced8749368e93698d}{trie\_iter\_destroy}}(\mbox{\hyperlink{structTrieIterator}{TrieIterator}}* iter);}
 \end{DoxyCode}
  Refer to \mbox{\hyperlink{trie_8h}{src/trie.\+h}} or doc/html/index.\+html for the documentation
 

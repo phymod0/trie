@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['children',['children',['../structtrie__node.html#a1166d2a6b60aa52e784572d5ed1da336',1,'trie_node']]]
+  ['children',['children',['../structTrieNode.html#aee14127d1ce0f5c51a3391ce130d864d',1,'TrieNode']]]
 ];

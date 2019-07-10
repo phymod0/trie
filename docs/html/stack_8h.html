@@ -90,9 +90,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ae31b3b0c46d4c70b634d01c89173e21b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#ae31b3b0c46d4c70b634d01c89173e21b">STACK_OPS_FREE</a>&#160;&#160;&#160;<a class="el" href="stack_8h.html#a2e669f9b5f2fa86e586f691933099f45">stack_makeops</a>(free)</td></tr>
+<tr class="memitem:ae31b3b0c46d4c70b634d01c89173e21b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#ae31b3b0c46d4c70b634d01c89173e21b">STACK_OPS_FREE</a>&#160;&#160;&#160;stack_makeops(free)</td></tr>
 <tr class="separator:ae31b3b0c46d4c70b634d01c89173e21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab92134c7551c5b9576225342ea322f7a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#ab92134c7551c5b9576225342ea322f7a">STACK_OPS_NONE</a>&#160;&#160;&#160;<a class="el" href="stack_8h.html#a2e669f9b5f2fa86e586f691933099f45">stack_makeops</a>(NULL)</td></tr>
+<tr class="memitem:ab92134c7551c5b9576225342ea322f7a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#ab92134c7551c5b9576225342ea322f7a">STACK_OPS_NONE</a>&#160;&#160;&#160;stack_makeops(NULL)</td></tr>
 <tr class="separator:ab92134c7551c5b9576225342ea322f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0010e0e9314bd51ca4a45cf927dd8687"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#a0010e0e9314bd51ca4a45cf927dd8687">STACK_FWD</a></td></tr>
 <tr class="separator:a0010e0e9314bd51ca4a45cf927dd8687"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,8 +104,6 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2e669f9b5f2fa86e586f691933099f45"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstack__ops.html">stack_ops</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#a2e669f9b5f2fa86e586f691933099f45">stack_makeops</a> (void(*dtor)(void *))</td></tr>
-<tr class="separator:a2e669f9b5f2fa86e586f691933099f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39b0d15223b77757179768b286076c46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="stack_8h.html#aa7883e8bf747b9dedec990b539df2cc0">Stack</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#a39b0d15223b77757179768b286076c46">stack_create</a> (const struct <a class="el" href="structstack__ops.html">stack_ops</a> ops)</td></tr>
 <tr class="separator:a39b0d15223b77757179768b286076c46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b046328734e118cf1b7907c68d9407f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack_8h.html#a8b046328734e118cf1b7907c68d9407f">stack_push</a> (<a class="el" href="stack_8h.html#aa7883e8bf747b9dedec990b539df2cc0">Stack</a> *s, void *data)</td></tr>
@@ -143,7 +141,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define STACK_OPS_FREE&#160;&#160;&#160;<a class="el" href="stack_8h.html#a2e669f9b5f2fa86e586f691933099f45">stack_makeops</a>(free)</td>
+          <td class="memname">#define STACK_OPS_FREE&#160;&#160;&#160;stack_makeops(free)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -158,7 +156,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define STACK_OPS_NONE&#160;&#160;&#160;<a class="el" href="stack_8h.html#a2e669f9b5f2fa86e586f691933099f45">stack_makeops</a>(NULL)</td>
+          <td class="memname">#define STACK_OPS_NONE&#160;&#160;&#160;stack_makeops(NULL)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -232,32 +230,6 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2e669f9b5f2fa86e586f691933099f45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e669f9b5f2fa86e586f691933099f45">&#9670;&nbsp;</a></span>stack_makeops()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structstack__ops.html">stack_ops</a> stack_makeops </td>
-          <td>(</td>
-          <td class="paramtype">void(*)(void *)&#160;</td>
-          <td class="paramname"><em>dtor</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

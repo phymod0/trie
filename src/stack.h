@@ -19,7 +19,7 @@ struct stack_ops {
 };
 
 
-inline struct stack_ops stack_makeops(void (*dtor)(void*))
+static inline struct stack_ops stack_makeops(void (*dtor)(void*))
 {
 	struct stack_ops ops;
 	ops.dtor = dtor;

@@ -14,14 +14,14 @@
 
 
 /** Operations on trie values. */
-struct trie_ops {
+struct TrieOps {
 	void (*dtor)(void*); /**< Destructor for an inserted value. */
 };
 
 
-inline struct trie_ops trie_makeops(void (*dtor)(void*))
+static inline struct TrieOps trie_makeops(void (*dtor)(void*))
 {
-	struct trie_ops ops;
+	struct TrieOps ops;
 	ops.dtor = dtor;
 	return ops;
 }
@@ -39,10 +39,10 @@ inline struct trie_ops trie_makeops(void (*dtor)(void*))
 //////////////////////////////////////////////////////
 
 /** Trie data structure. */
-struct trie;
+struct Trie;
 #ifndef TRIE_FWD
 #define TRIE_FWD
-typedef struct trie Trie;
+typedef struct Trie Trie;
 #endif /* TRIE_FWD */
 
 
@@ -52,7 +52,7 @@ typedef struct trie Trie;
  * @param ops Set of trie value operations
  * @returns Allocated trie structure or NULL if out of memory
  */
-Trie* trie_create(const struct trie_ops ops);
+Trie* trie_create(const struct TrieOps ops);
 
 /**
  * Destroy a trie.
@@ -116,10 +116,10 @@ void* trie_find(Trie* trie, char* key);
 //////////////////////////////////////////////////////////
 
 /** Iterator type for iterating over (key, value) pairs in a subtrie. */
-struct trie_iter;
+struct TrieIterator;
 #ifndef TRIE_ITER_FWD
 #define TRIE_ITER_FWD
-typedef struct trie_iter TrieIterator;
+typedef struct TrieIterator TrieIterator;
 #endif /* TRIE_ITER_FWD */
 
 

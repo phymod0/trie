@@ -16,9 +16,9 @@ struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{stack_8h_ae31b3b0c46d4c70b634d01c89173e21b}{S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~\mbox{\hyperlink{stack_8h_a2e669f9b5f2fa86e586f691933099f45}{stack\+\_\+makeops}}(free)
+\#define \mbox{\hyperlink{stack_8h_ae31b3b0c46d4c70b634d01c89173e21b}{S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~stack\+\_\+makeops(free)
 \item 
-\#define \mbox{\hyperlink{stack_8h_ab92134c7551c5b9576225342ea322f7a}{S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~\mbox{\hyperlink{stack_8h_a2e669f9b5f2fa86e586f691933099f45}{stack\+\_\+makeops}}(N\+U\+LL)
+\#define \mbox{\hyperlink{stack_8h_ab92134c7551c5b9576225342ea322f7a}{S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~stack\+\_\+makeops(N\+U\+LL)
 \item 
 \#define \mbox{\hyperlink{stack_8h_a0010e0e9314bd51ca4a45cf927dd8687}{S\+T\+A\+C\+K\+\_\+\+F\+WD}}
 \end{DoxyCompactItemize}
@@ -29,8 +29,6 @@ typedef struct \mbox{\hyperlink{structstack}{stack}} \mbox{\hyperlink{stack_8h_a
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
-\item 
-struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}} \mbox{\hyperlink{stack_8h_a2e669f9b5f2fa86e586f691933099f45}{stack\+\_\+makeops}} (void($\ast$dtor)(void $\ast$))
 \item 
 \mbox{\hyperlink{stack_8h_aa7883e8bf747b9dedec990b539df2cc0}{Stack}} $\ast$ \mbox{\hyperlink{stack_8h_a39b0d15223b77757179768b286076c46}{stack\+\_\+create}} (const struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}} ops)
 \item 
@@ -62,13 +60,13 @@ Methods for stack operations.
 \index{stack.h@{stack.h}!STACK\_OPS\_FREE@{STACK\_OPS\_FREE}}
 \index{STACK\_OPS\_FREE@{STACK\_OPS\_FREE}!stack.h@{stack.h}}
 \subsubsection{\texorpdfstring{STACK\_OPS\_FREE}{STACK\_OPS\_FREE}}
-{\footnotesize\ttfamily \#define S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~\mbox{\hyperlink{stack_8h_a2e669f9b5f2fa86e586f691933099f45}{stack\+\_\+makeops}}(free)}
+{\footnotesize\ttfamily \#define S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~stack\+\_\+makeops(free)}
 
 Free all inserted values with {\ttfamily free()}. \mbox{\Hypertarget{stack_8h_ab92134c7551c5b9576225342ea322f7a}\label{stack_8h_ab92134c7551c5b9576225342ea322f7a}} 
 \index{stack.h@{stack.h}!STACK\_OPS\_NONE@{STACK\_OPS\_NONE}}
 \index{STACK\_OPS\_NONE@{STACK\_OPS\_NONE}!stack.h@{stack.h}}
 \subsubsection{\texorpdfstring{STACK\_OPS\_NONE}{STACK\_OPS\_NONE}}
-{\footnotesize\ttfamily \#define S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~\mbox{\hyperlink{stack_8h_a2e669f9b5f2fa86e586f691933099f45}{stack\+\_\+makeops}}(N\+U\+LL)}
+{\footnotesize\ttfamily \#define S\+T\+A\+C\+K\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~stack\+\_\+makeops(N\+U\+LL)}
 
 Do not free inserted values. 
 
@@ -99,12 +97,6 @@ Do not free inserted values.
 \index{stack\_empty@{stack\_empty}!stack.h@{stack.h}}
 \subsubsection{\texorpdfstring{stack\_empty()}{stack\_empty()}}
 {\footnotesize\ttfamily bool stack\+\_\+empty (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_aa7883e8bf747b9dedec990b539df2cc0}{Stack}} $\ast$}]{s }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{stack_8h_a2e669f9b5f2fa86e586f691933099f45}\label{stack_8h_a2e669f9b5f2fa86e586f691933099f45}} 
-\index{stack.h@{stack.h}!stack\_makeops@{stack\_makeops}}
-\index{stack\_makeops@{stack\_makeops}!stack.h@{stack.h}}
-\subsubsection{\texorpdfstring{stack\_makeops()}{stack\_makeops()}}
-{\footnotesize\ttfamily struct \mbox{\hyperlink{structstack__ops}{stack\+\_\+ops}} stack\+\_\+makeops (\begin{DoxyParamCaption}\item[{void($\ast$)(void $\ast$)}]{dtor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{stack_8h_a21832629d58719d2635446a64539c45e}\label{stack_8h_a21832629d58719d2635446a64539c45e}} 
 \index{stack.h@{stack.h}!stack\_pop@{stack\_pop}}

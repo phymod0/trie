@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['segment',['segment',['../structtrie__node.html#a12084a8e8f390a22ed508767066eba93',1,'trie_node']]]
+  ['segment',['segment',['../structTrieNode.html#aee6b01ef1df2e14fc60b7cac7f842f9c',1,'TrieNode']]]
 ];
