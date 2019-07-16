@@ -18,7 +18,7 @@ static char* _Strdup(const char* str)
 template<typename T>
 static void _Generic_destroy(void* objPtr)
 {
-	delete reinterpret_cast<T*>(objPtr);
+	delete static_cast<T*>(objPtr);
 }
 
 
@@ -42,7 +42,7 @@ pair<const char*, T&> trie<T>::iterator::operator*() const
 {
 	const char* key = trie_iter_getkey(iter);
 	void* val = trie_iter_getval(iter);
-	return pair<const char*, T&>(key, *reinterpret_cast<T*>(val));
+	return pair<const char*, T&>(key, *static_cast<T*>(val));
 }
 
 
@@ -106,7 +106,7 @@ typename trie<T>::iterator trie<T>::find(const char* key)
 template<typename T>
 T& trie<T>::operator[](const char* key)
 {
-	T* found = reinterpret_cast<T*>(trie_find(t, (char*)key));
+	T* found = static_cast<T*>(trie_find(t, (char*)key));
 	if (not found) {
 		T* newVal = new T();
 		trie_insert(t, (char*)key, (void*)newVal);
@@ -161,7 +161,7 @@ pair<const char*, T&> subtrie<T>::iterator::operator*() const
 {
 	const char* key = trie_iter_getkey(iter);
 	void* val = trie_iter_getval(iter);
-	return pair<const char*, T&>(key, *reinterpret_cast<T*>(val));
+	return pair<const char*, T&>(key, *static_cast<T*>(val));
 }
 
 
@@ -246,7 +246,7 @@ public:
 };
 
 
-#if 0
+#if 1
 int main()
 {
 	trie<double> T;
