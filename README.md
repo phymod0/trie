@@ -23,6 +23,7 @@ int trie_insert(Trie* trie, char* key, void* val);
 void* trie_find(Trie* trie, char* key);
 int trie_delete(Trie* trie, char* key);
 void trie_destroy(Trie* trie);
+size_t trie_memory_usage(const Trie* trie);
 size_t trie_maxkeylen_added(Trie* trie);
 
 //////////////////////////////////////////////////////////

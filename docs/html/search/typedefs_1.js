@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['stack',['Stack',['../stack_8h.html#aa7883e8bf747b9dedec990b539df2cc0',1,'stack.h']]],
-  ['stackelem',['StackElem',['../stack_8c.html#a88b8340a4dfb89fe37115fc2b0719d20',1,'stack.c']]]
+  ['memusage_5ft',['memusage_t',['../trie_8c.html#a00f40454269ffcdf4b6ba7a691da44f2',1,'trie.c']]]
 ];

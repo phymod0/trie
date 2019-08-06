@@ -37,6 +37,7 @@ typedef struct TrieIterator TrieIterator;
 #endif /* TRIE_ITER_FWD */
 
 typedef void (*destructor_t)(void*);
+typedef size_t (*memusage_t)(void*);
 
 
 /* Utility functions */
@@ -48,6 +49,9 @@ static inline char* segncpy(char*, const char*, size_t);
 static inline char* key_add_segment(char*, const char*, char*, size_t);
 static inline ptrdiff_t pflen_equal(const char*, const char*);
 static void val_insert(TrieNode*, void*, destructor_t);
+
+/* DFS auxiliaries */
+static size_t node_memory_usage(TrieNode*, memusage_t);
 
 /* Search functions */
 static inline TrieNode* leq_child(TrieNode*, char);
@@ -193,6 +197,12 @@ void* trie_find(Trie* trie, char* key)
 	char* segptr;
 	find_mismatch(trie, key, &node, NULL, &segptr, &key);
 	return *key || *segptr ? NULL : node->value;
+}
+
+
+size_t trie_memory_usage(const Trie* trie)
+{
+	return trie ? node_memory_usage(trie->root, trie->ops->memusage) : 0;
 }
 
 
@@ -649,6 +659,26 @@ return_empty_iterator:
 	stack_destroy(node_stack);
 	stack_destroy(keyptr_stack);
 	return NULL;
+}
+
+
+static size_t node_memory_usage(TrieNode* node, memusage_t val_usage)
+{
+	size_t n_children, result;
+
+	if (!node)
+		return 0;
+
+	n_children = node->n_children;
+	result = sizeof *node;
+
+	result += strlen(node->segment) + 1;
+	for (size_t i = 0; i < n_children; ++i)
+		result += node_memory_usage(&node->children[i], val_usage);
+	if (val_usage)
+		result += val_usage(node->value);
+
+	return result;
 }
 
 

@@ -17,6 +17,7 @@ var searchData=
   ['trie_5fiter_5fgetval',['trie_iter_getval',['../trie_8c.html#a74977c6f67a3f3740ae481759967fafb',1,'trie_iter_getval(const TrieIterator *iter):&#160;trie.c'],['../trie_8h.html#a74977c6f67a3f3740ae481759967fafb',1,'trie_iter_getval(const TrieIterator *iter):&#160;trie.c']]],
   ['trie_5fiter_5fnext',['trie_iter_next',['../trie_8c.html#a29af5e6478255dab9bd6d2ddcd9ebaf6',1,'trie_iter_next(TrieIterator **iter_p):&#160;trie.c'],['../trie_8h.html#a29af5e6478255dab9bd6d2ddcd9ebaf6',1,'trie_iter_next(TrieIterator **iter_p):&#160;trie.c']]],
   ['trie_5fmaxkeylen_5fadded',['trie_maxkeylen_added',['../trie_8c.html#a3cfd530552e7ec075229aa9e22979ede',1,'trie_maxkeylen_added(Trie *trie):&#160;trie.c'],['../trie_8h.html#a3cfd530552e7ec075229aa9e22979ede',1,'trie_maxkeylen_added(Trie *trie):&#160;trie.c']]],
+  ['trie_5fmemory_5fusage',['trie_memory_usage',['../trie_8c.html#a86fe03884a7266078fd252541217c8b9',1,'trie_memory_usage(const Trie *trie):&#160;trie.c'],['../trie_8h.html#a86fe03884a7266078fd252541217c8b9',1,'trie_memory_usage(const Trie *trie):&#160;trie.c']]],
   ['trie_5fops_5ffree',['TRIE_OPS_FREE',['../trie_8h.html#aa17de87c06bbd97024f1ae249b9c26c6',1,'trie.h']]],
   ['trie_5fops_5fnone',['TRIE_OPS_NONE',['../trie_8h.html#ae61a15b5f69ebdaa373035943c57d04e',1,'trie.h']]],
   ['trieiterator',['TrieIterator',['../structTrieIterator.html',1,'TrieIterator'],['../trie_8h.html#abb83102935fadd2d9dc7dd9e39712eab',1,'TrieIterator():&#160;trie.h']]],

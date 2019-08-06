@@ -16,22 +16,25 @@
 /** Operations on trie values. */
 struct TrieOps {
 	void (*dtor)(void*); /**< Destructor for an inserted value. */
+	size_t (*memusage)(void*); /**< Memory usage evaluator for values. */
 };
 
 
-static inline struct TrieOps trie_makeops(void (*dtor)(void*))
+static inline struct TrieOps trie_makeops(void (*dtor)(void*),
+					  size_t (*memusage)(void*))
 {
 	struct TrieOps ops;
 	ops.dtor = dtor;
+	ops.memusage = memusage;
 	return ops;
 }
 
 
 /** Free all inserted values with <code>free()</code>. */
-#define TRIE_OPS_FREE trie_makeops(free)
+#define TRIE_OPS_FREE trie_makeops(free, NULL)
 
 /** Do not free inserted values. */
-#define TRIE_OPS_NONE trie_makeops(NULL)
+#define TRIE_OPS_NONE trie_makeops(NULL, NULL)
 
 
 //////////////////////////////////////////////////////
@@ -109,6 +112,17 @@ int trie_delete(Trie* trie, char* key);
  * @returns Requested value or NULL if not found
  */
 void* trie_find(Trie* trie, char* key);
+
+/**
+ * Get a rough estimate of the number of bytes used by the trie.
+ *
+ * Values will not be considered in the aggregate if the <code>memusage</code>
+ * operation passed to <code>trie_create()</code> was a NULL function pointer.
+ *
+ * @param trie Trie context
+ * @returns Optimistic estimate of the number of bytes used.
+ */
+size_t trie_memory_usage(const Trie* trie);
 
 
 //////////////////////////////////////////////////////////

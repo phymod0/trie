@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['trie',['Trie',['../trie_8h.html#ac539c2f1d9c08086c130fedc98bc6990',1,'trie.h']]],
-  ['trieiterator',['TrieIterator',['../trie_8h.html#abb83102935fadd2d9dc7dd9e39712eab',1,'trie.h']]],
-  ['trienode',['TrieNode',['../trie_8c.html#a00768dcc81f7f258a804f2e4e6f37d09',1,'trie.c']]]
+  ['stack',['Stack',['../stack_8h.html#aa7883e8bf747b9dedec990b539df2cc0',1,'stack.h']]],
+  ['stackelem',['StackElem',['../stack_8c.html#a88b8340a4dfb89fe37115fc2b0719d20',1,'stack.c']]]
 ];

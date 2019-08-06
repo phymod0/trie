@@ -90,9 +90,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#aa17de87c06bbd97024f1ae249b9c26c6">TRIE_OPS_FREE</a>&#160;&#160;&#160;trie_makeops(free)</td></tr>
+<tr class="memitem:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#aa17de87c06bbd97024f1ae249b9c26c6">TRIE_OPS_FREE</a>&#160;&#160;&#160;trie_makeops(free, NULL)</td></tr>
 <tr class="separator:aa17de87c06bbd97024f1ae249b9c26c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae61a15b5f69ebdaa373035943c57d04e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#ae61a15b5f69ebdaa373035943c57d04e">TRIE_OPS_NONE</a>&#160;&#160;&#160;trie_makeops(NULL)</td></tr>
+<tr class="memitem:ae61a15b5f69ebdaa373035943c57d04e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#ae61a15b5f69ebdaa373035943c57d04e">TRIE_OPS_NONE</a>&#160;&#160;&#160;trie_makeops(NULL, NULL)</td></tr>
 <tr class="separator:ae61a15b5f69ebdaa373035943c57d04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a440318004d0a0b1cfb3c46f4887300a5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#a440318004d0a0b1cfb3c46f4887300a5">TRIE_FWD</a></td></tr>
 <tr class="separator:a440318004d0a0b1cfb3c46f4887300a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,6 +120,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae126fc59d33595f7dd6c689c241d2080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f18803659abb76370cd52e8b031c002"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#a9f18803659abb76370cd52e8b031c002">trie_find</a> (<a class="el" href="structTrie.html">Trie</a> *trie, char *key)</td></tr>
 <tr class="separator:a9f18803659abb76370cd52e8b031c002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86fe03884a7266078fd252541217c8b9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#a86fe03884a7266078fd252541217c8b9">trie_memory_usage</a> (const <a class="el" href="structTrie.html">Trie</a> *trie)</td></tr>
+<tr class="separator:a86fe03884a7266078fd252541217c8b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c497ea4aae3f4eced8749368e93698d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#a9c497ea4aae3f4eced8749368e93698d">trie_iter_destroy</a> (<a class="el" href="structTrieIterator.html">TrieIterator</a> *iter)</td></tr>
 <tr class="separator:a9c497ea4aae3f4eced8749368e93698d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97e35fe2a4cb169905debb703b0d001d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTrieIterator.html">TrieIterator</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8h.html#a97e35fe2a4cb169905debb703b0d001d">trie_findall</a> (<a class="el" href="structTrie.html">Trie</a> *trie, const char *key_prefix, size_t max_len)</td></tr>
@@ -169,7 +171,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRIE_OPS_FREE&#160;&#160;&#160;trie_makeops(free)</td>
+          <td class="memname">#define TRIE_OPS_FREE&#160;&#160;&#160;trie_makeops(free, NULL)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -184,7 +186,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRIE_OPS_NONE&#160;&#160;&#160;trie_makeops(NULL)</td>
+          <td class="memname">#define TRIE_OPS_NONE&#160;&#160;&#160;trie_makeops(NULL, NULL)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -570,6 +572,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Size of the longest key </dd></dl>
+
+</div>
+</div>
+<a id="a86fe03884a7266078fd252541217c8b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86fe03884a7266078fd252541217c8b9">&#9670;&nbsp;</a></span>trie_memory_usage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t trie_memory_usage </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTrie.html">Trie</a> *&#160;</td>
+          <td class="paramname"><em>trie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get a rough estimate of the number of bytes used by the trie.</p>
+<p>Values will not be considered in the aggregate if the <code>memusage</code> operation passed to <code><a class="el" href="trie_8h.html#a0b4926c622607e593ec9ceeeacc6d5d9">trie_create()</a></code> was a NULL function pointer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">trie</td><td><a class="el" href="structTrie.html">Trie</a> context </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Optimistic estimate of the number of bytes used. </dd></dl>
 
 </div>
 </div>

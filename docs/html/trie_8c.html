@@ -100,6 +100,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a00768dcc81f7f258a804f2e4e6f37d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2930134ffa16d71fb37514b22bc3ff46"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a2930134ffa16d71fb37514b22bc3ff46">destructor_t</a>) (void *)</td></tr>
 <tr class="separator:a2930134ffa16d71fb37514b22bc3ff46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00f40454269ffcdf4b6ba7a691da44f2"><td class="memItemLeft" align="right" valign="top">typedef size_t(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a00f40454269ffcdf4b6ba7a691da44f2">memusage_t</a>) (void *)</td></tr>
+<tr class="separator:a00f40454269ffcdf4b6ba7a691da44f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -115,6 +117,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae126fc59d33595f7dd6c689c241d2080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f18803659abb76370cd52e8b031c002"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a9f18803659abb76370cd52e8b031c002">trie_find</a> (<a class="el" href="structTrie.html">Trie</a> *trie, char *key)</td></tr>
 <tr class="separator:a9f18803659abb76370cd52e8b031c002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86fe03884a7266078fd252541217c8b9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a86fe03884a7266078fd252541217c8b9">trie_memory_usage</a> (const <a class="el" href="structTrie.html">Trie</a> *trie)</td></tr>
+<tr class="separator:a86fe03884a7266078fd252541217c8b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c497ea4aae3f4eced8749368e93698d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a9c497ea4aae3f4eced8749368e93698d">trie_iter_destroy</a> (<a class="el" href="structTrieIterator.html">TrieIterator</a> *iter)</td></tr>
 <tr class="separator:a9c497ea4aae3f4eced8749368e93698d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e521735f7d4b998912170fce1a16eb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTrieIterator.html">TrieIterator</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trie_8c.html#a6e521735f7d4b998912170fce1a16eb5">trie_findall</a> (<a class="el" href="structTrie.html">Trie</a> *trie, const char *key_prefix, size_t max_keylen)</td></tr>
@@ -198,6 +202,20 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef void(* destructor_t) (void *)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00f40454269ffcdf4b6ba7a691da44f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00f40454269ffcdf4b6ba7a691da44f2">&#9670;&nbsp;</a></span>memusage_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef size_t(* memusage_t) (void *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -567,6 +585,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Size of the longest key </dd></dl>
+
+</div>
+</div>
+<a id="a86fe03884a7266078fd252541217c8b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86fe03884a7266078fd252541217c8b9">&#9670;&nbsp;</a></span>trie_memory_usage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t trie_memory_usage </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTrie.html">Trie</a> *&#160;</td>
+          <td class="paramname"><em>trie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get a rough estimate of the number of bytes used by the trie.</p>
+<p>Values will not be considered in the aggregate if the <code>memusage</code> operation passed to <code><a class="el" href="trie_8h.html#a0b4926c622607e593ec9ceeeacc6d5d9">trie_create()</a></code> was a NULL function pointer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">trie</td><td><a class="el" href="structTrie.html">Trie</a> context </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Optimistic estimate of the number of bytes used. </dd></dl>
 
 </div>
 </div>

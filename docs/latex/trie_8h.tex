@@ -16,9 +16,9 @@ struct \mbox{\hyperlink{structTrieOps}{Trie\+Ops}}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~trie\+\_\+makeops(free)
+\#define \mbox{\hyperlink{trie_8h_aa17de87c06bbd97024f1ae249b9c26c6}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE}}~trie\+\_\+makeops(free, N\+U\+LL)
 \item 
-\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~trie\+\_\+makeops(N\+U\+LL)
+\#define \mbox{\hyperlink{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}{T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE}}~trie\+\_\+makeops(N\+U\+LL, N\+U\+LL)
 \item 
 \#define \mbox{\hyperlink{trie_8h_a440318004d0a0b1cfb3c46f4887300a5}{T\+R\+I\+E\+\_\+\+F\+WD}}
 \item 
@@ -45,6 +45,8 @@ int \mbox{\hyperlink{trie_8h_ab81b3de6ec6517c401c7b405e4f18fb3}{trie\+\_\+insert
 int \mbox{\hyperlink{trie_8h_ae126fc59d33595f7dd6c689c241d2080}{trie\+\_\+delete}} (\mbox{\hyperlink{structTrie}{Trie}} $\ast$trie, char $\ast$key)
 \item 
 void $\ast$ \mbox{\hyperlink{trie_8h_a9f18803659abb76370cd52e8b031c002}{trie\+\_\+find}} (\mbox{\hyperlink{structTrie}{Trie}} $\ast$trie, char $\ast$key)
+\item 
+size\+\_\+t \mbox{\hyperlink{trie_8h_a86fe03884a7266078fd252541217c8b9}{trie\+\_\+memory\+\_\+usage}} (const \mbox{\hyperlink{structTrie}{Trie}} $\ast$trie)
 \item 
 void \mbox{\hyperlink{trie_8h_a9c497ea4aae3f4eced8749368e93698d}{trie\+\_\+iter\+\_\+destroy}} (\mbox{\hyperlink{structTrieIterator}{Trie\+Iterator}} $\ast$iter)
 \item 
@@ -80,13 +82,13 @@ Methods for trie operations.
 \index{trie.h@{trie.h}!TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}}
 \index{TRIE\_OPS\_FREE@{TRIE\_OPS\_FREE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_FREE}{TRIE\_OPS\_FREE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~trie\+\_\+makeops(free)}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+F\+R\+EE~trie\+\_\+makeops(free, N\+U\+LL)}
 
 Free all inserted values with {\ttfamily free()}. \mbox{\Hypertarget{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}\label{trie_8h_ae61a15b5f69ebdaa373035943c57d04e}} 
 \index{trie.h@{trie.h}!TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}}
 \index{TRIE\_OPS\_NONE@{TRIE\_OPS\_NONE}!trie.h@{trie.h}}
 \subsubsection{\texorpdfstring{TRIE\_OPS\_NONE}{TRIE\_OPS\_NONE}}
-{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~trie\+\_\+makeops(N\+U\+LL)}
+{\footnotesize\ttfamily \#define T\+R\+I\+E\+\_\+\+O\+P\+S\+\_\+\+N\+O\+NE~trie\+\_\+makeops(N\+U\+LL, N\+U\+LL)}
 
 Do not free inserted values. 
 
@@ -304,4 +306,22 @@ Sizes of keys that were previously added but do not exist are counted. Sizes of 
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Size of the longest key 
+\end{DoxyReturn}
+\mbox{\Hypertarget{trie_8h_a86fe03884a7266078fd252541217c8b9}\label{trie_8h_a86fe03884a7266078fd252541217c8b9}} 
+\index{trie.h@{trie.h}!trie\_memory\_usage@{trie\_memory\_usage}}
+\index{trie\_memory\_usage@{trie\_memory\_usage}!trie.h@{trie.h}}
+\subsubsection{\texorpdfstring{trie\_memory\_usage()}{trie\_memory\_usage()}}
+{\footnotesize\ttfamily size\+\_\+t trie\+\_\+memory\+\_\+usage (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structTrie}{Trie}} $\ast$}]{trie }\end{DoxyParamCaption})}
+
+Get a rough estimate of the number of bytes used by the trie.
+
+Values will not be considered in the aggregate if the {\ttfamily memusage} operation passed to {\ttfamily \mbox{\hyperlink{trie_8h_a0b4926c622607e593ec9ceeeacc6d5d9}{trie\+\_\+create()}}} was a N\+U\+LL function pointer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em trie} & \mbox{\hyperlink{structTrie}{Trie}} context \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Optimistic estimate of the number of bytes used. 
 \end{DoxyReturn}

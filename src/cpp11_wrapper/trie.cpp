@@ -61,7 +61,7 @@ bool trie<T>::iterator::operator!=(const iterator& it) const
 
 
 template<typename T>
-trie<T>::trie() : t(trie_create(trie_makeops(_Generic_destroy<T>)))
+trie<T>::trie() : t(trie_create(trie_makeops(_Generic_destroy<T>, NULL)))
 { }
 
 
